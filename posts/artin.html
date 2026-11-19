@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Is 2 a primitive root? Artin's conjecture · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Is 2 a primitive root? Artin's conjecture · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <h1>Is 2 a primitive root? Artin's conjecture</h1>
+    <div class="byline"><span class="date">November 2026</span><span class="tag">primes</span><span class="tag">open problems</span><span class="date">≈ 7 min read</span></div>
+  </header>
+  <div class="prose">
+<p>Write $1/7$ in decimal and you get $0.\overline{142857}$, a repeating block of length $6 = 7 - 1$, the longest possible. The same happens for $1/17$, $1/19$, $1/23$, $1/29$, $1/47$: the period of $1/p$ is the order of $10$ modulo $p$, and it equals $p - 1$ exactly when $10$ is a <strong>primitive root</strong> mod $p$, a generator of the cyclic group $(\mathbb{Z}/p\mathbb{Z})^\times$. Gauss asked whether there are infinitely many such primes. Two hundred years later nobody knows, for $10$, for $2$, or for any single integer.</p>
+
+<h2>The conjecture and the constant</h2>
+<p>In 1927 Emil Artin conjectured that every integer $a \ne -1$ that is not a perfect square is a primitive root modulo infinitely many primes, and he predicted their proportion. For $a = 2$ the prediction is <strong>Artin's constant</strong>
+$$A = \prod_{q \text{ prime}} \left(1 - \frac{1}{q(q-1)}\right) = 0.3739558136\ldots$$
+The heuristic: $2$ fails to be a primitive root mod $p$ exactly when, for some prime $q$, $q \mid p - 1$ and $2$ is a $q$-th power mod $p$. For a "random" prime these events have probability $\frac{1}{q-1} \cdot \frac1q$ and are independent, which gives the product. The data agree: of the $78{,}497$ odd primes below $10^6$, exactly $29{,}341$ have $2$ as a primitive root, a proportion of $0.3738$. The first few are
+$$3,\ 5,\ 11,\ 13,\ 19,\ 29,\ 37,\ 53,\ 59,\ 61,\ 67,\ 83,\ 101,\ 107,\ \dots$$
+The heuristic is subtler than it looks: for some $a$, such as $a = 5$, the events are <em>not</em> independent, because $\mathbb{Q}(\sqrt5)$ sits inside the cyclotomic field $\mathbb{Q}(\zeta_5)$. The Lehmers found in 1957 that the data for $a = 5$ disagreed with Artin's constant, and Heilbronn supplied the correction factor. Artin's original prediction needed fixing in exactly these cases.</p>
+
+<h2>What is known</h2>
+<p>In 1967 Christopher Hooley proved Artin's conjecture, with the correct density, assuming the generalised Riemann hypothesis for the Dedekind zeta functions of the fields $\mathbb{Q}(\zeta_q, 2^{1/q})$. Unconditionally, Gupta and Murty (1984) and then Heath-Brown (1986) showed that there are at most two primes $a$ for which the conjecture fails. So one of $2, 3, 5$ is a primitive root modulo infinitely many primes; we just cannot say which. It is a strange state of affairs: a theorem about three numbers, and no theorem about any one of them.</p>
+  <details class="proof">
+    <summary>Full proof: testing for a primitive root, and why p ≡ ±1 mod 8 never works</summary>
+    <div class="proof-body">
+<p><strong>Lemma 1.</strong> <em>Let $p$ be prime and $p \nmid a$. Then $a$ is a primitive root mod $p$ if and only if $a^{(p-1)/q} \not\equiv 1 \pmod p$ for every prime $q \mid p - 1$.</em></p>
+<p><em>Proof.</em> The order $d$ of $a$ divides $p - 1$ by Fermat. If $d < p - 1$, pick a prime $q$ dividing $(p-1)/d$; then $d \mid (p-1)/q$ and $a^{(p-1)/q} \equiv 1$. Conversely if $a^{(p-1)/q} \equiv 1$ then $d \le (p-1)/q < p - 1$. $\square$</p>
+<p><strong>Lemma 2.</strong> <em>If $p \equiv \pm 1 \pmod 8$, then $2$ is not a primitive root mod $p$.</em></p>
+<p><em>Proof.</em> By the second supplement to quadratic reciprocity, $2$ is a quadratic residue mod $p$ exactly when $p \equiv \pm1 \pmod 8$. Then Euler's criterion gives $2^{(p-1)/2} \equiv 1$, and Lemma 1 with $q = 2$ shows $2$ is not a primitive root. $\square$</p>
+<p>So the primes with $2$ as a primitive root all lie in the classes $3$ and $5 \bmod 8$, half of all primes, and Artin's constant says roughly three quarters of those qualify. This is the factor $q = 2$ of the product: $1 - \frac{1}{2 \cdot 1} = \frac12$.</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>P. Moree, <em>Artin's primitive root conjecture: a survey</em>, Integers 12 (2012).</li>
+  <li>C. Hooley, <em>On Artin's conjecture</em>, Journal für die reine und angewandte Mathematik 225 (1967).</li>
+  <li>D. R. Heath-Brown, <em>Artin's conjecture for primitive roots</em>, Quarterly Journal of Mathematics 37 (1986).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

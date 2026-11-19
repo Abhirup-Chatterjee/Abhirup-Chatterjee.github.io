@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kloosterman paths and curlicues · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Kloosterman paths and curlicues · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <p class="eyebrow">Lab · Exponential sums</p>
+    <h1>Kloosterman paths and curlicues</h1>
+    <p class="lead">Add up unit vectors whose angles follow an arithmetic rule, and draw the running total. Kloosterman sums make symmetric closed shapes, Gauss sums make spirals, and quadratic sums with irrational angles make fractal curlicues.</p>
+    <div class="byline"><span class="tag">exponential sums</span><span class="tag">finite fields</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Write $e(t) = e^{2\pi i t}$. An exponential sum adds unit complex numbers $e(f(x)/p)$ for $x$ running over $\mathbb{F}_p$. If the angles were random, the total would have size about $\sqrt p$, the length of a random walk with $p$ steps. The miracle, proved by Weil in the 1940s, is that for algebraic $f$ the sums really are that small. The <strong>Kloosterman sum</strong>
+$$\mathrm{Kl}(a, b; p) = \sum_{x=1}^{p-1} e\!\left(\frac{ax + b\bar x}{p}\right), \qquad x\bar x \equiv 1 \pmod p,$$
+satisfies $|\mathrm{Kl}(a, b; p)| \le 2\sqrt p$. The applet draws the polygon of partial sums, from the first term (marigold) to the last (indigo), together with the circle of radius $2\sqrt p$.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/exp-sums.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:1060px" src="app/exp-sums.html" title="Kloosterman paths and curlicues: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>The shapes</h2>
+<p><strong>Kloosterman paths</strong> are symmetric because the terms for $x$ and $p - x$ are complex conjugates, so the sum is real and the second half of the path mirrors the first. Kowalski and Sawin (2016) showed that, rescaled by $\sqrt p$ and averaged over $a$ as $p \to \infty$, these paths converge in law to a random Fourier series $t\,\mathrm{ST}_0 + \sum_{h \ne 0} \frac{e(ht) - 1}{2\pi i h}\mathrm{ST}_h$ built from independent Sato–Tate variables. Kloosterman sums appear in the Fourier coefficients of modular forms (via the Petersson and Kuznetsov formulas), which is where most of their applications come from.</p>
+<p><strong>Quadratic Gauss sums</strong> $G(a; p) = \sum_x e(ax^2/p)$ make spirals that end at a point of absolute value exactly $\sqrt p$. Gauss found the exact value, $G(1; p) = \sqrt p$ for $p \equiv 1 \pmod 4$ and $i\sqrt p$ for $p \equiv 3 \pmod 4$, after four years of trying to fix the sign. <strong>Cubic sums</strong> $\sum_x e((x^3 + ax)/p)$ have no closed form, but Weil's bound $2\sqrt p$ still holds.</p>
+<p><strong>Curlicues</strong> are the sums $\sum_{n \le N} e^{\pi i n^2 x}$ for irrational $x$. They form spirals inside spirals, and Berry and Goldberg (1988) explained the self-similarity by a renormalisation map $x \mapsto -1/x$: the sizes of the spirals are governed by the continued fraction of $x$, which is why the golden ratio gives the tidiest picture. The same transformation, the theta function's modularity, drives the Hardy–Littlewood bounds for these sums.</p>
+  <details class="proof">
+    <summary>Full proof: the Gauss sum has absolute value √p</summary>
+    <div class="proof-body">
+<p><strong>Proposition.</strong> <em>For an odd prime $p$ and $p \nmid a$, $|G(a; p)|^2 = p$.</em></p>
+<p><em>Proof.</em> Expanding,
+$$|G(a; p)|^2 = \sum_{x, y \in \mathbb{F}_p} e\!\left(\frac{a(x^2 - y^2)}{p}\right) = \sum_{y, h} e\!\left(\frac{a(2yh + h^2)}{p}\right),$$
+substituting $x = y + h$. For fixed $h$, the inner sum over $y$ is $e(ah^2/p)\sum_y e(2ahy/p)$, which is $p$ if $h = 0$ and $0$ otherwise, because $2ah \not\equiv 0$ and the sum of a nontrivial additive character over $\mathbb{F}_p$ vanishes. Only $h = 0$ survives, giving $p$. $\square$</p>
+<p>The same "square and shift" trick gives $|\mathrm{Kl}|$ on average, but the pointwise bound $2\sqrt p$ for Kloosterman sums needs Weil's Riemann hypothesis for the curve $y^p - y = ax + b/x$; an elementary proof was later found by Stepanov's method.</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>H. Iwaniec and E. Kowalski, <em>Analytic Number Theory</em>, AMS Colloquium Publications 53, 2004, Chapters 11–12.</li>
+  <li>E. Kowalski and W. Sawin, <em>Kloosterman paths and the shape of exponential sums</em>, Compositio Mathematica 152 (2016).</li>
+  <li>M. V. Berry and J. Goldberg, <em>Renormalisation of curlicues</em>, Nonlinearity 1 (1988).</li>
+  <li>B. C. Berndt, R. J. Evans and K. S. Williams, <em>Gauss and Jacobi Sums</em>, Wiley, 1998.</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

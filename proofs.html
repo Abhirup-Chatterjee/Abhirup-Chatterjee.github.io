@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proofs without Words · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Proofs without Words · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="cv.html">CV</a><a href="number-theory.html">Number Theory</a><a href="recreational.html" aria-current="page">Recreational</a><a href="art.html">Art</a><a href="resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article" style="max-width:var(--wrap)">
+  <header class="article-head">
+    <a class="back" href="recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Gallery · Recreational maths</p>
+    <h1>Proofs without words</h1>
+    <p class="lead">Fourteen pictures that prove something. Each one plays by itself; pause it and step through with the arrows, or open the note underneath for the argument in words.</p>
+  </header>
+</article>
+<section class="wrap quote-band" style="padding-top:0"><figure class="quote"><blockquote>My work always tried to unite the true with the beautiful; but when I had to choose one or the other, I usually chose the beautiful.</blockquote><figcaption><b>Hermann Weyl</b><span>quoted by Freeman Dyson, Nature, 1956</span></figcaption></figure></section>
+<section class="wrap" style="padding-bottom:2rem">
+  <div class="chips" data-filter-group="#pw-grid" role="group" aria-label="Filter proofs" style="margin-bottom:1.4rem"><button class="chip" type="button" data-filter="all" aria-pressed="true">All</button><button class="chip" type="button" data-filter="sums" aria-pressed="false">sums</button><button class="chip" type="button" data-filter="number-theory" aria-pressed="false">number theory</button><button class="chip" type="button" data-filter="geometry" aria-pressed="false">geometry</button></div>
+  <div class="pw-grid" id="pw-grid">
+  <figure class="pw" data-proof="odd-squares" data-tags="sums">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Odd numbers make squares</h3><p>$1 + 3 + 5 + \dots + (2n-1) = n^2$</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Growing a $(k-1) \times (k-1)$ square into a $k \times k$ square adds an L-shaped border of $k + (k-1) = 2k - 1$ cells. Starting from a single cell and adding the borders for $k = 2, \dots, n$ builds the $n \times n$ square, so the first $n$ odd numbers sum to $n^2$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="triangular" data-tags="sums">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Two staircases make a rectangle</h3><p>$1 + 2 + \dots + n = \dfrac{n(n+1)}{2}$</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>The staircase with rows of $1, 2, \dots, n$ cells has $1 + 2 + \dots + n$ cells. A copy turned through $180^\circ$ has rows of $n, n-1, \dots, 1$ cells, so placed beside the original every row has $n + 1$ cells. The two copies fill an $n \times (n+1)$ rectangle, which gives $2(1 + \dots + n) = n(n+1)$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="nicomachus" data-tags="sums">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Nicomachus: cubes fill a square</h3><p>$1^3 + 2^3 + \dots + n^3 = (1 + 2 + \dots + n)^2$</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Write $T_k = 1 + 2 + \dots + k$. The square of side $T_n$ is the union of the L-shaped borders between the squares of sides $T_{k-1}$ and $T_k$. The $k$-th border has width $k$ and two arms of length $T_k$ which overlap in a $k \times k$ corner, so its area is $2kT_k - k^2 = k^2(k+1) - k^2 = k^3$.</p><p>In the picture each border is cut into $k$ squares of side $k$. When $k$ is odd each arm holds $(k-1)/2$ of them besides the corner; when $k$ is even the arms end in two $k \times \frac{k}{2}$ half-squares (drawn lighter), which together make one more square. Summing the borders gives $1^3 + \dots + n^3 = T_n^2$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="quarters" data-tags="sums">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Quarters make a third</h3><p>$\dfrac14 + \dfrac1{16} + \dfrac1{64} + \dots = \dfrac13$</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Cut the unit square into four quarters and colour three of them in three different ways, leaving the fourth. Repeat inside the remaining quarter. After $k$ rounds each colour covers $\frac14 + \dots + \frac1{4^k}$, the three colours cover the same area, and the uncoloured square has area $4^{-k} \to 0$. So each colour covers one third of the square in the limit. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="tennenbaum" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Tennenbaum: $\sqrt2$ is irrational</h3><p>No positive integers satisfy $a^2 = 2b^2$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Suppose $a^2 = 2b^2$ with $a$ as small as possible; then $b < a < 2b$. Place two $b \times b$ squares in opposite corners of an $a \times a$ square. Their total area $2b^2$ equals the area $a^2$ of the big square, so the area covered twice equals the area not covered at all. The doubly covered region is a square of side $2b - a$, and the uncovered region is two squares of side $a - b$. Hence $(2b-a)^2 = 2(a-b)^2$ with $0 < 2b - a < a$, a smaller solution: a contradiction. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="windmills" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Zagier's windmills</h3><p>Every prime $p \equiv 1 \pmod 4$ is a sum of two squares; here $17 = 1^2 + 4^2$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>The solutions of $x^2 + 4yz = 17$ in positive integers are drawn as windmills: an $x \times x$ square with four $y \times z$ sails. Zagier's involution $\zeta$ has exactly one fixed point, the plus sign $(1, 1, 4)$, so the number of windmills is odd. The swap $g(x, y, z) = (x, z, y)$ is also an involution, so it must fix some windmill $(x, y, y)$; its four $y \times y$ sails form a $2y \times 2y$ square, so $p = x^2 + (2y)^2$. The <a href="labs/windmills.html">Zagier's Windmills lab</a> has the full argument and an applet for any prime. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="necklaces" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Necklaces: Fermat's little theorem</h3><p>$p \mid a^p - a$ for every prime $p$; here $5 \mid 2^5 - 2$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>There are $a^p$ strings of $p$ beads in $a$ colours. Group them by rotation. A string equal to one of its nontrivial rotations has a period dividing $p$ but less than $p$, so since $p$ is prime its period is $1$ and it is a single colour. Apart from these $a$ strings, every rotation class has exactly $p$ members (one necklace), so $p$ divides $a^p - a$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="eisenstein" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Eisenstein: quadratic reciprocity</h3><p>$\left(\dfrac{p}{q}\right)\left(\dfrac{q}{p}\right) = (-1)^{\frac{p-1}{2} \cdot \frac{q-1}{2}}$; here $(p, q) = (11, 7)$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>By Eisenstein's form of Gauss's lemma, for distinct odd primes $\left(\frac{q}{p}\right) = (-1)^{N}$ with $N = \sum_{k=1}^{(p-1)/2} \lfloor kq/p \rfloor$, which counts the lattice points of the box $0 < x < p/2$, $0 < y < q/2$ lying below the diagonal $y = qx/p$. Symmetrically $\left(\frac{p}{q}\right) = (-1)^{M}$ where $M$ counts the points above it. No lattice point lies on the diagonal because $p$ and $q$ are coprime, so $N + M = \frac{p-1}{2} \cdot \frac{q-1}{2}$, the number of points in the box. In the picture $N = 7$ and $M = 8$: indeed $7$ is not a square mod $11$, and $11 \equiv 2^2 \pmod 7$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="hyperbola" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Dirichlet's hyperbola method</h3><p>$\displaystyle\sum_{m \le n} d(m) = 2\sum_{x \le \sqrt n} \left\lfloor \frac nx \right\rfloor - \lfloor \sqrt n \rfloor^2$; here $n = 20$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>$\sum_{m \le n} d(m)$ counts the pairs $(x, y)$ of positive integers with $xy \le n$, the lattice points under the hyperbola. Each such point has $x \le \sqrt n$ or $y \le \sqrt n$, since otherwise $xy > n$. The strip $x \le \sqrt n$ contains $\sum_{x \le \sqrt n} \lfloor n/x \rfloor$ points, the strip $y \le \sqrt n$ the same number by symmetry, and the points in both form a $\lfloor \sqrt n \rfloor \times \lfloor \sqrt n \rfloor$ square. Inclusion–exclusion gives the formula. Since each sum now has only $\sqrt n$ terms, it yields $\sum_{m \le n} d(m) = n \log n + (2\gamma - 1)n + O(\sqrt n)$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="bhaskara" data-tags="geometry">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Bhāskara: Pythagoras' theorem</h3><p>$a^2 + b^2 = c^2$ for a right triangle with legs $a, b$ and hypotenuse $c$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Put the squares on $a$ and $b$ side by side. Two cuts of length $c$ from the point at distance $a$ along the base split the shape into a pentagon and two copies of the right triangle. Turning each triangle a quarter turn about its top vertex closes the pentagon up into a quadrilateral with four sides of length $c$ and right angles, the square on $c$. Nothing was added or removed, so $a^2 + b^2 = c^2$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="am-gm" data-tags="geometry">
+    <div class="pw-stage"></div>
+    <figcaption><h3>AM–GM in a semicircle</h3><p>$\sqrt{ab} \le \dfrac{a+b}{2}$ for $a, b > 0$, with equality only when $a = b$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Draw a semicircle on a diameter split into lengths $a$ and $b$, and raise the perpendicular $h$ at the split point. The angle at its top is a right angle (Thales), so the two smaller triangles are similar and $h/a = b/h$, that is $h = \sqrt{ab}$. A half-chord is never longer than the radius $\frac{a+b}{2}$, and the two are equal only when the split point is the centre, that is when $a = b$. $\blacksquare$</p>
+    </div></details>
+  </figure>
+  <figure class="pw" id="lucas" data-proof="lucas" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Pascal mod 2 doubles itself</h3><p>Rows $0$ to $2^{k+1} - 1$ of Pascal's triangle mod $2$ are three copies of rows $0$ to $2^k - 1$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Modulo $2$, $(1 + x)^{2} = 1 + x^2$, and by induction $(1 + x)^{2^k} \equiv 1 + x^{2^k}$. So row $2^k$ is $1, 0, \dots, 0, 1$. For $0 \le m < 2^k$, row $2^k + m$ is the coefficient list of $(1 + x)^{2^k}(1 + x)^m \equiv (1 + x)^m + x^{2^k}(1 + x)^m$: a copy of row $m$ on the left, another copy shifted by $2^k$ on the right, and zeros in between because $m < 2^k$. Rows $2^k$ to $2^{k+1} - 1$ are therefore two copies of the first $2^k$ rows with an all-even triangle between them. Repeating the doubling gives the Sierpiński triangle; the <a href="labs/pascal-mod-p.html">Pascal lab</a> shows the same for every prime $p$.</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="calkin-wilf" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Every fraction exactly once</h3><p>In the Calkin–Wilf tree each positive fraction appears once, in lowest terms.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>Children of $a/b$ are $a/(a+b) < 1$ and $(a+b)/b > 1$, and $\gcd$ is preserved, so every entry is in lowest terms. Going up the tree from a reduced fraction $a/b \ne 1/1$ is forced: subtract the smaller of $a, b$ from the larger. This is the subtractive Euclidean algorithm, which always reaches $1/1$, so every reduced fraction is in the tree; and since the parent and the side (left if $a < b$, right if $a > b$) are determined by the fraction, two occurrences would trace back to two different copies of $1/1$, which is impossible because $1/1$ is nobody's child. The <a href="labs/calkin-wilf.html">Calkin–Wilf lab</a> traces any fraction.</p>
+    </div></details>
+  </figure>
+  <figure class="pw" data-proof="vieta" data-tags="number-theory">
+    <div class="pw-stage"></div>
+    <figcaption><h3>Vieta jumping on Markov triples</h3><p>Every positive solution of $x^2 + y^2 + z^2 = 3xyz$ descends to $(1, 1, 1)$.</p></figcaption>
+    <details class="proof"><summary>Full proof: in words</summary><div class="proof-body">
+<p>For a solution $a \le b \le c$, the largest entry $c$ is a root of $f(t) = t^2 - 3ab\,t + a^2 + b^2$, whose other root $c' = 3ab - c = (a^2 + b^2)/c$ is a positive integer, giving a new solution $(a, b, c')$. Unless the triple is $(1, 1, 1)$ or $(1, 1, 2)$, one checks $f(b) < 0$, so $b$ lies strictly between the roots and $c' < b < c$. The largest entry strictly decreases, so repeated jumps end at $(1, 1, 1)$. The post on <a href="posts/markov.html">Markov numbers</a> has the details and the whole tree.</p>
+    </div></details>
+  </figure>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+<script src="assets/proofs.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The first −2: cyclotomic polynomials and 105 · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="The first −2: cyclotomic polynomials and 105 · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <h1>The first −2: cyclotomic polynomials and 105</h1>
+    <div class="byline"><span class="date">November 2026</span><span class="tag">polynomials</span><span class="tag">patterns that break</span><span class="date">≈ 6 min read</span></div>
+  </header>
+  <div class="prose">
+<p>The $n$-th <strong>cyclotomic polynomial</strong> $\Phi_n(x)$ is the monic polynomial whose roots are the primitive $n$-th roots of unity. It has integer coefficients and degree $\varphi(n)$, and $x^n - 1 = \prod_{d \mid n}\Phi_d(x)$. The first few are
+$$\Phi_1 = x - 1,\quad \Phi_2 = x + 1,\quad \Phi_3 = x^2 + x + 1,\quad \Phi_6 = x^2 - x + 1,\quad \Phi_{15} = x^8 - x^7 + x^5 - x^4 + x^3 - x + 1.$$
+Compute a few dozen more and a pattern jumps out: every coefficient is $0$, $1$ or $-1$. It holds for $n = 1, 2, \dots, 104$. Then:</p>
+<figure class="post-fig"><svg class="fig" viewBox="0 0 680 200" role="img" aria-label="Coefficients of the 105th cyclotomic polynomial: all are 0, 1 or -1 except two coefficients equal to -2" style="width:100%;height:auto;display:block"><line x1="20" y1="110" x2="668" y2="110" style="stroke:var(--rule)"/><rect x="20.4" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="33.6" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="46.8" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="86.5" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="99.7" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="113.0" y="110.0" width="12.4" height="68.0" style="fill:var(--accent)"/><rect x="126.2" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="139.4" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="179.1" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="192.3" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="205.5" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="218.8" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="232.0" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="245.2" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="284.9" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="311.3" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="337.8" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="364.2" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="390.7" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="430.4" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="443.6" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="456.8" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="470.0" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="483.3" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="496.5" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="536.2" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="549.4" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="562.6" y="110.0" width="12.4" height="68.0" style="fill:var(--accent)"/><rect x="575.8" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="589.1" y="110.0" width="12.4" height="34.0" style="fill:var(--ink-soft)"/><rect x="628.7" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="642.0" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><rect x="655.2" y="76.0" width="12.4" height="34.0" style="fill:var(--plus)"/><text x="26.6" y="160" text-anchor="middle" style="font-family:var(--f-mono);fill:var(--muted);font-size:11px">1</text><text x="119.2" y="194" text-anchor="middle" style="font-family:var(--f-mono);fill:var(--muted);font-size:11px">x⁷</text><text x="568.8" y="194" text-anchor="middle" style="font-family:var(--f-mono);fill:var(--muted);font-size:11px">x⁴¹</text><text x="661.4" y="160" text-anchor="middle" style="font-family:var(--f-mono);fill:var(--muted);font-size:11px">x⁴⁸</text></svg><figcaption>The $49$ coefficients of $\Phi_{105}(x)$, from $x^0$ to $x^{48}$: indigo $+1$, dark $-1$, and two marigold coefficients equal to $-2$, at $x^7$ and $x^{41}$.</figcaption></figure>
+<p>$105 = 3 \cdot 5 \cdot 7$ is the smallest product of three distinct odd primes, and that is no accident: Migotti showed in 1883 that $\Phi_{pq}$ has all coefficients in $\{-1, 0, 1\}$ for primes $p, q$, and powers and the prime $2$ do not create new coefficients. Once three odd primes are available, the pattern breaks, and it keeps breaking: a computer search finds the first $n$ where the largest coefficient in absolute value (the <em>height</em>) reaches each value.</p>
+<table class="nums"><tr><th>height</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+<tr><td>first n</td><td>105</td><td>385</td><td>1365</td><td>1785</td><td>2805</td><td>3135</td></tr></table>
+<p>Schur showed that the coefficients are unbounded, Erdős that the heights grow faster than any power of $n$ along a subsequence, and Vaughan (1975) that they can be as large as $\exp\!\big(n^{\log 2/\log\log n}\big)$. A pattern that survives the first hundred cases is no evidence at all; the post on <a href="aliquot.html">aliquot sequences</a> and the <a href="../labs/prime-races.html">prime races lab</a> have more examples.</p>
+  <details class="proof">
+    <summary>Full proof: Schur's argument, and why the coefficient at x⁷ is −2</summary>
+    <div class="proof-body">
+<p>For $n > 1$, Möbius inversion of $x^n - 1 = \prod_{d \mid n}\Phi_d(x)$ gives
+$$\Phi_n(x) = \prod_{d \mid n} (1 - x^d)^{\mu(n/d)}.$$</p>
+<p><strong>Proposition (Schur).</strong> <em>Let $k \ge 3$ be odd and $p_1 < p_2 < \dots < p_k$ primes with $p_1 + p_2 > p_k$, and $n = p_1 \cdots p_k$. Then the coefficient of $x^{p_k}$ in $\Phi_n(x)$ is $1 - k$.</em></p>
+<p><em>Proof.</em> Work modulo $x^{p_k + 1}$. Any divisor $d$ of $n$ with two or more prime factors has $d \ge p_1p_2 > p_1 + p_2 > p_k$, so $1 - x^d \equiv 1$. The remaining divisors are $d = 1$, with $\mu(n) = (-1)^k = -1$, and $d = p_i$, with $\mu(n/p_i) = (-1)^{k-1} = 1$. Hence
+$$\Phi_n(x) \equiv \frac{(1 - x^{p_1})\cdots(1 - x^{p_k})}{1 - x} \equiv (1 + x + x^2 + \cdots)(1 - x^{p_1} - x^{p_2} - \cdots - x^{p_k}),$$
+since a product of two of the $x^{p_i}$ has degree $p_i + p_j > p_k$. The coefficient of $x^{p_k}$ is $1 - k$. $\square$</p>
+<p>For $3, 5, 7$ we get $k = 3$ and the coefficient $-2$ at $x^7$, exactly the first marigold bar. Since for every odd $k$ there are $k$ primes in an interval $(m, 2m)$ for large $m$ (a consequence of the prime number theorem), the hypothesis can be met and the coefficients are unbounded.</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>R. C. Vaughan, <em>Bounds for the coefficients of cyclotomic polynomials</em>, Michigan Mathematical Journal 21 (1975).</li>
+  <li>P. Moree and H. Hommersom, <em>Value distribution of Ramanujan sums and of cyclotomic polynomial coefficients</em>, 2003 (arXiv:math/0307352).</li>
+  <li>T. Y. Lam and K. H. Leung, <em>On the cyclotomic polynomial $\Phi_{pq}(X)$</em>, American Mathematical Monthly 103 (1996).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

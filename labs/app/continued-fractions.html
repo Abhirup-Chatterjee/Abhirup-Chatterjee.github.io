@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);addEventListener("message",function(e){var d=e.data;if(d&&typeof d.acTheme==="string"&&v.test(d.acTheme))document.documentElement.setAttribute("data-theme",d.acTheme)});addEventListener("storage",function(e){if(e.key==="ac-theme"&&e.newValue)document.documentElement.setAttribute("data-theme",e.newValue)});addEventListener("DOMContentLoaded",function(){if(window.top===window.self){var b=document.querySelector(".ac-back");if(b)b.hidden=false}})})();</script><style>.ac-back{display:inline-block;margin-bottom:10px;font:500 12px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.04em;color:inherit;opacity:.75;text-decoration:none}.ac-back:hover{opacity:1;text-decoration:underline}</style>
+<title>Continued Fraction Digits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<style>
+[hidden]{display:none!important}
+body{margin:0}
+/* Layout: one canvas (digit ticker, histogram, convergence graph), controls and readout underneath. Colours follow the site. */
+:root{--paper:#f6f7fb;--card:#fff;--ink:#1c2040;--ink-soft:#464c74;--muted:#6e7396;--rule:#d6d9ea;--accent:#e0901f;--plus:#3d4fd6;
+--f-display:"Fraunces",Georgia,serif;--f-body:"Source Serif 4",Georgia,serif;--f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0f1128;--card:#171a3a;--ink:#e9eaf5;--ink-soft:#b7bad6;--muted:#8b90b3;--rule:#2b2f57;--accent:#f3aa3f;--plus:#8c9bff;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#0f1128;--card:#171a3a;--ink:#e9eaf5;--ink-soft:#b7bad6;--muted:#8b90b3;--rule:#2b2f57;--accent:#f3aa3f;--plus:#8c9bff;color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+body{background:var(--card);color:var(--ink);font:16px/1.55 var(--f-body)}
+.app{max-width:900px;margin:0 auto;padding:18px clamp(12px,3vw,26px) 22px}
+h1{font:400 1.8rem/1.15 var(--f-display);margin:.2rem 0 .3rem}
+.sub{color:var(--ink-soft);margin:0 0 .8rem;font-size:.97rem}
+.embedded .standalone{display:none}
+.row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;font:.74rem var(--f-mono);color:var(--muted);margin:.35rem 0}
+.row .lab{min-width:4.5em}
+button,input{border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:999px;padding:.32rem .78rem;font:.74rem var(--f-mono);cursor:pointer}
+button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input{cursor:text;width:13rem;border-radius:6px}
+.err{color:var(--accent);font:.72rem var(--f-mono)}
+.stage{position:relative;width:100%;aspect-ratio:4/3;max-height:640px;margin-top:.6rem}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+.readout{font:.76rem/1.6 var(--f-mono);color:var(--ink-soft);white-space:pre-line;min-height:6.4em;margin-top:.5rem;border-top:1px solid var(--rule);padding-top:.6rem}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font:.7rem var(--f-mono);color:var(--muted);margin-top:.3rem}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:.35rem;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../continued-fractions.html" hidden>← Back to the notes</a>
+  <div class="standalone">
+    <h1>Continued fraction digits</h1>
+    <p class="sub">Gauss–Kuzmin, Khinchin and Lévy, watched digit by digit.</p>
+  </div>
+  <div class="row"><span class="lab">number</span>
+    <button type="button" data-x="rand">random x</button><button type="button" data-x="pi">π</button><button type="button" data-x="cbrt2">∛2</button>
+    <button type="button" data-x="e">e</button><button type="button" data-x="sqrt2">√2</button><button type="button" data-x="phi">golden ratio</button>
+  </div>
+  <div class="row"><span class="lab">your own</span>
+    <input id="own" type="text" inputmode="decimal" placeholder="a decimal, e.g. 0.5772156649015328606" aria-label="Type a decimal number"><button type="button" id="ownGo">expand</button><span class="err" id="ownErr"></span>
+  </div>
+  <div class="row"><span class="lab">graph</span>
+    <button type="button" data-g="khin">geometric mean → Khinchin</button><button type="button" data-g="levy">q<sub>n</sub><sup>1/n</sup> → Lévy</button>
+    <span style="flex:1"></span><button type="button" id="pause">Pause</button><button type="button" id="all">Show all digits</button>
+  </div>
+  <div class="stage"><canvas id="cv" aria-label="Continued fraction digits of the chosen number: a histogram against the Gauss–Kuzmin law, and a convergence graph"></canvas></div>
+  <div class="readout" id="out" aria-live="polite">…</div>
+  <div class="legend"><span><i style="background:var(--plus);opacity:.55"></i>digits so far</span><span><i style="background:var(--ink-soft)"></i>prediction for almost every x</span><span><i style="background:var(--accent)"></i>this number</span></div>
+</div>
+<script>
+(function(){
+"use strict";
+try{if(window.frameElement&&window.frameElement.classList.contains("lab-frame"))document.documentElement.classList.add("embedded");}catch(e){}
+var root=document.documentElement;
+function css(n){return getComputedStyle(root).getPropertyValue(n).trim();}
+var cv=document.getElementById("cv"),out=document.getElementById("out");
+var K=2.6854520010653064,LEVY=Math.exp(Math.PI*Math.PI/(12*Math.LN2)),BMAX=10,BITS=6000;
+var digits=[],a0=0,shown=0,label="",dec="",note="",graph="khin",paused=false,hoverBin=-1,last=0,geom,kind="rand";
+function gk(k){return -Math.log2(1-1/((k+1)*(k+1)));}
+function gkTail(k){return Math.log2((k+1)/k);}
+function cfRat(n,d,max){var o=[];while(d!==0n&&o.length<max){var q=n/d;if(n<0n&&q*d!==n)q-=1n;o.push(q);var r=n-q*d;n=d;d=r;}return o;}
+function cfBetween(nl,dl,nh,dh){var A=cfRat(nl,dl,1e9),B=cfRat(nh,dh,1e9),o=[];for(var i=0;i<Math.min(A.length,B.length)-1;i++){if(A[i]!==B[i])break;o.push(A[i]);}return o;}
+function piBig(bits){var G=64n,S=BigInt(bits)+G,one=1n<<S;function at(x){var X=BigInt(x),x2=X*X,t=one/X,s=t,n=1n,sg=-1n;while(t!==0n){t/=x2;n+=2n;s+=sg*(t/n);sg=-sg;}return s;}return (16n*at(5)-4n*at(239))>>G;}
+function icbrt(n){var x=1n<<BigInt(Math.ceil(n.toString(2).length/3)+1);while(true){var y=(2n*x+n/(x*x))/3n;if(y>=x)break;x=y;}while(x*x*x>n)x-=1n;while((x+1n)*(x+1n)*(x+1n)<=n)x+=1n;return x;}
+function decStr(n,d,places){var neg=n<0n;if(neg)n=-n;var ip=n/d,r=n%d,s=(neg?"−":"")+ip+".";for(var i=0;i<places;i++){r*=10n;s+=String(r/d);r%=d;}return s+"…";}
+function load(k,own){
+  kind=k;var D=1n<<BigInt(BITS),cf,n;note="";
+  if(k==="rand"){n=0n;for(var i=0;i<BITS/30;i++)n=(n<<30n)|BigInt(Math.floor(Math.random()*1073741824));cf=cfBetween(n,D,n+1n,D);label="x = a random number in (0, 1), from "+BITS+" random bits";dec=decStr(n,D,16);}
+  else if(k==="pi"){n=piBig(BITS);cf=cfBetween(n-4n,D,n+4n,D);label="x = π";dec=decStr(n,D,16);note="Nobody can prove that π follows Khinchin's law, or even that its digits are unbounded.";}
+  else if(k==="cbrt2"){var c=icbrt(2n<<BigInt(3*BITS));cf=cfBetween(c,D,c+1n,D);label="x = ∛2";dec=decStr(c,D,16);note="An algebraic number of degree 3. It is not known whether its digits are bounded.";}
+  else if(k==="e"){cf=[2n];for(var m=1;cf.length<2500;m++)cf.push(1n,BigInt(2*m),1n);label="x = e = [2; 1, 2, 1, 1, 4, 1, 1, 6, …]";dec="2.7182818284590452…";note="Euler's pattern 1, 2k, 1 makes the geometric mean grow without bound.";}
+  else if(k==="sqrt2"){cf=[1n];for(var t=0;t<2500;t++)cf.push(2n);label="x = √2 = [1; 2, 2, 2, …]";dec="1.4142135623730950…";note="Quadratic irrationals have periodic expansions (Lagrange), so they never follow the random law.";}
+  else if(k==="phi"){cf=[];for(t=0;t<2500;t++)cf.push(1n);label="x = (1 + √5)/2 = [1; 1, 1, 1, …]";dec="1.6180339887498948…";note="All digits are 1: the number hardest to approximate by fractions (Hurwitz).";}
+  else if(k==="own"){cf=own.cf;label="x = "+own.text;dec=own.dec;note="A decimal with "+own.places+" places pins down only the first "+Math.max(0,cf.length-1)+" digits; the rest would need more decimals.";}
+  a0=Number(cf[0]);digits=cf.slice(1).map(function(x){return x>1000000000n?1e9:Number(x);});shown=0;last=0;
+  document.querySelectorAll("[data-x]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.x===k));});
+  draw();report();
+}
+function parseOwn(){
+  var raw=document.getElementById("own").value.trim().replace(/[\s_,]/g,""),err=document.getElementById("ownErr");err.textContent="";
+  var m=/^(-?)(\d*)\.?(\d*)$/.exec(raw);if(!m||(!m[2]&&!m[3])){err.textContent="type a decimal like 0.5772156649";return;}
+  var places=m[3].length,D=10n**BigInt(places),n=BigInt((m[2]||"0")+m[3]);if(m[1])n=-n;
+  // the true value lies in [n, n+1)/D if the user truncated; use those bounds
+  var cf=cfBetween(n,D,n+1n,D);if(cf.length<2){cf=cfRat(n,D,4000);}
+  load("own",{cf:cf,text:raw.length>34?raw.slice(0,34)+"…":raw,dec:decStr(n,D,Math.min(16,places)),places:places});
+}
+function stats(){var h=new Float64Array(BMAX+1),sl=0,lq=0,r=0;for(var i=0;i<shown;i++){var v=digits[i];h[Math.min(v,BMAX+1)-1]++;sl+=Math.log(v);r=v+(i?1/r:0);lq+=Math.log(r);}
+  return{h:h,gm:shown?Math.exp(sl/shown):NaN,lv:shown?Math.exp(lq/shown):NaN};}
+function layout(){var dpr=Math.min(window.devicePixelRatio||1,2),w=cv.clientWidth||600,h=cv.clientHeight||450;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);var c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);geom={ctx:c,w:w,h:h};}
+function draw(){
+  if(!geom)layout();var c=geom.ctx,W=geom.w,H=geom.h;c.clearRect(0,0,W,H);
+  var ink=css("--ink"),soft=css("--ink-soft"),mut=css("--muted"),rule=css("--rule"),acc=css("--accent"),plus=css("--plus"),f=css("--f-mono"),st=stats();
+  c.font="12.5px "+f;c.textAlign="left";c.fillStyle=soft;
+  var from=Math.max(0,shown-60),parts=[];for(var i=from;i<shown;i++)parts.push(String(digits[i]));
+  var lead="["+a0+"; "+(from>0?"…, ":""),tk=lead+parts.join(", ");
+  while(c.measureText(tk).width>W-16&&parts.length>1){parts.shift();lead="["+a0+"; …, ";tk=lead+parts.join(", ");}
+  c.fillText(tk+(shown<digits.length?" …":(shown?"]":"")),4,18);
+  c.fillStyle=mut;c.font="11px "+f;c.fillText(shown+" of "+digits.length+" digits",4,36);
+  var wide=W>=640,top=60,bot=wide?H-40:H*0.6,left=36,right=wide?W*0.56:W-8,nb=BMAX+1,bw=(right-left)/nb,maxP=0.45;
+  function yOf(p){return bot-(bot-top)*Math.min(1,p/maxP);}
+  c.font="10px "+f;c.textAlign="right";
+  [0.1,0.2,0.3,0.4].forEach(function(v){var y=yOf(v);c.fillStyle=mut;c.fillText(Math.round(v*100)+"%",left-5,y+3);c.strokeStyle=rule;c.globalAlpha=.55;c.beginPath();c.moveTo(left,y+.5);c.lineTo(right,y+.5);c.stroke();c.globalAlpha=1;});
+  c.strokeStyle=rule;c.beginPath();c.moveTo(left,bot+.5);c.lineTo(right,bot+.5);c.stroke();
+  for(var b=0;b<nb;b++){var obs=shown?st.h[b]/shown:0,x0=left+b*bw+bw*.14,x1=left+(b+1)*bw-bw*.14,y=yOf(obs);
+    c.fillStyle=plus;c.globalAlpha=b===hoverBin?.85:.45;c.fillRect(x0,y,x1-x0,bot-y);c.globalAlpha=1;
+    if(obs>maxP){c.fillStyle=plus;c.textAlign="center";c.fillText(Math.round(obs*100)+"%",(x0+x1)/2,top-4);}
+    c.fillStyle=mut;c.textAlign="center";c.fillText(b<BMAX?String(b+1):"≥"+(BMAX+1),(x0+x1)/2,bot+14);}
+  c.strokeStyle=soft;c.fillStyle=soft;c.lineWidth=1.3;c.beginPath();
+  for(b=0;b<nb;b++){var pk=b<BMAX?gk(b+1):gkTail(BMAX+1),cx=left+(b+.5)*bw,yy=yOf(pk);if(b)c.lineTo(cx,yy);else c.moveTo(cx,yy);}c.stroke();
+  for(b=0;b<nb;b++){pk=b<BMAX?gk(b+1):gkTail(BMAX+1);c.beginPath();c.arc(left+(b+.5)*bw,yOf(pk),2.6,0,6.2832);c.fill();}
+  c.fillStyle=mut;c.textAlign="left";c.fillText("digit aₙ",left,bot+30);
+  // convergence graph
+  var gl=wide?W*0.64:left,gr=W-10,gt=wide?top+16:H*0.71,gb=wide?bot:H-22,target=graph==="khin"?K:LEVY,ymin=graph==="khin"?1.5:2.2,ymax=graph==="khin"?4.5:4.6,nT=Math.max(digits.length,10);
+  function gy(v){return gb-(gb-gt)*(Math.min(ymax,Math.max(ymin,v))-ymin)/(ymax-ymin);}
+  function gx(n){return gl+(gr-gl)*Math.log(n)/Math.log(nT);}
+  c.strokeStyle=rule;c.beginPath();c.moveTo(gl,gb+.5);c.lineTo(gr,gb+.5);c.moveTo(gl+.5,gt);c.lineTo(gl+.5,gb);c.stroke();
+  c.setLineDash([4,4]);c.strokeStyle=soft;c.beginPath();c.moveTo(gl,gy(target));c.lineTo(gr,gy(target));c.stroke();c.setLineDash([]);
+  c.fillStyle=soft;c.textAlign="right";c.fillText(graph==="khin"?"K = 2.68545…":"exp(π²/12 ln 2) = 3.27582…",gr,gy(target)-6);
+  c.fillStyle=mut;[Math.ceil(ymin),Math.floor(ymax)].forEach(function(v){c.fillText(String(v),gl-5,gy(v)+3);});
+  c.textAlign="left";c.fillText("1",gl,gb+13);c.textAlign="right";c.fillText(nT+" (log scale)",gr,gb+13);
+  c.textAlign="left";c.fillText(graph==="khin"?"(a₁a₂⋯aₙ)^(1/n)":"qₙ^(1/n), with qₙ the denominator of the n-th convergent",gl,gt-8);
+  if(shown){c.strokeStyle=acc;c.lineWidth=1.7;c.beginPath();var sl=0,r=0,X,Y;
+    for(i=0;i<shown;i++){var v=digits[i];if(graph==="khin"){sl+=Math.log(v);}else{r=v+(i?1/r:0);sl+=Math.log(r);}var val=Math.exp(sl/(i+1));X=gx(i+1);Y=gy(val);if(i)c.lineTo(X,Y);else c.moveTo(X,Y);}
+    c.stroke();c.fillStyle=acc;c.beginPath();c.arc(X,Y,3.2,0,6.2832);c.fill();}
+}
+function report(){
+  var st=stats();
+  if(hoverBin>=0){var k=hoverBin+1,obs=shown?st.h[hoverBin]/shown*100:0,pr=(hoverBin<BMAX?gk(k):gkTail(k))*100;
+    out.textContent=(hoverBin<BMAX?"digit "+k:"digits ≥ "+k)+": "+(shown?st.h[hoverBin]:0)+" of "+shown+" = "+obs.toFixed(2)+"%\nGauss–Kuzmin predicts "+pr.toFixed(2)+"%  "+(hoverBin<BMAX?"= −log₂(1 − 1/"+((k+1)*(k+1))+")":"= log₂("+(k+1)+"/"+k+")")+"\n(for almost every x, the share of digits equal to k tends to this value)";return;}
+  out.textContent=label+"   ≈ "+dec+"\ngeometric mean of the digits = "+(shown?st.gm.toFixed(4):"…")+"   (Khinchin: 2.68545…)\nqₙ^(1/n) = "+(shown?st.lv.toFixed(4):"…")+"   (Lévy: 3.27582…)"+(note?"\n"+note:"");}
+function setGraph(g){graph=g;document.querySelectorAll("[data-g]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.g===g));});draw();}
+document.querySelectorAll("[data-x]").forEach(function(b){b.addEventListener("click",function(){load(b.dataset.x);});});
+document.querySelectorAll("[data-g]").forEach(function(b){b.addEventListener("click",function(){setGraph(b.dataset.g);});});
+document.getElementById("ownGo").addEventListener("click",parseOwn);
+document.getElementById("own").addEventListener("keydown",function(e){if(e.key==="Enter")parseOwn();});
+document.getElementById("pause").addEventListener("click",function(){paused=!paused;this.textContent=paused?"Play":"Pause";});
+document.getElementById("all").addEventListener("click",function(){shown=digits.length;draw();report();});
+cv.addEventListener("pointermove",function(ev){var r=cv.getBoundingClientRect(),x=ev.clientX-r.left,y=ev.clientY-r.top,W=r.width,H=r.height,wide=W>=640,left=36,right=wide?W*0.56:W-8,bot=wide?H-40:H*0.6,bw=(right-left)/(BMAX+1);
+  var nb=(y>48&&y<bot+18&&x>left&&x<right)?Math.floor((x-left)/bw):-1;if(nb!==hoverBin){hoverBin=nb;draw();report();}});
+cv.addEventListener("pointerleave",function(){hoverBin=-1;draw();report();});
+var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function tick(now){
+  if(!paused&&shown<digits.length){if(reduce){shown=digits.length;draw();report();}
+    else{var every=shown<12?220:shown<60?70:16,per=shown<150?1:Math.max(1,Math.ceil(shown/50));if(now-last>=every){shown=Math.min(digits.length,shown+per);last=now;draw();report();}}}
+  requestAnimationFrame(tick);}
+new MutationObserver(function(){draw();}).observe(root,{attributes:true,attributeFilter:["data-theme"]});
+if(window.matchMedia)matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+window.addEventListener("resize",function(){layout();draw();});
+setGraph("khin");layout();load("rand");requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

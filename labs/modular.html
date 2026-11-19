@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The modular surface: j(τ) and CM points · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="The modular surface: j(τ) and CM points · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <p class="eyebrow">Lab · Modular forms</p>
+    <h1>The modular surface: j(τ) and CM points</h1>
+    <p class="lead">The upper half-plane, tiled by copies of one triangle, coloured by the j-function. Then the special points where j is an algebraic integer, and Duke's theorem that they spread out evenly.</p>
+    <div class="byline"><span class="tag">modular forms</span><span class="tag">quadratic forms</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>The group $\mathrm{SL}_2(\mathbb{Z})$ acts on the upper half-plane $\mathbb{H} = \{\tau : \mathrm{Im}\,\tau > 0\}$ by $\tau \mapsto \frac{a\tau + b}{c\tau + d}$. Every orbit meets the <em>fundamental domain</em> $\mathcal{F} = \{|\mathrm{Re}\,\tau| \le \tfrac12,\ |\tau| \ge 1\}$, and the copies $\gamma\mathcal{F}$ tile $\mathbb{H}$. The applet draws $\mathbb{H}$ as the Poincaré disc via $w = \frac{\tau - i}{\tau + i}$, so the tiles become curvilinear triangles that shrink towards the boundary circle.</p>
+<p>A function on $\mathbb{H}$ that is invariant under the whole group is a function on the tiling. The most important one is Klein's $j$-function,
+$$j(\tau) = \frac{E_4(\tau)^3}{\Delta(\tau)} = \frac1q + 744 + 196884\,q + 21493760\,q^2 + \cdots, \qquad q = e^{2\pi i \tau},$$
+with $E_4 = 1 + 240\sum_{n} \sigma_3(n) q^n$ and $\Delta = q\prod_{n \ge 1}(1 - q^n)^{24}$. The colour is the phase of $j(\tau)$ and the shading follows $\log|j(\tau)|$. Because $j$ is invariant, the same pattern repeats in every tile. $\Delta$ is not invariant, it is a cusp form of weight $12$, $\Delta(\gamma\tau) = (c\tau + d)^{12}\Delta(\tau)$, and switching to it shows the phase twisting from tile to tile.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/modular.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:1000px" src="app/modular.html" title="The modular surface: j(τ) and CM points: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>How the colouring is computed</h2>
+<p>Near the boundary of the disc, $q$-series converge hopelessly slowly. So for each pixel the applet first moves $\tau$ into $\mathcal{F}$ by the reduction algorithm below, keeping track of the matrix $\gamma$. There $|q| \le e^{-\pi\sqrt3} \approx 0.0043$, and ten terms of each series are plenty. The value of $\Delta$ at the original point is recovered from the transformation law. The thin lines mark pixels close to the edge of $\mathcal{F}$ after reduction, which is how the tiling appears.</p>
+  <details class="proof">
+    <summary>Full proof: every point can be moved into the fundamental domain</summary>
+    <div class="proof-body">
+<p><strong>Proposition.</strong> <em>For every $\tau \in \mathbb{H}$ there is $\gamma \in \mathrm{SL}_2(\mathbb{Z})$ with $\gamma\tau \in \mathcal{F}$.</em></p>
+<p><em>Proof.</em> Let $T\tau = \tau + 1$ and $S\tau = -1/\tau$. For $\gamma = \begin{pmatrix} a & b \\ c & d\end{pmatrix}$ we have $\mathrm{Im}(\gamma\tau) = \mathrm{Im}\,\tau / |c\tau + d|^2$. Since $c\tau + d$ runs over a lattice as $(c, d)$ ranges over $\mathbb{Z}^2$, only finitely many pairs have $|c\tau + d| \le 1$, so $\mathrm{Im}(\gamma\tau)$ attains a maximum over the orbit, say at $\tau' = \gamma\tau$. Apply a power of $T$ so that $|\mathrm{Re}\,\tau'| \le \tfrac12$; this does not change the imaginary part. If $|\tau'| < 1$, then $\mathrm{Im}(S\tau') = \mathrm{Im}\,\tau' / |\tau'|^2 > \mathrm{Im}\,\tau'$, contradicting maximality. So $|\tau'| \ge 1$ and $\tau' \in \mathcal{F}$. $\square$</p>
+<p>The algorithm in the applet does exactly this: translate into the strip, invert if inside the unit circle, repeat. Each inversion strictly increases the imaginary part, and the argument above shows it stops.</p>
+    </div>
+  </details>
+
+<h2>CM points and Duke's theorem</h2>
+<p>A primitive positive definite binary quadratic form $ax^2 + bxy + cy^2$ of discriminant $b^2 - 4ac = -D$ has a root $\tau = \frac{-b + i\sqrt D}{2a}$ in $\mathbb{H}$, and equivalent forms give $\mathrm{SL}_2(\mathbb{Z})$-equivalent roots. Gauss's <em>reduced</em> forms, those with $|b| \le a \le c$, are exactly the ones whose root lies in $\mathcal{F}$, so the points in the "CM points" view are the elements of the class group, and their number is the class number $h(-D)$.</p>
+<p>These points are special: the elliptic curve $\mathbb{C}/(\mathbb{Z} + \tau\mathbb{Z})$ has complex multiplication, and $j(\tau)$ is an algebraic integer of degree $h(-D)$. When $h = 1$ it is an ordinary integer, which is why $e^{\pi\sqrt{163}}$ is so close to one; see the post <a href="../posts/heegner.html">163 and the class number one problem</a>.</p>
+<p>As $D$ grows the points multiply (roughly like $\sqrt D$) and fill $\mathcal{F}$ more and more evenly, with respect to the hyperbolic area $\frac{3}{\pi}\frac{dx\,dy}{y^2}$, not the flat one. That is <strong>Duke's theorem</strong> (1988). The readout tests one consequence: the share of points with $\mathrm{Im}\,\tau > 1.5$ should approach $\frac{3}{\pi}\int_{1.5}^{\infty} \frac{dy}{y^2} = \frac{2}{\pi} \approx 63.7\%$. Duke's proof needed a nontrivial bound for Fourier coefficients of modular forms of half-integral weight, due to Iwaniec, which is why the theorem waited until the late 1980s.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>J.-P. Serre, <em>A Course in Arithmetic</em>, Springer GTM 7, 1973, Chapter VII.</li>
+  <li>F. Diamond and J. Shurman, <em>A First Course in Modular Forms</em>, Springer GTM 228, 2005.</li>
+  <li>D. A. Cox, <em>Primes of the Form $x^2 + ny^2$</em>, 2nd ed., Wiley, 2013.</li>
+  <li>W. Duke, <em>Hyperbolic distribution problems and half-integral weight Maass forms</em>, Inventiones Mathematicae 92 (1988).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The modular surface: j(τ) and CM points</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../modular.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>The modular surface: j(τ) and CM points</h1><p class="sub">Klein's j-function on the Poincaré disc, and Duke's equidistribution of CM points.</p></div>
+<div class="row"><span class="lab">show</span><button type="button" data-f="j">j(τ) on the disc</button><button type="button" data-f="d">Δ(τ) on the disc</button><button type="button" data-f="cm">CM points</button></div>
+  <div class="row" id="cmctl" hidden><span class="lab">D</span><input id="cmD" type="range" min="3" max="40000" value="163" aria-label="Discriminant -D"><span id="cmDv" class="val">163</span><button type="button" id="cmPlay">Play</button>
+    <span class="lab" style="margin-left:.6rem">jump to</span><button type="button" data-cm="163">163</button><button type="button" data-cm="30011">30011</button><button type="button" data-cm="4999">4999</button></div>
+  <div class="stage" style="--ar:1;max-width:640px;margin-inline:auto"><canvas id="jc" aria-label="Domain colouring of the modular j-function on the Poincaré disc, or CM points in the fundamental domain"></canvas></div>
+  <div class="readout" id="jr">Hover over the disc</div>
+  <div class="legend"><span>phase colours: marigold → paper → indigo → ink → marigold</span><span>thin lines: copies of the fundamental domain</span></div>
+</div>
+<script>
+var css=Lab.css,setup=Lab.setup,sub=Lab.sub,sup=Lab.sup,hexRGB=Lab.rgb,redraws=[];var root=document.documentElement;Lab.onTheme(function(){redraws.forEach(function(f){f();});});
+
+/* CM points: reduced binary quadratic forms of discriminant -D, drawn in the fundamental domain (Duke's theorem) */
+var CM=(function(){
+  var cv=document.getElementById("jc"),out=document.getElementById("jr"),slider=document.getElementById("cmD"),dv=document.getElementById("cmDv"),ctl=document.getElementById("cmctl");
+  var on=false,D=163,pts=[],hov=null,geom,YMAX=2.4,play=null;
+  function gcd(a,b){while(b){var t=a%b;a=b;b=t;}return Math.abs(a);}
+  function forms(D){var out=[];if(D%4===1||D%4===2)return out;
+    for(var a=1;3*a*a<=D;a++)for(var b=-a+1;b<=a;b++){if((b*b+D)%(4*a))continue;var c=(b*b+D)/(4*a);if(c<a)continue;if(b<0&&(a===c))continue;if(gcd(gcd(a,b),c)!==1)continue;out.push([a,b,c]);}
+    return out;}
+  function load(){pts=forms(D);dv.textContent=D;slider.value=D;hov=null;}
+  function frame(){geom=setup(cv);var W=geom.w,H=geom.h,ym=YMAX,pad=34,h=H-pad-24,w=Math.min(W-60,h*1/(ym-0.8)*1.0);var sc=Math.min((W-70),(H-60)/(ym-0.8));return{W:W,H:H,sc:sc,cx:W/2,by:H-34,top:H-34-(ym-0.8)*sc};}
+  function X(F,x){return F.cx+x*F.sc;}function Y(F,y){return F.by-(y-0.8)*F.sc;}
+  function draw(){var F=frame(),c=geom.ctx;c.clearRect(0,0,F.W,F.H);
+    var ink=css("--ink"),soft=css("--ink-soft"),mut=css("--muted"),rule=css("--rule"),acc=css("--accent"),plus=css("--plus"),f=css("--f-mono");
+    // hyperbolic density shading: rows darker where 3/(pi y^2) is larger
+    for(var yy=0.8;yy<YMAX;yy+=0.02){var dens=0.75/(yy*yy);c.fillStyle=plus;c.globalAlpha=Math.min(.22,dens*.22);c.fillRect(X(F,-.5),Y(F,yy+0.02),F.sc,Y(F,yy)-Y(F,yy+0.02)+.5);}
+    c.globalAlpha=1;
+    // fundamental domain outline: |x|<=1/2, |tau|>=1
+    c.save();c.beginPath();c.moveTo(X(F,-.5),Y(F,YMAX));c.lineTo(X(F,-.5),Y(F,Math.sqrt(.75)));
+    for(var t=0;t<=60;t++){var th=2*Math.PI/3-t/60*(Math.PI/3);c.lineTo(X(F,Math.cos(th)),Y(F,Math.sin(th)));}
+    c.lineTo(X(F,.5),Y(F,YMAX));c.strokeStyle=ink;c.lineWidth=1.4;c.stroke();
+    // grey out region below the arc
+    c.beginPath();c.moveTo(X(F,-.5),Y(F,.8));for(t=0;t<=60;t++){th=2*Math.PI/3-t/60*(Math.PI/3);c.lineTo(X(F,Math.cos(th)),Y(F,Math.sin(th)));}c.lineTo(X(F,.5),Y(F,.8));c.closePath();c.fillStyle=css("--card");c.fill();c.restore();
+    c.font="10px "+f;c.fillStyle=mut;c.textAlign="center";["−½","0","½"].forEach(function(l,i){c.fillText(l,X(F,i*.5-.5),F.by+14);});
+    c.textAlign="right";[1,1.5,2].forEach(function(v){c.fillText(String(v),X(F,-.5)-6,Y(F,v)+3);});
+    c.textAlign="left";c.fillText("Im τ",X(F,-.5)-30,F.top-8);
+    var above=0,r=Math.max(2.2,Math.min(6,90/Math.sqrt(pts.length+4)));
+    pts.forEach(function(q){var x=-q[1]/(2*q[0]),y=Math.sqrt(D)/(2*q[0]);if(y>YMAX){above++;return;}
+      c.fillStyle=q===hov?ink:acc;c.beginPath();c.arc(X(F,x),Y(F,y),q===hov?r+2:r,0,6.2832);c.fill();});
+    if(above){c.fillStyle=soft;c.textAlign="center";c.fillText("↑ "+above+" more above Im τ = "+YMAX,F.cx,F.top-8);}
+  }
+  function report(){var h=pts.length;
+    if(hov){var a=hov[0],b=hov[1],cc=hov[2];out.textContent="form "+a+"x² "+(b<0?"− ":"+ ")+Math.abs(b)+"xy + "+cc+"y²   ·   discriminant "+(b*b-4*a*cc)+"\nτ = ("+(-b)+" + i√"+D+")/"+(2*a)+" ≈ "+(-b/(2*a)).toFixed(3)+" + "+(Math.sqrt(D)/(2*a)).toFixed(3)+"i";return;}
+    var Yc=1.5,obs=pts.filter(function(q){return Math.sqrt(D)/(2*q[0])>Yc;}).length;
+    out.textContent=(h?"discriminant −"+D+":  h = "+h+" reduced primitive form"+(h===1?"":"s")+(h===1?"   (class number one)":""):"−"+D+" is not a discriminant (needs D ≡ 0 or 3 mod 4)")+
+      (h?"\nshare with Im τ > 1.5:  "+(100*obs/h).toFixed(1)+"%   ·   Duke's theorem predicts 3/(1.5π) = 63.7% as D → ∞":"")+"\ndrag the slider or press Play; hover a point to see its form";}
+  function move(ev){var p=Lab.local(cv,ev),F=frame(),best=null,bd=144;pts.forEach(function(q){var x=X(F,-q[1]/(2*q[0])),y=Y(F,Math.sqrt(D)/(2*q[0]));var d=(x-p[0])*(x-p[0])+(y-p[1])*(y-p[1]);if(d<bd){bd=d;best=q;}});if(best!==hov){hov=best;draw();report();}}
+  slider.addEventListener("input",function(){if(play){clearInterval(play);play=null;document.getElementById("cmPlay").textContent="Play";}D=+slider.value;load();draw();report();});
+  document.getElementById("cmPlay").addEventListener("click",function(){var b=this;if(play){clearInterval(play);play=null;b.textContent="Play";return;}b.textContent="Pause";
+    play=setInterval(function(){do{D++;}while(D%4===1||D%4===2);if(D>+slider.max)D=3;load();draw();report();},Lab.reduce?600:60);});
+  document.querySelectorAll("[data-cm]").forEach(function(b){b.addEventListener("click",function(){D=+b.dataset.cm;load();draw();report();});});
+  return{active:function(v){on=v;ctl.hidden=!v;if(!v&&play){clearInterval(play);play=null;document.getElementById("cmPlay").textContent="Play";}if(v){load();}},draw:draw,report:report,move:move,leave:function(){hov=null;draw();report();}};
+})();
+/* =================== Option 3: j(τ) / Δ(τ) on the Poincaré disc =================== */
+(function(){
+  var cv=document.getElementById("jc"),out=document.getElementById("jr");
+  var mode="j",geom,phase,band,edge,inside,N,hover=null;
+  var SIG3=[0,1,9,28,73,126,252,344,585,757,1134];
+  // reduce tau=(x,y) to the fundamental domain; returns {x,y,a,b,c,d,ok}
+  function reduce(x,y){var a=1,b=0,c=0,d=1,ok=false;
+    for(var it=0;it<200;it++){var n=Math.round(x);if(n){x-=n;a-=n*c;b-=n*d;}
+      var r=x*x+y*y;if(r<1-1e-12){x=-x/r;y=y/r;var na=-c,nb=-d;c=a;d=b;a=na;b=nb;}else{ok=true;break;}}
+    return{x:x,y:y,a:a,b:b,c:c,d:d,ok:ok};}
+  // q-series at tau in F:  returns [jre,jim,dre,dim]
+  function series(x,y){var r=Math.exp(-2*Math.PI*y),t=2*Math.PI*x,qr=r*Math.cos(t),qi=r*Math.sin(t);
+    var er=1,ei=0,pr=qr,pi=qi;
+    for(var n=1;n<=10;n++){er+=240*SIG3[n]*pr;ei+=240*SIG3[n]*pi;var tr=pr*qr-pi*qi;pi=pr*qi+pi*qr;pr=tr;}
+    // Delta = q prod (1-q^n)^24
+    var dr=qr,di=qi,mr=qr,mi=qi;
+    for(n=1;n<=12;n++){var fr=1-mr,fi=-mi;var lr=Math.log(Math.hypot(fr,fi))*24,la=Math.atan2(fi,fr)*24,g=Math.exp(lr),cr=g*Math.cos(la),ci=g*Math.sin(la);
+      var t2=dr*cr-di*ci;di=dr*ci+di*cr;dr=t2;var t3=mr*qr-mi*qi;mi=mr*qi+mi*qr;mr=t3;}
+    // E4^3
+    var e2r=er*er-ei*ei,e2i=2*er*ei,e3r=e2r*er-e2i*ei,e3i=e2r*ei+e2i*er;
+    var den=dr*dr+di*di,jr=(e3r*dr+e3i*di)/den,ji=(e3i*dr-e3r*di)/den;
+    return[jr,ji,dr,di];}
+  function tauOf(u,v){var d=(1-u)*(1-u)+v*v;return[-2*v/d,(1-u*u-v*v)/d];}
+  function evalAt(u,v){
+    var t=tauOf(u,v),R=reduce(t[0],t[1]);if(!R.ok)return null;
+    var s=series(R.x,R.y);
+    // Delta(tau) = Delta(tau_F) / (c tau + d)^12
+    var cr=R.c*t[0]+R.d,ci=R.c*t[1],lm=Math.log(Math.hypot(cr,ci))*12,an=Math.atan2(ci,cr)*12;
+    var dl=Math.log(Math.hypot(s[2],s[3]))-lm,da=Math.atan2(s[3],s[2])-an;
+    var inv=6*Math.log(R.y)+Math.log(Math.hypot(s[2],s[3])); // log( y^6 |Delta| ), SL2(Z)-invariant
+    return{tau:t,R:R,j:[s[0],s[1]],logj:Math.log(Math.hypot(s[0],s[1])),argj:Math.atan2(s[1],s[0]),argD:da,logD:dl,inv:inv};}
+  function compute(){
+    geom=setup(cv,1.5);var W=cv.width,H=cv.height,S=Math.min(W,H),rad=S/2-2*geom.dpr;N=W*H;
+    phase=new Float32Array(N*2);band=new Float32Array(N*2);edge=new Float32Array(N);inside=new Uint8Array(N);
+    var px=1/rad;
+    for(var Y=0;Y<H;Y++)for(var X=0;X<W;X++){var i=Y*W+X,u=(X+.5-W/2)/rad,v=-(Y+.5-H/2)/rad,w2=u*u+v*v;if(w2>=1)continue;
+      var t=tauOf(u,v),R=reduce(t[0],t[1]);inside[i]=R.ok?1:2;if(!R.ok)continue;
+      var s=series(R.x,R.y);
+      phase[2*i]=Math.atan2(s[1],s[0]);band[2*i]=Math.log(Math.hypot(s[0],s[1]))/(2*Math.PI);
+      var cr=R.c*t[0]+R.d,ci=R.c*t[1];
+      phase[2*i+1]=Math.atan2(s[3],s[2])-12*Math.atan2(ci,cr);band[2*i+1]=(6*Math.log(R.y)+Math.log(Math.hypot(s[2],s[3])))/Math.LN2*2;
+      var hyp=2*px/(1-w2),dE=Math.min(.5-Math.abs(R.x),Math.sqrt(R.x*R.x+R.y*R.y)-1)/R.y; // hyperbolic-ish distance to the edge of F
+      var lw=1.1*hyp,fade=Math.max(0,1-hyp/0.22);
+      edge[i]=dE<lw?fade*(1-dE/lw):0;}
+  }
+  function paint(){
+    if(mode==="cm"){CM.draw();return;}
+    if(!phase)compute();var W=cv.width,H=cv.height,ctx=cv.getContext("2d");ctx.setTransform(1,0,0,1,0,0);
+    var img=ctx.createImageData(W,H),D=img.data;
+    var stops=[hexRGB(css("--accent")),hexRGB(css("--card")),hexRGB(css("--plus")),hexRGB(css("--ink"))],inkC=hexRGB(css("--ink")),paperC=hexRGB(css("--paper"));
+    var dark=root.getAttribute("data-theme")==="dark",k=mode==="j"?0:1;
+    for(var i=0;i<N;i++){if(!inside[i])continue;var o=4*i;
+      if(inside[i]===2){D[o]=paperC[0];D[o+1]=paperC[1];D[o+2]=paperC[2];D[o+3]=255;continue;}
+      var ph=phase[2*i+k]/(2*Math.PI);if(!isFinite(ph)||!isFinite(band[2*i+k])){D[o]=paperC[0];D[o+1]=paperC[1];D[o+2]=paperC[2];D[o+3]=255;continue;}ph-=Math.floor(ph);var f=ph*4,s=Math.floor(f)%4,t=f-Math.floor(f),A=stops[s],B=stops[(s+1)%4];
+      t=t*t*(3-2*t);
+      var r=A[0]+(B[0]-A[0])*t,g=A[1]+(B[1]-A[1])*t,b=A[2]+(B[2]-A[2])*t;
+      var bd=band[2*i+k];bd-=Math.floor(bd);var shade=0.78+0.22*bd;
+      if(dark){r=r*shade;g=g*shade;b=b*shade;}else{r=255-(255-r)*(2-shade)*.62-0;g=255-(255-g)*(2-shade)*.62;b=255-(255-b)*(2-shade)*.62;r*=shade+.08;g*=shade+.08;b*=shade+.08;}
+      var e=edge[i];if(e>0){var lc=dark?[255,255,255]:inkC;var a=e*0.55;r=r+(lc[0]-r)*a;g=g+(lc[1]-g)*a;b=b+(lc[2]-b)*a;}
+      D[o]=Math.max(0,Math.min(255,r));D[o+1]=Math.max(0,Math.min(255,g));D[o+2]=Math.max(0,Math.min(255,b));D[o+3]=255;}
+    ctx.putImageData(img,0,0);
+    // rim + hover ring
+    var dpr=geom.dpr,S=Math.min(W,H),rad=S/2-2*dpr;ctx.strokeStyle=css("--ink");ctx.lineWidth=1.2*dpr;ctx.beginPath();ctx.arc(W/2,H/2,rad,0,2*Math.PI);ctx.stroke();
+    if(hover){ctx.strokeStyle=dark?"#fff":css("--ink");ctx.lineWidth=1.5*dpr;ctx.beginPath();ctx.arc(hover[0]*dpr,hover[1]*dpr,7*dpr,0,2*Math.PI);ctx.stroke();}
+  }
+  function fmtNum(x){var a=Math.abs(x);if(a===0)return"0";if(a>=1e5||a<1e-3){var e=Math.floor(Math.log10(a)),m=x/Math.pow(10,e);return m.toFixed(2)+"·10"+(e<0?"⁻":"")+sup(Math.abs(e));}return x.toFixed(a<10?3:1);}
+  function fmtC(re,im){return fmtNum(re)+(im<0?" − ":" + ")+fmtNum(Math.abs(im))+"i";}
+  function fmtPolar(logm,arg){var e=logm/Math.LN10,ex=Math.floor(e),m=Math.pow(10,e-ex);var deg=Math.round(((arg*180/Math.PI)%360+540)%360-180);
+    return (ex>=-2&&ex<=4?(+Math.pow(10,e).toPrecision(4)).toString():m.toFixed(2)+"·10"+(ex<0?"⁻":"")+sup(Math.abs(ex)))+" ∠ "+deg+"°";}
+  function report(){
+    if(mode==="cm"){CM.report();return;}
+    if(!hover){out.textContent="Hover over the disc";return;}
+    var r=cv.getBoundingClientRect(),rad=Math.min(r.width,r.height)/2-2,u=(hover[0]-r.width/2)/rad,v=-(hover[1]-r.height/2)/rad;
+    var z=evalAt(u,v);if(!z){out.textContent="too close to the boundary to resolve";return;}
+    var R=z.R;
+    var line1="τ = "+fmtC(z.tau[0],z.tau[1])+"   →   τ_F = "+fmtC(R.x,R.y);
+    var line2="γ = ("+R.a+" "+R.b+" ; "+R.c+" "+R.d+")  ∈ SL₂(ℤ),  γτ = τ_F";
+    var line3=mode==="j"?"j(τ) ≈ "+fmtPolar(z.logj,z.argj):"Δ(τ) ≈ "+fmtPolar(z.logD,z.argD)+"   ·   y⁶|Δ| ≈ "+fmtNum(Math.exp(z.inv));
+    out.textContent=line1+"\n"+line2+"\n"+line3;}
+  function setMode(m){if(mode==="cm"&&m!=="cm")phase=null;mode=m;CM.active(m==="cm");document.querySelectorAll("[data-f]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.f===mode));});paint();report();}
+  document.querySelectorAll("[data-f]").forEach(function(b){b.addEventListener("click",function(){setMode(b.dataset.f);});});
+  cv.addEventListener("pointermove",function(ev){if(mode==="cm"){CM.move(ev);return;}var r=cv.getBoundingClientRect(),x=ev.clientX-r.left,y=ev.clientY-r.top,rad=Math.min(r.width,r.height)/2-2;
+    if(Math.hypot(x-r.width/2,y-r.height/2)>=rad){if(hover){hover=null;paint();report();}return;}hover=[x,y];paint();report();});
+  cv.addEventListener("pointerleave",function(){if(mode==="cm"){CM.leave();return;}hover=null;paint();report();});
+  var rt;window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(function(){phase=null;paint();},150);});
+  redraws.push(paint);
+  setMode("j");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kloosterman paths and curlicues</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../exp-sums.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Kloosterman paths and curlicues</h1><p class="sub">Exponential sums drawn as paths in the complex plane.</p></div>
+<div class="row"><span class="lab">sum</span><button type="button" data-m="kl">Kloosterman</button><button type="button" data-m="gauss">Gauss (quadratic)</button><button type="button" data-m="cubic">cubic</button><button type="button" data-m="curl">curlicue</button></div>
+  <div class="row" id="rowP"><span class="lab">prime p</span><input id="sp" type="range" min="0" max="167" value="60" aria-label="Prime p"><span id="spv" class="val"></span>
+    <span class="lab" style="margin-left:.6rem">a</span><input id="sa" type="number" min="1" value="1" aria-label="a"><span class="lab" id="lbB">b</span><input id="sb" type="number" min="1" value="1" aria-label="b"><button type="button" id="srand">random</button></div>
+  <div class="row" id="rowC" hidden><span class="lab">x</span><button type="button" data-x="golden">(√5−1)/2</button><button type="button" data-x="e">e</button><button type="button" data-x="pi">π</button><button type="button" data-x="sqrt2">√2</button>
+    <span class="lab" style="margin-left:.6rem">terms</span><input id="sn" type="range" min="200" max="20000" step="100" value="4000" aria-label="Number of terms"><span id="snv" class="val"></span></div>
+  <div class="row"><button type="button" id="sreplay">Redraw slowly</button></div>
+  <div class="stage" style="--ar:1;max-width:640px;margin-inline:auto"><canvas id="sc" aria-label="The path traced in the complex plane by the partial sums of an exponential sum"></canvas></div>
+  <div class="readout" id="sr">…</div>
+  <div class="legend"><span><i style="background:linear-gradient(90deg,var(--accent),var(--plus))"></i>partial sums, first → last term</span><span><i class="sq" style="background:var(--ink)"></i>start (0)</span><span><i class="sq" style="background:var(--plus)"></i>end: the value of the sum</span></div>
+</div>
+<script>
+(function(){
+"use strict";
+var cv=document.getElementById("sc"),out=document.getElementById("sr");
+var PR=[];for(var n=3;PR.length<168;n++){var ok=true;for(var d=2;d*d<=n;d++)if(n%d===0){ok=false;break;}if(ok)PR.push(n);}
+var mode="kl",p=0,a=1,b=1,xs="golden",N=4000,pts=[],shown=0,anim=null,geom;
+var spS=document.getElementById("sp"),spV=document.getElementById("spv"),sA=document.getElementById("sa"),sB=document.getElementById("sb"),snS=document.getElementById("sn"),snV=document.getElementById("snv");
+spS.max=PR.length-1;
+function powmod(b,e,m){var r=1;b%=m;while(e>0){if(e&1)r=r*b%m;b=b*b%m;e=Math.floor(e/2);}return r;}
+function inv(x,m){return powmod(((x%m)+m)%m,m-2,m);}
+var XV={golden:(Math.sqrt(5)-1)/2,e:Math.E,pi:Math.PI,sqrt2:Math.SQRT2};
+function compute(){
+  pts=[[0,0]];var sx=0,sy=0,i,t;
+  if(mode==="curl"){var x=XV[xs];for(i=1;i<=N;i++){t=Math.PI*x*i*i;t=t%(2*Math.PI);sx+=Math.cos(t);sy+=Math.sin(t);pts.push([sx,sy]);}return;}
+  p=PR[+spS.value];a=Math.max(1,(+sA.value||1)%p||1);b=Math.max(1,(+sB.value||1)%p||1);
+  var start=mode==="kl"?1:0;
+  for(i=start;i<p;i++){
+    var k;if(mode==="kl")k=(a*i+b*inv(i,p))%p;else if(mode==="gauss")k=(a*i%p)*i%p;else k=((i*i%p)*i+a*i)%p;
+    t=2*Math.PI*k/p;sx+=Math.cos(t);sy+=Math.sin(t);pts.push([sx,sy]);}
+}
+function layout(){geom=Lab.setup(cv);}
+function draw(){
+  if(!geom)layout();var c=geom.ctx,W=geom.w,H=geom.h;c.clearRect(0,0,W,H);
+  var acc=Lab.rgb(Lab.css("--accent")),plus=Lab.rgb(Lab.css("--plus")),ink=Lab.css("--ink"),mut=Lab.css("--muted"),rule=Lab.css("--rule"),soft=Lab.css("--ink-soft");
+  var xmin=0,xmax=0,ymin=0,ymax=0;pts.forEach(function(q){xmin=Math.min(xmin,q[0]);xmax=Math.max(xmax,q[0]);ymin=Math.min(ymin,q[1]);ymax=Math.max(ymax,q[1]);});
+  var R=mode==="curl"?0:(mode==="kl"?2*Math.sqrt(p):Math.sqrt(p));
+  if(mode!=="curl"){var fe=pts[pts.length-1];xmin=Math.min(xmin,fe[0]-R*0.1);}
+  var pad=22,sc=Math.min((W-2*pad)/Math.max(1e-9,xmax-xmin),(H-2*pad)/Math.max(1e-9,ymax-ymin));
+  var ox=W/2-(xmin+xmax)/2*sc,oy=H/2+(ymin+ymax)/2*sc;
+  function X(v){return ox+v*sc;}function Y(v){return oy-v*sc;}
+  c.strokeStyle=rule;c.lineWidth=1;c.beginPath();c.moveTo(X(xmin)-10,Y(0));c.lineTo(X(xmax)+10,Y(0));c.moveTo(X(0),Y(ymin)-10);c.lineTo(X(0),Y(ymax)+10);c.stroke();
+  var m=Math.min(shown,pts.length-1),bands=40,lw=mode==="curl"?1:Math.max(1,Math.min(2.2,600/pts.length+1));
+  for(var bI=0;bI<bands;bI++){var i0=Math.floor(bI*(pts.length-1)/bands),i1=Math.floor((bI+1)*(pts.length-1)/bands);if(i0>=m)break;i1=Math.min(i1,m);
+    c.strokeStyle=Lab.mix(acc,plus,bI/(bands-1));c.lineWidth=lw;c.lineJoin="round";c.beginPath();c.moveTo(X(pts[i0][0]),Y(pts[i0][1]));for(var i=i0+1;i<=i1;i++)c.lineTo(X(pts[i][0]),Y(pts[i][1]));c.stroke();}
+  c.fillStyle=ink;c.beginPath();c.arc(X(0),Y(0),3.2,0,6.2832);c.fill();
+  if(m===pts.length-1){var e=pts[m];c.fillStyle=Lab.mix(plus,plus,0);c.beginPath();c.arc(X(e[0]),Y(e[1]),4,0,6.2832);c.fill();
+    if(mode==="kl"||mode==="gauss"){c.setLineDash([4,4]);c.strokeStyle=soft;c.globalAlpha=.6;c.beginPath();c.arc(X(0),Y(0),R*sc,0,6.2832);c.stroke();c.setLineDash([]);c.globalAlpha=1;}}
+  c.fillStyle=mut;c.font=Lab.font(10);c.textAlign="left";c.fillText("0",X(0)+5,Y(0)-6);
+}
+function fmt(v){return (Math.abs(v)<5e-9?0:v).toFixed(4);}
+function report(){
+  var e=pts[pts.length-1];
+  if(mode==="curl"){out.textContent="S(N) = Σ_{n ≤ N} e^{πi n² x},  x = "+({golden:"(√5−1)/2",e:"e",pi:"π",sqrt2:"√2"})[xs]+",  N = "+N+"\n|S(N)| = "+Math.hypot(e[0],e[1]).toFixed(2)+"  vs  √N = "+Math.sqrt(N).toFixed(2)+"\nthe path curls into self-similar spirals; their sizes follow the continued fraction of x";return;}
+  var mag=Math.hypot(e[0],e[1]);
+  if(mode==="kl")out.textContent="Kl("+a+", "+b+"; "+p+") = Σ e((ax + bx̄)/p) over x = 1, …, "+(p-1)+"\n= "+fmt(e[0])+(Math.abs(e[1])>1e-6?" + "+fmt(e[1])+"i":"")+"   (always real: x ↦ −x conjugates each term)\n|Kl| = "+mag.toFixed(3)+" ≤ 2√p = "+(2*Math.sqrt(p)).toFixed(3)+"  (Weil)   ·   ratio "+(mag/(2*Math.sqrt(p))).toFixed(3);
+  else if(mode==="gauss"){var leg=powmod(a,(p-1)/2,p)===1?1:-1;out.textContent="G(a; p) = Σ e(ax²/p),  a = "+a+",  p = "+p+" ≡ "+(p%4)+" mod 4\n= "+fmt(e[0])+" + "+fmt(e[1])+"i\nGauss: G = (a/p)·"+(p%4===1?"√p":"i√p")+" = "+(leg>0?"":"−")+(p%4===1?"":"i·")+Math.sqrt(p).toFixed(4)+"   ·   |G|² = "+(mag*mag).toFixed(3)+" = p";}
+  else out.textContent="Σ e((x³ + ax)/p),  a = "+a+",  p = "+p+"\n= "+fmt(e[0])+" + "+fmt(e[1])+"i,   |S| = "+mag.toFixed(3)+"\nWeil: |S| ≤ 2√p = "+(2*Math.sqrt(p)).toFixed(3);
+}
+function go(slow){if(anim)cancelAnimationFrame(anim);compute();report();
+  spV.textContent=PR[+spS.value];snV.textContent=N;
+  if(!slow||Lab.reduce){shown=pts.length;draw();return;}
+  shown=0;var t0=null,dur=Math.min(9000,1500+pts.length*6);
+  (function fr(t){if(t0===null)t0=t;var u=Math.min(1,(t-t0)/dur);shown=Math.floor(u*(pts.length-1));draw();if(u<1)anim=requestAnimationFrame(fr);else{anim=null;shown=pts.length;draw();}})(performance.now());}
+function setMode(m){mode=m;Lab.pressed("[data-m]",function(b){return b.dataset.m===m;});
+  document.getElementById("rowP").hidden=m==="curl";document.getElementById("rowC").hidden=m!=="curl";
+  document.getElementById("lbB").hidden=sB.hidden=m!=="kl";go(true);}
+document.querySelectorAll("[data-m]").forEach(function(bt){bt.addEventListener("click",function(){setMode(bt.dataset.m);});});
+document.querySelectorAll("[data-x]").forEach(function(bt){bt.addEventListener("click",function(){xs=bt.dataset.x;Lab.pressed("[data-x]",function(q){return q.dataset.x===xs;});go(true);});});
+spS.addEventListener("input",function(){go(false);});sA.addEventListener("input",function(){go(false);});sB.addEventListener("input",function(){go(false);});
+snS.addEventListener("input",function(){N=+snS.value;go(false);});
+document.getElementById("srand").addEventListener("click",function(){spS.value=20+Math.floor(Math.random()*(PR.length-20));var q=PR[+spS.value];sA.value=1+Math.floor(Math.random()*(q-1));sB.value=1+Math.floor(Math.random()*(q-1));go(true);});
+document.getElementById("sreplay").addEventListener("click",function(){go(true);});
+Lab.onTheme(draw);window.addEventListener("resize",function(){layout();draw();});
+Lab.pressed("[data-x]",function(q){return q.dataset.x===xs;});
+layout();setMode("kl");
+})();
+</script>
+</body>
+</html>

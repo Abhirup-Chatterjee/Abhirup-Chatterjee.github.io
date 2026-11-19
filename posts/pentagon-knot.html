@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A regular pentagon from a strip of paper · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="A regular pentagon from a strip of paper · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <h1>A regular pentagon from a strip of paper</h1>
+    <div class="byline"><span class="date">November 2026</span><span class="tag">origami</span><span class="tag">geometry</span><span class="date">≈ 6 min read</span></div>
+  </header>
+  <div class="prose">
+<p>Cut a long strip of paper of constant width, say $2$ cm wide and $30$ cm long. Tie a simple overhand knot in it, the same knot you would tie in a piece of string, and then pull gently and press it flat so that no paper bulges. What you are holding is a regular pentagon, with the two loose ends of the strip sticking out. Try it before reading on: it takes a minute, and the result looks far too neat to be an accident.</p>
+<figure class="post-fig"><svg class="fig" viewBox="0 0 640 330" role="img" aria-label="A regular pentagon ABCDE with its diagonals; the band between side CD and the parallel diagonal BE, of width w, is shaded" style="width:100%;height:auto;display:block"><polygon points="-5.7,276.1 405.7,276.1 402.1,136.4 -2.1,136.4" style="fill:var(--accent);fill-opacity:.16"/><line x1="-5.7" y1="276.1" x2="405.7" y2="276.1" style="stroke:var(--accent);stroke-width:1.4;stroke-dasharray:5 4"/><line x1="-2.1" y1="136.4" x2="402.1" y2="136.4" style="stroke:var(--accent);stroke-width:1.4;stroke-dasharray:5 4"/><line x1="200.0" y1="50.0" x2="126.5" y2="276.1" style="stroke:var(--rule);stroke-width:1.2"/><line x1="200.0" y1="50.0" x2="273.5" y2="276.1" style="stroke:var(--rule);stroke-width:1.2"/><line x1="81.1" y1="136.4" x2="273.5" y2="276.1" style="stroke:var(--rule);stroke-width:1.2"/><line x1="81.1" y1="136.4" x2="318.9" y2="136.4" style="stroke:var(--rule);stroke-width:1.2"/><line x1="126.5" y1="276.1" x2="318.9" y2="136.4" style="stroke:var(--rule);stroke-width:1.2"/><line x1="126.5" y1="276.1" x2="200.0" y2="50.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="273.5" y1="276.1" x2="200.0" y2="50.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="273.5" y1="276.1" x2="81.1" y2="136.4" style="stroke:var(--rule);stroke-width:1.2"/><line x1="318.9" y1="136.4" x2="81.1" y2="136.4" style="stroke:var(--rule);stroke-width:1.2"/><line x1="318.9" y1="136.4" x2="126.5" y2="276.1" style="stroke:var(--rule);stroke-width:1.2"/><polygon points="200.0,50.0 81.1,136.4 126.5,276.1 273.5,276.1 318.9,136.4" style="fill:none;stroke:var(--ink);stroke-width:2"/><text x="200.0" y="39.0" text-anchor="middle" style="font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink)">A</text><text x="65.9" y="136.4" text-anchor="middle" style="font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink)">B</text><text x="117.1" y="294.1" text-anchor="middle" style="font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink)">C</text><text x="282.9" y="294.1" text-anchor="middle" style="font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink)">D</text><text x="334.1" y="136.4" text-anchor="middle" style="font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink)">E</text><line x1="200.0" y1="276.1" x2="200.0" y2="136.4" style="stroke:var(--plus);stroke-width:1.6"/><text x="206.0" y="210.2" style="font-family:var(--f-mono);font-size:12px;fill:var(--plus)">w</text><text x="380" y="70" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)">each side is parallel to the</text><text x="380" y="92" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)">diagonal across from it,</text><text x="380" y="114" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)">e.g. CD ∥ BE;</text><text x="380" y="136" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)"></text><text x="380" y="158" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)">the strip covers the band between</text><text x="380" y="180" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)">them, of width w;</text><text x="380" y="202" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)"></text><text x="380" y="224" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)">five bands of equal width</text><text x="380" y="246" style="font-family:var(--f-mono);font-size:12px;fill:var(--ink-soft)">force a regular pentagon</text></svg><figcaption>The flattened knot is a regular pentagon. Each straight passage of the strip covers a band between one side of the pentagon and the diagonal parallel to it; all these bands have the width $w$ of the strip.</figcaption></figure>
+
+<h2>What the flattened knot looks like</h2>
+<p>Look closely at the flat knot. The strip runs straight between folds, and each straight run covers a band of width $w$, the width of the strip, whose two edges lie along lines through vertices of the pentagon. Following the strip around, you find five such bands, one for each side: the band for side $CD$ is bounded by $CD$ itself and by the diagonal $BE$, and similarly for the other sides. So the knot gives us a convex pentagon with two properties:</p>
+<ol>
+  <li>every side is parallel to the diagonal "across" from it: $AB \parallel EC$, $BC \parallel AD$, $CD \parallel BE$, $DE \parallel CA$, $EA \parallel DB$;</li>
+  <li>the distance between each side and its parallel diagonal is the same number $w$.</li>
+</ol>
+<p>These two facts alone force the pentagon to be regular. The pleasant surprise is that the proof uses nothing but areas of triangles.</p>
+  <details class="proof">
+    <summary>Full proof: equal bands force a regular pentagon</summary>
+    <div class="proof-body">
+<p><strong>Proposition.</strong> <em>Let $ABCDE$ be a convex pentagon in which each side is parallel to the diagonal across from it, at the same distance $w$ for all five sides. Then $ABCDE$ is regular.</em></p>
+<p><em>Step 1: the five "ear" triangles have equal area.</em> Write $T_1 = [ABC]$, $T_2 = [BCD]$, $T_3 = [CDE]$, $T_4 = [DEA]$, $T_5 = [EAB]$ for the areas. Since $C$ and $E$ lie on a line parallel to $AB$, triangles $ABC$ and $ABE$ have the same base and height, so $T_1 = T_5$. In the same way $BC \parallel AD$ gives $[BCD] = [BCA]$, so $T_2 = T_1$; $CD \parallel BE$ gives $T_3 = T_2$; and $DE \parallel CA$ gives $T_4 = T_3$.</p>
+<p><em>Step 2: the sides are equal.</em> The vertex $C$ lies on the diagonal $EC$, at distance $w$ from line $AB$, so $T_1 = \tfrac12|AB|\,w$. Likewise $T_2 = \tfrac12|BC|\,w$, because $D$ lies on $AD$, at distance $w$ from $BC$; and so on around. Equal areas give $|AB| = |BC| = |CD| = |DE| = |EA| = s$.</p>
+<p><em>Step 3: the angles are equal.</em> Now $T_1 = \tfrac12 s^2 \sin B$, $T_2 = \tfrac12 s^2 \sin C$, and so on, so all five interior angles have the same sine: each is $\alpha$ or $180^\circ - \alpha$. If $k$ of them equal $\alpha$, the angle sum $540^\circ$ gives $k\alpha + (5-k)(180^\circ - \alpha) = 540^\circ$. Running through $k = 0, \dots, 5$, the only possibilities are all five angles equal to $108^\circ$, or four angles of $120^\circ$ and one of $60^\circ$. In the second case the exterior angles are $60^\circ, 60^\circ, 60^\circ, 60^\circ, 120^\circ$, so the five unit side vectors point in directions $0^\circ, 60^\circ, 120^\circ, 180^\circ, 240^\circ$ (up to rotation), and their sum is $e^{2\pi i \cdot 2/6} \ne 0$: the polygon would not close. So every angle is $108^\circ$, and the equilateral, equiangular pentagon is regular. $\square$</p>
+    </div>
+  </details>
+
+<h2>Variations</h2>
+<p>Tying more elaborate knots in a strip gives other flat polygons, and working out which ones are regular is a good exercise in the same area argument; the overhand knot is the simplest case. The strip width fixes the size: for the pentagon, the side length is $s = w / \sin 72^\circ \approx 1.05\,w$. The paper-folding theme continues in the post on <a href="haga-fold.html">Haga's theorem</a>, and the gallery on the <a href="../art.html">Art page</a> has more folded things.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>T. C. Hull, <em>Origametry: Mathematical Methods in Paper Folding</em>, Cambridge University Press, 2020.</li>
+  <li>K. Haga, <em>Origamics: Mathematical Explorations Through Paper Folding</em>, World Scientific, 2008.</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

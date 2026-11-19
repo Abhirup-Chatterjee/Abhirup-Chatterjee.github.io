@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Erdős–Kac Lab · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Erdős–Kac Lab · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Probabilistic number theory</p>
+    <h1>Erdős–Kac Lab</h1>
+    <p class="lead">How many prime factors does a random number have? Experiments with the Gaussian law of prime factors.</p>
+    <div class="byline"><span class="tag">probabilistic number theory</span><span class="tag">function fields</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Pick an integer $n$ at random up to $x$ and count its distinct prime factors, $\omega(n)$. The answer is random, but its distribution is not: once centred at $\log\log x$ and scaled by $\sqrt{\log\log x}$, it follows the bell curve. This is the Erdős–Kac theorem, and the lab below lets you watch it happen for $\omega(n)$, for $\Omega(n)$, for values of polynomials, for shifted primes, and for polynomials over finite fields.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/erdos-kac.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame tall" src="app/erdos-kac.html" title="Erdős–Kac Lab: interactive histograms of the number of prime factors" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>Where this comes from: probabilistic number theory</h2>
+<p>In 1917 Hardy and Ramanujan showed that almost every integer $n$ has about $\log\log n$ prime factors. Their proof was intricate. In 1934 Turán gave a short one by bounding a variance,
+$$\sum_{n \le x} \big(\omega(n) - \log\log x\big)^2 \ll x \log\log x,$$
+which is Chebyshev's inequality in disguise. That proof made it clear that probability was hiding in the problem.</p>
+<p>Mark Kac made the probability explicit. Write $\omega(n) = \sum_{p} \mathbf{1}_{p \mid n}$. For a random $n$, the events "$p$ divides $n$" have probability $1/p$ and behave almost independently for different primes. So $\omega(n)$ looks like a sum of independent Bernoulli variables, with
+$$\text{mean} \approx \sum_{p \le x} \frac1p = \log\log x + O(1), \qquad \text{variance} \approx \sum_{p \le x} \frac1p\Big(1 - \frac1p\Big) \sim \log\log x$$
+by Mertens' theorem. The central limit theorem then predicts a Gaussian. Kac saw this heuristic and Erdős supplied the sieve argument to make it rigorous. Their theorem (1940) says that for every real $z$,
+$$\lim_{x \to \infty} \frac1x \,\#\Big\{ n \le x : \frac{\omega(n) - \log\log x}{\sqrt{\log\log x}} \le z \Big\} = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{z} e^{-t^2/2}\, dt.$$</p>
+
+<h3>Why the pictures look lopsided</h3>
+<p>The convergence is very slow. Even at $x = 10^{20}$ we have $\log\log x \approx 3.8$, so $\omega(n)$ takes only a handful of values and the histogram is visibly skewed. The error in the normal approximation is of order $1/\sqrt{\log\log x}$ (Rényi and Turán). The "prime model" overlay in the lab, which treats each prime as an independent coin, matches the data far better than the Gaussian at any range you can compute. That gap is a good illustration of what "asymptotically normal" does and does not promise.</p>
+
+<h3>Polynomials over finite fields</h3>
+<p>The same story holds in $\mathbb{F}_q[t]$. For a random monic polynomial of degree $n$, the number of distinct irreducible factors has mean and variance about $\log n$, and is asymptotically normal. Here the degree $n$ plays the role of $\log x$, so $\log n$ replaces $\log\log x$. The lab computes these distributions exactly from the generating function, for degrees in the thousands.</p>
+
+<h3>Why I care</h3>
+<p>My own work on the Chowla conjecture for a truncated Möbius function over $\mathbb{F}_q[t]$ turns a correlation problem into a uniform <em>bivariate</em> Erdős–Kac theorem, proved through characteristic functions. See <a href="https://arxiv.org/abs/2610.06471" rel="noopener">arXiv:2610.06471</a>.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>M. Kac, <em>Statistical Independence in Probability, Analysis and Number Theory</em>, Carus Mathematical Monographs 12, 1959.</li>
+  <li>P. Erdős and M. Kac, <em>The Gaussian law of errors in the theory of additive number theoretic functions</em>, American Journal of Mathematics 62 (1940).</li>
+  <li>A. Granville and K. Soundararajan, <em>Sieving and the Erdős–Kac theorem</em>, in Equidistribution in Number Theory, an Introduction, Springer, 2007.</li>
+  <li>G. Tenenbaum, <em>Introduction to Analytic and Probabilistic Number Theory</em>, AMS Graduate Studies in Mathematics 163, 2015.</li>
+</ul>
+</div>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

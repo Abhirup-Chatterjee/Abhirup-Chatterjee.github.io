@@ -1,0 +1,104 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="index.html" aria-current="page">Home</a><a href="about.html">About</a><a href="cv.html">CV</a><a href="number-theory.html">Number Theory</a><a href="recreational.html">Recreational</a><a href="art.html">Art</a><a href="resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<section class="wrap hero">
+  <div class="reveal">
+    <p class="eyebrow">Number theory <span class="dot">·</span> IMSc, Chennai</p>
+    <h1>Abhirup<br><em>Chatterjee</em></h1>
+    <p class="lead">I am a PhD student working on the distribution of arithmetic functions over function fields, with a particular soft spot for the Möbius function over $\mathbb{F}_q[t]$. Away from research I fold paper, chase puzzles and write about both.</p>
+    <div class="btn-row">
+      <a class="btn solid" href="about.html">About &amp; research</a>
+      <a class="btn" href="number-theory.html">Read the blog</a>
+      <a class="btn" href="cv.html">CV</a>
+    </div>
+  </div>
+  <div class="reveal d2">
+    <div class="spiral-card orchard-card">
+      <canvas id="orchard" aria-label="Euclid's orchard: a tree at every lattice point within a circle, seen from above, with you at the centre. You can see the tree at (x, y) exactly when gcd(x, y) = 1. Scroll to zoom in, drag to move."></canvas>
+      <div class="spiral-readout" id="orchard-readout" aria-live="polite">scroll to zoom in, drag to move</div>
+    </div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>visible: gcd(x, y) = 1</span><span><i style="background:var(--ink-soft);opacity:.5"></i>hidden behind another tree</span><span><i style="background:var(--plus)"></i>line of sight</span><button type="button" class="legend-btn" id="orchard-reset">reset view</button></div>
+    <p class="orchard-note">Euclid's orchard: standing at the centre, you see the tree at $(x, y)$ only when $\gcd(x, y) = 1$. The visible share tends to $6/\pi^2 = 1/\zeta(2)$, about 60.8%. Scroll to zoom in, drag to move.</p>
+  </div>
+</section>
+
+<section class="wrap quote-band"><figure class="quote"><blockquote>The important thing is not to stop questioning. Curiosity has its own reason for existing.</blockquote><figcaption><b>Albert Einstein</b><span>LIFE magazine, 1955</span></figcaption></figure></section>
+<section class="wrap section">
+  <div class="sec-title"><span class="sym">§</span><h2>Right now</h2></div>
+  <div class="now-grid">
+    <div class="now"><span class="eyebrow">Research</span><h3>Chowla for a truncated Möbius function</h3><p>New preprint on the two-point correlation of the truncated Möbius function $\mu_M$ over $\mathbb{F}_q[t]$, via a bivariate Erdős–Kac theorem: <a href="https://arxiv.org/abs/2610.06471" rel="noopener">arXiv:2610.06471</a>.</p></div>
+    <div class="now"><span class="eyebrow">Recently</span><h3>Equidistribution and Beyond</h3><p>Dr F. C. Kohli Center, CMI, September 2026: ergodic-theoretic methods in number theory, at the meeting point with probability.</p></div>
+    <div class="now"><span class="eyebrow">New on the site</span><h3>Seventeen interactive labs</h3><p>From the zeros of $\zeta$ and Hofstadter's butterfly to Pollard's rho and the $p$-adic integers: see the <a href="number-theory.html#labs">number theory</a> and <a href="recreational.html#labs">recreational</a> pages.</p></div>
+  </div>
+</section>
+
+<section class="wrap section">
+  <div class="sec-title"><span class="sym">§</span><h2>Latest writing</h2><a class="more" href="number-theory.html">All posts →</a></div>
+  <div class="cards">
+    <a class="card" href="posts/mobius-polynomials.html">
+  <span class="eyebrow">Number theory</span>
+  <h3>The Möbius function over polynomials, and a prime number theorem in one line</h3>
+  <p>Over $\mathbb{F}_q[t]$ the Mertens sum vanishes in every degree $n \ge 2$. Why that happens, a live check on your browser, and where the hard questions (Chowla) begin.</p>
+  <div class="meta"><span class="date">Oct 2026</span><span class="tag">function fields</span><span class="tag">expository</span></div>
+</a>
+    <a class="card" href="posts/haga-fold.html">
+  <span class="eyebrow">Recreational maths</span>
+  <h3>Folding thirds: Haga's theorem is a Möbius transformation</h3>
+  <p>Fold one corner of a square to a point on the opposite edge and the paper divides the side at $h=\frac{1-t}{1+t}$. An interactive fold and a pun that turns out to be true.</p>
+  <div class="meta"><span class="date">Oct 2026</span><span class="tag">origami</span><span class="tag">geometry</span></div>
+</a>
+    <a class="card" href="art.html">
+      <span class="eyebrow">Art</span>
+      <h3>Origami, sketches and mathematical pictures</h3>
+      <p>A small gallery: crease patterns, Ford circles, Gaussian primes, and the models I fold.</p>
+      <div class="meta"><span class="tag">gallery</span></div>
+    </a>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body></html>

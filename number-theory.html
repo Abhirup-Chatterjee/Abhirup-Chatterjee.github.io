@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Number Theory Notes · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Number Theory Notes · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="cv.html">CV</a><a href="number-theory.html" aria-current="page">Number Theory</a><a href="recreational.html">Recreational</a><a href="art.html">Art</a><a href="resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<section class="wrap page-head">
+  <p class="eyebrow">Blog · Number theory</p>
+  <h1>Notes on number theory</h1>
+  <p class="lead">Expository posts on function fields, arithmetic functions and L-functions, written for graduate students and curious mathematicians. Mathematics is typeset with MathJax, so $\sum_{\deg f = n} \mu(f) = 0$ looks the way it should.</p>
+</section>
+<section class="wrap quote-band"><figure class="quote"><blockquote>Mathematics is the queen of the sciences, and arithmetic the queen of mathematics.</blockquote><figcaption><b>Carl Friedrich Gauss</b><span>as recalled by Sartorius von Waltershausen, 1856</span></figcaption></figure></section>
+<section class="wrap" style="padding-bottom:2rem">
+  <div class="chips" data-filter-group="#posts" role="group" aria-label="Filter posts" style="margin-bottom:1.4rem"><button class="chip" type="button" data-filter="all" aria-pressed="true">All</button><button class="chip" type="button" data-filter="function-fields" aria-pressed="false">function fields</button><button class="chip" type="button" data-filter="primes" aria-pressed="false">primes</button><button class="chip" type="button" data-filter="modular-forms" aria-pressed="false">modular forms</button><button class="chip" type="button" data-filter="expository" aria-pressed="false">expository</button><button class="chip" type="button" data-filter="talk-notes" aria-pressed="false">talk notes</button></div>
+  <ul class="post-list" id="posts"><li class="post-item" data-tags="expository modular-forms">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/heegner.html">163 and the class number one problem</a></h3><p>Why $e^{\pi\sqrt{163}}$ misses an integer by $10^{-12}$: Gauss's class number one discriminants, the $j$-function, Euler's $n^2 + n + 41$, and Heegner's vindicated proof.</p><div class="tags"><span class="tag">quadratic forms</span><span class="tag">modular forms</span></div></div>
+</li><li class="post-item" data-tags="expository primes">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/artin.html">Is 2 a primitive root? Artin's conjecture</a></h3><p>Why $1/7$ repeats with period $6$, Artin's constant $0.3739\ldots$ against the primes below $10^6$, Hooley's conditional proof, and the theorem that one of $2, 3, 5$ works.</p><div class="tags"><span class="tag">primes</span><span class="tag">open problems</span></div></div>
+</li><li class="post-item" data-tags="expository modular-forms">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/ramanujan-congruences.html">Ramanujan's congruences and Dyson's crank</a></h3><p>$p(5n+4) \equiv 0 \pmod 5$ and its cousins mod $7$ and $11$, Dyson's rank and crank, Ono's infinitely many congruences, and a two-identity proof of the first.</p><div class="tags"><span class="tag">partitions</span><span class="tag">modular forms</span></div></div>
+</li><li class="post-item" data-tags="expository primes">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/green-tao.html">Long progressions of primes</a></h3><p>Ten primes $199 + 210k$, the Green–Tao theorem, where its proof comes from, and why the common difference must be a multiple of $210$.</p><div class="tags"><span class="tag">primes</span><span class="tag">additive combinatorics</span></div></div>
+</li><li class="post-item" data-tags="expository modular-forms">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/isogeny-graph.html">Supersingular isogeny graphs</a></h3><p>The $2$-isogeny graph of supersingular curves for $p = 431$, computed from the modular polynomial: a Ramanujan graph, a cryptographic playground, and quaternion algebras in disguise.</p><div class="tags"><span class="tag">elliptic curves</span><span class="tag">expander graphs</span></div></div>
+</li><li class="post-item" data-tags="expository modular-forms">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/dedekind-sums.html">Dedekind sums and a fractal scatter</a></h3><p>A finite sawtooth sum that is the phase of the eta function: its reciprocity law, its self-similar scatter plot, and its appearances from lattice points to topology.</p><div class="tags"><span class="tag">modular forms</span><span class="tag">lattice points</span></div></div>
+</li><li class="post-item" data-tags="function-fields expository">
+  <span class="date">Oct 2026</span>
+  <div><h3><a href="posts/mobius-polynomials.html">The Möbius function over polynomials, and a prime number theorem in one line</a></h3><p>Over $\mathbb{F}_q[t]$ the Mertens sum vanishes in every degree $n \ge 2$. Why that happens, a live check on your browser, and where the hard questions (Chowla) begin.</p><div class="tags"><span class="tag">function fields</span><span class="tag">expository</span></div></div>
+</li><li class="post-item" data-tags="function-fields expository">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/rh-curves.html">Riemann hypothesis for curves, from the zeta function of $\mathbb{F}_q[t]$ upward</a></h3><p>The prime polynomial theorem with no zeros at all, zeta functions of curves of genus $g$, Weil's theorem, and why the Hasse–Weil bound drives most of function-field number theory.</p><div class="tags"><span class="tag">function fields</span><span class="tag">zeta functions</span></div></div>
+</li><li class="post-item" data-tags="talk-notes function-fields">
+  <span class="date">Jul 2025</span>
+  <div><h3><a href="posts/l-functions-talk.html">Talk notes: L-functions over function fields (IMSc, Jul 2025)</a></h3><p>Why Dirichlet $L$-functions over $\mathbb{F}_q[t]$ are polynomials, what the proved Riemann hypothesis says about them, and moments in the hyperelliptic family.</p><div class="tags"><span class="tag">talk notes</span><span class="tag">function fields</span></div></div>
+</li><li class="post-item" data-tags="expository modular-forms">
+  <span class="date">Nov 2026</span>
+  <div><h3><a href="posts/multiple-zeta.html">A first look at multiple zeta values</a></h3><p>Euler's $\zeta(2,1) = \zeta(3)$, stuffle and shuffle products, Zagier's dimension conjecture, and the weight-12 relation where $691$ and the cusp form $\Delta$ appear.</p><div class="tags"><span class="tag">zeta values</span><span class="tag">modular forms</span></div></div>
+</li></ul>
+</section>
+
+<section class="wrap section" id="labs">
+  <div class="sec-title"><span class="sym">§</span><h2>Interactive labs</h2></div>
+  <p style="color:var(--ink-soft);margin-bottom:1.4rem;max-width:var(--measure)">Applets for the research-flavoured side of the subject, each with a note on the mathematics and a full proof of one key step. More labs, closer to puzzles, live on the <a href="recreational.html#labs">recreational page</a>.</p>
+  <div class="cards">
+    <a class="card" href="labs/zeros-circle.html">
+      <span class="eyebrow">Function fields</span>
+      <h3>Zeros on the unit circle</h3>
+      <p>Random curves $y^2 = f(x)$ over $\mathbb{F}_p$: their L-function zeros sit on a circle (Weil) and spread like eigenvalues of random symplectic matrices (Katz–Sarnak). Genus 1 gives Sato–Tate.</p>
+      <div class="meta"><span class="tag">applet</span><span class="tag">function fields</span></div>
+    </a>
+    <a class="card" href="labs/explicit-formula.html">
+      <span class="eyebrow">Analytic number theory</span>
+      <h3>Primes from the zeros of ζ</h3>
+      <p>Add the zeros of $\zeta(s)$ one at a time: their waves sum to Chebyshev's staircase $\psi(x)$, with jumps exactly at the prime powers.</p>
+      <div class="meta"><span class="tag">applet</span><span class="tag">zeta function</span></div>
+    </a>
+    <a class="card" href="labs/modular.html">
+      <span class="eyebrow">Modular forms</span>
+      <h3>The modular surface: j(τ) and CM points</h3>
+      <p>The upper half-plane tiled by $\mathrm{SL}_2(\mathbb{Z})$, coloured by $j(\tau)$ and $\Delta(\tau)$. Then the class group drawn as points in the fundamental domain, spreading out as Duke proved.</p>
+      <div class="meta"><span class="tag">applet</span><span class="tag">modular forms</span></div>
+    </a>
+    <a class="card" href="labs/elliptic-fp.html">
+      <span class="eyebrow">Elliptic curves</span>
+      <h3>Chord and tangent over 𝔽ₚ</h3>
+      <p>The points of $y^2 = x^3 + ax + b$ modulo $p$, and the chord-and-tangent walk $P, 2P, 3P, \dots$ that looks random enough to secure the internet.</p>
+      <div class="meta"><span class="tag">applet</span><span class="tag">elliptic curves</span></div>
+    </a>
+    <a class="card" href="labs/exp-sums.html">
+      <span class="eyebrow">Exponential sums</span>
+      <h3>Kloosterman paths and curlicues</h3>
+      <p>Partial sums of Kloosterman, Gauss and cubic sums drawn as paths, against Weil's bound $2\sqrt p$; and the fractal curlicues of $\sum e^{\pi i n^2 x}$.</p>
+      <div class="meta"><span class="tag">applet</span><span class="tag">exponential sums</span></div>
+    </a>
+    <a class="card" href="labs/prime-races.html">
+      <span class="eyebrow">Analytic number theory</span>
+      <h3>Prime races and arithmetic random walks</h3>
+      <p>Primes $3 \bmod 4$ against $1 \bmod 4$ (Chebyshev's bias), the Mertens function against $\pm\sqrt x$, Pólya's Liouville walk and Chowla's correlation, computed up to $10^7$.</p>
+      <div class="meta"><span class="tag">applet</span><span class="tag">primes</span></div>
+    </a>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

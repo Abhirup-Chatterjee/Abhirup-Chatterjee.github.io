@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zeros on the unit circle · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Zeros on the unit circle · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <p class="eyebrow">Lab · Function fields</p>
+    <h1>Zeros on the unit circle</h1>
+    <p class="lead">The Riemann hypothesis is a theorem for curves over finite fields. Draw random curves, put the zeros of their L-functions on a circle, and watch them settle into the statistics of random symplectic matrices.</p>
+    <div class="byline"><span class="tag">function fields</span><span class="tag">random matrices</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Take a squarefree polynomial $f(x)$ of degree $2g+1$ over $\mathbb{F}_p$ and the curve $C : y^2 = f(x)$, of genus $g$. Counting its points over the fields $\mathbb{F}_{p^r}$ gives the zeta function, and all the arithmetic is in one polynomial of degree $2g$:
+$$L_C(T) = \prod_{j=1}^{2g} (1 - \alpha_j T), \qquad \#C(\mathbb{F}_{p^r}) = p^r + 1 - \sum_{j=1}^{2g} \alpha_j^{\,r}.$$
+Weil proved in 1948 that every $\alpha_j$ has absolute value exactly $\sqrt p$. So after dividing by $\sqrt p$ the zeros sit on the unit circle, in conjugate pairs $e^{\pm i\theta_1}, \dots, e^{\pm i\theta_g}$. The applet picks curves at random, counts their points exactly over $\mathbb{F}_p, \dots, \mathbb{F}_{p^g}$, recovers $L_C(T)$ and draws the angles.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/zeros-circle.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:980px" src="app/zeros-circle.html" title="Zeros on the unit circle: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>What the picture shows</h2>
+<p><strong>Weil's theorem</strong> is the circle itself: no zero ever leaves it. <strong>Where on the circle</strong> is a statistical question. Katz and Sarnak showed that as $p \to \infty$, the normalised Frobenius of a random curve in this family becomes equidistributed in the compact symplectic group $\mathrm{USp}(2g)$, the $2g \times 2g$ unitary matrices that preserve an alternating form. Its eigenvalues come in conjugate pairs for the same reason the zeros do, and the density of a single angle $\theta \in [0, \pi]$ is
+$$\rho_g(\theta) = \frac{1}{2\pi g}\left(2g + 1 - \frac{\sin\big((2g+1)\theta\big)}{\sin\theta}\right).$$
+That is the outline drawn around the circle. For $g = 1$ it is $\frac{2}{\pi}\sin^2\theta$, the <strong>Sato–Tate law</strong>, here in its "vertical" form (one prime, many curves), which Birch proved in 1968. The "horizontal" form, one elliptic curve over $\mathbb{Q}$ and many primes, was proved in 2008–2011 by Clozel, Harris, Shepherd-Barron and Taylor, with Barnet-Lamb and Geraghty.</p>
+<p>For larger genus the density dips at $\theta = 0$ and $\theta = \pi$: zeros avoid the real axis because each one repels its own conjugate. This repulsion is a fingerprint of the symmetry type, and the same symplectic statistics are conjectured for low-lying zeros of quadratic Dirichlet L-functions over $\mathbb{Q}$.</p>
+
+<h3>How the applet computes $L_C(T)$</h3>
+<p>Write $S_r = \sum_{x \in \mathbb{F}_{p^r}} \chi_r(f(x))$, where $\chi_r$ is the quadratic character of $\mathbb{F}_{p^r}$. Since $f$ has odd degree there is one point at infinity, so $\#C(\mathbb{F}_{p^r}) = p^r + 1 + S_r$ and the power sums are $\sum_j \alpha_j^r = -S_r$. Newton's identities turn $S_1, \dots, S_g$ into the first $g$ coefficients of $L_C(T)$, and the functional equation $T^{2g} p^g L_C(1/pT) = L_C(T)$ gives the rest. The quadratic character of $\mathbb{F}_{p^r}$ is evaluated as the Legendre symbol of the norm, so every count is exact.</p>
+  <details class="proof">
+    <summary>Full proof: the point count is a character sum</summary>
+    <div class="proof-body">
+<p><strong>Lemma.</strong> <em>For $q$ odd and $f \in \mathbb{F}_q[x]$, the number of solutions of $y^2 = f(x)$ with $x, y \in \mathbb{F}_q$ is $q + \sum_{x \in \mathbb{F}_q} \chi(f(x))$, where $\chi$ is the quadratic character of $\mathbb{F}_q$ (with $\chi(0) = 0$).</em></p>
+<p><em>Proof.</em> For a fixed $a \in \mathbb{F}_q$, the equation $y^2 = a$ has $1 + \chi(a)$ solutions: two if $a$ is a nonzero square, none if $a$ is a non-square, and one if $a = 0$. Summing over $a = f(x)$ for each $x \in \mathbb{F}_q$ gives $\sum_x (1 + \chi(f(x))) = q + \sum_x \chi(f(x))$. $\square$</p>
+<p><strong>Lemma.</strong> <em>For $a \in \mathbb{F}_{p^r}$, $\chi_r(a) = \big(\tfrac{N(a)}{p}\big)$, where $N$ is the norm to $\mathbb{F}_p$.</em></p>
+<p><em>Proof.</em> Both sides are multiplicative characters of $\mathbb{F}_{p^r}^\times$ of order dividing $2$. The norm $N(a) = a^{(p^r-1)/(p-1)}$ is surjective onto $\mathbb{F}_p^\times$, so $a \mapsto \big(\tfrac{N(a)}{p}\big)$ is nontrivial. A cyclic group has exactly one character of order $2$, so the two agree. $\square$</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>N. M. Katz and P. Sarnak, <em>Random Matrices, Frobenius Eigenvalues, and Monodromy</em>, AMS Colloquium Publications 45, 1999.</li>
+  <li>N. M. Katz and P. Sarnak, <em>Zeroes of zeta functions and symmetry</em>, Bulletin of the AMS 36 (1999).</li>
+  <li>M. Rosen, <em>Number Theory in Function Fields</em>, Springer GTM 210, 2002, Chapter 5.</li>
+  <li>B. J. Birch, <em>How the number of points of an elliptic curve over a fixed prime field varies</em>, Journal of the London Mathematical Society 43 (1968).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zagier's Windmills · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Zagier's Windmills · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Elementary number theory</p>
+    <h1>Zagier's Windmills</h1>
+    <p class="lead">Fermat's Christmas theorem, proved by redrawing a picture.</p>
+    <div class="byline"><span class="tag">number theory</span><span class="tag">combinatorics</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>On 25 December 1640 Fermat wrote to Mersenne that every prime $p \equiv 1 \pmod 4$ is a sum of two squares: $5 = 1^2 + 2^2$, $13 = 2^2 + 3^2$, $41 = 4^2 + 5^2$. In 1990 Don Zagier published a proof that is one sentence long. Alexander Spivak later noticed that the sentence is really about pictures of windmills.</p>
+<p>Consider the finite set
+$$S = \{(x, y, z) \in \mathbb{N}^3 : x^2 + 4yz = p\}.$$
+Draw $(x, y, z)$ as an $x \times x$ square with four $y \times z$ rectangles (the sails) attached in a pinwheel. The picture has exactly $x^2 + 4yz = p$ unit cells. In the applet, pick a prime, apply Zagier's map $\zeta$ and the swap $\tau$, and press <strong>Walk to the answer</strong> to watch the proof produce the two squares.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/windmills.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame tall" src="app/windmills.html" title="Zagier's Windmills: interactive windmill diagrams for the triples x² + 4yz = p" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>The proof</h2>
+<p><strong>Zagier's involution.</strong> Define $\zeta : S \to S$ by
+$$\zeta(x, y, z) = \begin{cases} (x + 2z,\ z,\ y - x - z) & \text{if } x < y - z, \\ (2y - x,\ y,\ x - y + z) & \text{if } y - z < x < 2y, \\ (x - 2y,\ x - y + z,\ y) & \text{if } x > 2y. \end{cases} \tag{2.1}$$
+The boundary cases cannot occur: $x = y - z$ would give $p = (y + z)^2$, and $x = 2y$ would make $p$ even. Substituting shows that each output lies in $S$, that the first and third cases are exchanged, and that the middle case is sent to itself; in every case $\zeta(\zeta(w)) = w$. In the picture, $\zeta$ keeps the outline of the windmill and redraws its inside with a different central square (mirrored in the middle case).</p>
+<p><strong>One fixed point.</strong> A fixed point of $\zeta$ must lie in the middle case, since the other two change $x$. There $2y - x = x$ forces $x = y$, so $p = x(x + 4z)$, and since $p$ is prime, $x = 1$. The only fixed point is $(1, 1, k)$ with $p = 4k + 1$: the plus-sign windmill.</p>
+<p><strong>Conclusion.</strong> So $|S|$ is odd. The swap $g(x, y, z) = (x, z, y)$ is another involution of $S$, so it has a fixed point $(x, y, y)$, and
+$$p = x^2 + 4y^2 = x^2 + (2y)^2.$$
+Geometrically, the four $y \times y$ sails fit together into a single $2y \times 2y$ square. $\blacksquare$</p>
+</div>
+  <details class="proof">
+    <summary>Full proof: the parity lemmas</summary>
+    <div class="proof-body">
+<p><strong>Lemma 2.3.</strong> <em>Let $f : S \to S$ be an involution which fixes only one point. Then $|S|$ is odd.</em></p>
+<p><em>Proof.</em> For all points $x \neq q$, $f(x) \neq x$, and $f(f(x)) = x$. Then we can express $f$ as a permutation consisting of $k$ disjoint 2-cycles and one 1-cycle. As the $k$ transpositions are disjoint, no element appears in two transpositions, so there are $2k$ elements which are not fixed by $f$. As $f$ fixes 1 element, $f$ acts on a set of order $2k + 1$ for some natural number $k$; equivalently, $|S|$ is odd. $\square$</p>
+<p>As (2.1) has exactly one fixed point, $|S| = 2k + 1$ is odd. Now let $g : (x, y, z) \mapsto (x, z, y)$ be an involution on $S$.</p>
+<p><strong>Lemma 2.4.</strong> <em>Let $f : S \to S$ be a function, and let $|S|$ be odd. If $f$ has no fixed points, then $f$ isn't an involution.</em></p>
+<p><em>Proof.</em> If $f$ is an involution, then $f$ can be written as the product of disjoint 2-cycles, yet each 2-cycle acts on exactly 2 elements of $S$ and fixes all the others, so any composition of $n$ disjoint transpositions acts on $2n$ elements of $S$. So if $f$ acts on $2k + 1$ elements of $S$, then it cannot be expressed as the product of disjoint transpositions, and therefore $f$ isn't an involution. $\square$</p>
+<p>By Lemma 2.4, $g$ has a fixed point $(x, y, y)$, which gives $p = x^2 + (2y)^2$.</p>
+    </div>
+  </details>
+  <div class="prose">
+<h3>From existence to an algorithm</h3>
+<p>As written, the proof only shows that a fixed point of $g$ exists. Alternating the two involutions finds one: start at $(1, 1, k)$ and apply $g$, $\zeta$, $g$, $\zeta, \dots$. Each map undoes itself, so the walk never revisits a triple, and it can only stop at a fixed point. The only fixed point of $\zeta$ is the starting point, so the walk ends at some $(x, y, y)$. For $p = 41$ it takes 10 steps and ends at $(5, 2, 2)$, giving $41 = 5^2 + 4^2$.</p>
+<div class="callout"><span class="eyebrow">Why p ≡ 3 (mod 4) has no windmills</span>
+<p>Since $p$ is odd, $x$ is odd, so $x^2 + 4yz \equiv 1 \pmod 4$. For $p \equiv 3 \pmod 4$ the set $S$ is empty, consistent with the fact that such primes are never sums of two squares.</p></div>
+
+<h2>Further reading</h2>
+<ul>
+  <li>D. Zagier, “A one-sentence proof that every prime $p \equiv 1 \pmod 4$ is a sum of two squares”, <em>Amer. Math. Monthly</em> 97 (1990), 144.</li>
+  <li>M. Aigner and G. M. Ziegler, <em>Proofs from THE BOOK</em>, Springer, chapter “Representing numbers as sums of two squares”.</li>
+</ul>
+</div>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

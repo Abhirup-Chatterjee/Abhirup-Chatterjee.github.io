@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prime races and arithmetic random walks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../prime-races.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Prime races and arithmetic random walks</h1><p class="sub">Chebyshev's bias, the Mertens function and the Liouville walk.</p></div>
+<div class="row"><span class="lab">walk</span><button type="button" data-m="race4">primes 3 vs 1 mod 4</button><button type="button" data-m="race3">primes 2 vs 1 mod 3</button><button type="button" data-m="mertens">Mertens M(x)</button><button type="button" data-m="liouville">Liouville L(x)</button><button type="button" data-m="chowla">Chowla Σλ(n)λ(n+1)</button></div>
+  <div class="row"><span class="lab">up to</span><button type="button" data-x="10000">10⁴</button><button type="button" data-x="100000">10⁵</button><button type="button" data-x="1000000">10⁶</button><button type="button" data-x="10000000">10⁷</button>
+    <span class="lab" style="margin-left:.6rem">x-axis</span><button type="button" data-s="lin">linear</button><button type="button" data-s="log">log</button></div>
+  <div class="stage" style="--ar:16/10"><canvas id="rc" aria-label="Running totals of arithmetic sequences: prime races, the Mertens function and Liouville sums"></canvas></div>
+  <div class="readout" id="rr">…</div>
+  <div class="legend" id="rl"></div>
+</div>
+<script>
+(function(){
+"use strict";
+var cv=document.getElementById("rc"),out=document.getElementById("rr"),leg=document.getElementById("rl");
+var mode="race4",X=1000000,scale="lin",geom,cols=null,sieved=0,mu=null,lam=null,comp=null,hoverC=-1,busy=false;
+function sieve(n){ // linear sieve for mu and lambda (Liouville) up to n
+  if(sieved>=n)return;mu=new Int8Array(n+2);lam=new Int8Array(n+2);comp=new Uint8Array(n+2);var primes=new Int32Array(Math.ceil(1.3*n/Math.log(n))+100),np=0;
+  mu[1]=1;lam[1]=1;
+  for(var i=2;i<=n+1;i++){if(!comp[i]){primes[np++]=i;mu[i]=-1;lam[i]=-1;}
+    for(var j=0;j<np;j++){var p=primes[j],ip=i*p;if(ip>n+1)break;comp[ip]=1;lam[ip]=-lam[i];if(i%p===0){mu[ip]=0;break;}mu[ip]=-mu[i];}}
+  sieved=n;}
+function build(){
+  sieve(X);var W=geom.w,L=46,R=W-12,nc=Math.max(50,Math.round(R-L));
+  var mn=new Float64Array(nc).fill(Infinity),mx=new Float64Array(nc).fill(-Infinity),last=new Float64Array(nc),neg=new Float64Array(nc),cnt=new Float64Array(nc);
+  var s=0,lead=0,total=0,firstFlip=0,lx=Math.log(X);
+  function col(n){return scale==="log"?Math.min(nc-1,Math.floor(Math.log(n)/lx*nc)):Math.min(nc-1,Math.floor((n-1)/X*nc));}
+  for(var n=2;n<=X;n++){
+    var v;
+    if(mode==="race4"){if(!comp[n]&&n>2){s+=(n%4===3)?1:-1;}}
+    else if(mode==="race3"){if(!comp[n]&&n>3){s+=(n%3===2)?1:-1;}}
+    else if(mode==="mertens")s+=mu[n];
+    else if(mode==="liouville")s+=lam[n];
+    else s+=lam[n]*lam[n+1];
+    v=mode==="mertens"?s+1:(mode==="liouville"?s+1:(mode==="chowla"?s+lam[1]*lam[2]:s));
+    var c=col(n);if(v<mn[c])mn[c]=v;if(v>mx[c])mx[c]=v;last[c]=v;cnt[c]++;
+    if(mode.slice(0,4)==="race"){total++;if(v<0){lead++;neg[c]++;if(!firstFlip)firstFlip=n;}}
+  }
+  for(var c2=1;c2<nc;c2++)if(!isFinite(mn[c2])){mn[c2]=mx[c2]=last[c2]=last[c2-1];}
+  cols={mn:mn,mx:mx,last:last,neg:neg,cnt:cnt,nc:nc,L:L,R:R,lead:lead,total:total,firstFlip:firstFlip,final:mode==="mertens"||mode==="liouville"?s+1:(mode==="chowla"?s+lam[1]*lam[2]:s)};
+}
+function xOf(c){return cols.L+c;}
+function nAt(c){return scale==="log"?Math.round(Math.exp((c+1)/cols.nc*Math.log(X))):Math.round((c+1)/cols.nc*X);}
+function draw(){
+  if(!geom)geom=Lab.setup(cv);if(!cols)build();var c=geom.ctx,W=geom.w,H=geom.h;c.clearRect(0,0,W,H);
+  var ink=Lab.css("--ink"),soft=Lab.css("--ink-soft"),mut=Lab.css("--muted"),rule=Lab.css("--rule"),acc=Lab.css("--accent"),plus=Lab.css("--plus");
+  var T=16,B=H-28,isRace=mode.slice(0,4)==="race",env=!isRace;
+  var lo=0,hi=0;for(var i=0;i<cols.nc;i++){lo=Math.min(lo,cols.mn[i]);hi=Math.max(hi,cols.mx[i]);}
+  if(env){var sq=Math.sqrt(X);lo=Math.min(lo,-sq*0.75);hi=Math.max(hi,sq*0.75);}
+  var pad=(hi-lo)*0.08||1;lo-=pad;hi+=pad;
+  function Y(v){return B-(B-T)*(v-lo)/(hi-lo);}
+  // axes
+  c.strokeStyle=rule;c.lineWidth=1;c.beginPath();c.moveTo(cols.L,Y(0)+.5);c.lineTo(cols.R,Y(0)+.5);c.moveTo(cols.L+.5,T);c.lineTo(cols.L+.5,B);c.stroke();
+  c.font=Lab.font(10);c.fillStyle=mut;c.textAlign="right";
+  var step=Math.pow(10,Math.floor(Math.log10((hi-lo)/3)));[-3,-2,-1,1,2,3].forEach(function(k){var v=k*step*Math.max(1,Math.round((hi-lo)/6/step));if(v>lo&&v<hi){c.fillText(String(v),cols.L-5,Y(v)+3);c.globalAlpha=.4;c.beginPath();c.moveTo(cols.L,Y(v)+.5);c.lineTo(cols.R,Y(v)+.5);c.stroke();c.globalAlpha=1;}});
+  c.fillText("0",cols.L-5,Y(0)+3);
+  c.textAlign="center";
+  var ticks=scale==="log"?[10,100,1e3,1e4,1e5,1e6,1e7].filter(function(t){return t<=X;}):[0.25,0.5,0.75,1].map(function(f){return f*X;});
+  ticks.forEach(function(t){var cc=scale==="log"?Math.log(t)/Math.log(X)*cols.nc:t/X*cols.nc;c.fillText(t>=1e3?(t/1e3>=1e3?t/1e6+"M":t/1e3+"k"):String(t),cols.L+cc,B+14);});
+  // envelope ±sqrt(x)
+  if(env){c.strokeStyle=soft;c.setLineDash([4,4]);c.globalAlpha=.7;[1,-1].forEach(function(sg){c.beginPath();for(var i=0;i<cols.nc;i++){var y=Y(sg*Math.sqrt(nAt(i)));if(i)c.lineTo(xOf(i),y);else c.moveTo(xOf(i),y);}c.stroke();});c.setLineDash([]);c.globalAlpha=1;}
+  // the walk: min-max bars per column
+  for(i=0;i<cols.nc;i++){var neg=isRace&&cols.mn[i]<0;c.strokeStyle=neg?acc:plus;c.lineWidth=1.2;c.beginPath();c.moveTo(xOf(i)+.5,Y(cols.mx[i])-.6);c.lineTo(xOf(i)+.5,Y(cols.mn[i])+.6);c.stroke();}
+  if(isRace&&cols.firstFlip){var fc=scale==="log"?Math.log(cols.firstFlip)/Math.log(X)*cols.nc:cols.firstFlip/X*cols.nc;c.fillStyle=acc;c.textAlign="left";c.fillText("first lead change: x = "+cols.firstFlip.toLocaleString("en"),Math.min(cols.L+fc+6,W-200),Y(lo+pad*0.3)-4);}
+  if(hoverC>=0){c.strokeStyle=ink;c.globalAlpha=.4;c.beginPath();c.moveTo(xOf(hoverC)+.5,T);c.lineTo(xOf(hoverC)+.5,B);c.stroke();c.globalAlpha=1;}
+}
+var NAMES={race4:"π(x; 4, 3) − π(x; 4, 1)",race3:"π(x; 3, 2) − π(x; 3, 1)",mertens:"M(x) = Σ μ(n)",liouville:"L(x) = Σ λ(n)",chowla:"Σ λ(n)λ(n+1)"};
+function report(){
+  if(hoverC>=0){var n=nAt(hoverC);out.textContent="x ≈ "+n.toLocaleString("en")+"   ·   "+NAMES[mode]+" = "+cols.last[hoverC]+(mode.slice(0,4)==="race"?"":"   ·   √x ≈ "+Math.sqrt(n).toFixed(0));return;}
+  var f=cols.final;
+  if(mode==="race4"||mode==="race3"){var m=mode==="race4"?"3 mod 4":"2 mod 3",o=mode==="race4"?"1 mod 4":"1 mod 3";
+    out.textContent=NAMES[mode]+" at x = "+X.toLocaleString("en")+": "+f+"\nthe "+o+" team leads for "+cols.lead+" of "+cols.total.toLocaleString("en")+" values of x ("+(100*cols.lead/cols.total).toFixed(3)+"%)"+(cols.firstFlip?"; it first leads at "+cols.firstFlip.toLocaleString("en"):"; it never leads up to here")+"\nRubinstein–Sarnak (assuming GRH): the "+m+" team leads for "+(mode==="race4"?"99.59%":"99.90%")+" of x in logarithmic density";}
+  else if(mode==="mertens")out.textContent="M("+X.toLocaleString("en")+") = "+f+"   ·   |M(x)|/√x = "+(Math.abs(f)/Math.sqrt(X)).toFixed(3)+"\nthe Mertens conjecture |M(x)| < √x is false (Odlyzko–te Riele, 1985), but no counterexample is known explicitly\nthe Riemann hypothesis is equivalent to M(x) = O(x^(1/2+ε)) for every ε > 0";
+  else if(mode==="liouville")out.textContent="L("+X.toLocaleString("en")+") = "+f+"   ·   λ(n) = (−1)^(number of prime factors of n, with multiplicity)\nPólya asked whether L(x) ≤ 0 for all x ≥ 2: false, first at x = 906,150,257 (Tanaka, 1980)\nthe prime number theorem is equivalent to L(x) = o(x)";
+  else out.textContent="Σ_{n ≤ x} λ(n)λ(n+1) at x = "+X.toLocaleString("en")+": "+f+"   ·   divided by x: "+(f/X).toFixed(4)+"\nChowla's conjecture: this is o(x), as if λ(n) and λ(n+1) were independent coin flips\nproved on average by Matomäki–Radziwiłł–Tao; the logarithmic version by Tao (2016)";
+}
+function setLegend(){var r=mode.slice(0,4)==="race";leg.innerHTML=r?'<span><i style="background:var(--plus)"></i>first team ahead</span><span><i style="background:var(--accent)"></i>second team ahead</span>':'<span><i style="background:var(--plus)"></i>the running sum</span><span><i style="background:var(--ink-soft)"></i>dashed: ±√x</span>';}
+function refresh(){if(busy)return;busy=true;out.textContent="computing…";setTimeout(function(){cols=null;geom=Lab.setup(cv);build();busy=false;hoverC=-1;draw();report();},20);}
+function sync(){Lab.pressed("[data-m]",function(b){return b.dataset.m===mode;});Lab.pressed("[data-x]",function(b){return +b.dataset.x===X;});Lab.pressed("[data-s]",function(b){return b.dataset.s===scale;});setLegend();}
+document.querySelectorAll("[data-m]").forEach(function(b){b.addEventListener("click",function(){mode=b.dataset.m;sync();refresh();});});
+document.querySelectorAll("[data-x]").forEach(function(b){b.addEventListener("click",function(){X=+b.dataset.x;sync();refresh();});});
+document.querySelectorAll("[data-s]").forEach(function(b){b.addEventListener("click",function(){scale=b.dataset.s;sync();refresh();});});
+cv.addEventListener("pointermove",function(ev){if(!cols)return;var p=Lab.local(cv,ev),c=Math.round(p[0]-cols.L);var h=(c>=0&&c<cols.nc)?c:-1;if(h!==hoverC){hoverC=h;draw();report();}});
+cv.addEventListener("pointerleave",function(){hoverC=-1;draw();report();});
+Lab.onTheme(draw);var rt;window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(refresh,150);});
+sync();refresh();
+})();
+</script>
+</body>
+</html>

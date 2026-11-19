@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Haga's Theorem and Möbius Maps</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Haga's Theorem and Möbius Maps">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <h1>Folding thirds: Haga's theorem is a Möbius transformation</h1>
+    <div class="byline"><span class="date">October 2026</span><span class="tag">origami</span><span class="tag">geometry</span><span class="date">≈ 5 min read</span></div>
+  </header>
+  <div class="prose">
+    <p>Dividing a square sheet of paper in half is easy: fold one edge onto the other. Dividing it into exact thirds, with no ruler and no guessing, is a nicer puzzle. The Japanese biologist and origami researcher Kazuo Haga found a one-fold answer.</p>
+    <blockquote>Fold the bottom-left corner of a square up to the midpoint of the top edge. The bottom edge of the folded flap now crosses the right edge exactly one third of the way up.</blockquote>
+    <p>Below, the corner can go anywhere along the top edge. Drag the slider and watch where the flap meets the right side.</p>
+  </div>
+
+  <div class="widget" style="margin-block:1.6rem">
+    <p class="date" style="margin:0">Dashed: the crease. Shaded: the folded flap. Blue: where the flap edge meets the right side, at height h.</p>
+    <svg id="haga-svg" class="fold-svg" viewBox="0 0 400 380" role="img" aria-label="A unit square with its bottom-left corner folded to the point (t, 1) on the top edge. The flap's edge meets the right side at height h."></svg>
+    <div class="controls">
+      <label for="haga-t">corner goes to t =
+        <input id="haga-t" type="range" min="50" max="950" step="1" value="500"></label>
+      <span>t = <b id="haga-tval">0.500</b></span>
+      <span style="color:var(--plus)">h = <b id="haga-hval">0.333</b></span>
+    </div>
+    <div class="chips">
+      <button class="chip plain" type="button" data-haga="500">t = 1/2</button>
+      <button class="chip plain" type="button" data-haga="333">t = 1/3</button>
+      <button class="chip plain" type="button" data-haga="250">t = 1/4</button>
+      <button class="chip plain" type="button" data-haga="200">t = 1/5</button>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h2>The computation</h2>
+    <p>Put the square at $[0,1]^2$ and send the corner $(0,0)$ to $(t,1)$. The crease is the perpendicular bisector of the segment joining these points:
+    $$t x + y = \frac{1 + t^2}{2}.$$
+    Reflecting across it sends the bottom edge, which leaves $(0,0)$ in direction $(1,0)$, to a line that leaves $(t,1)$ in direction
+    $$\frac{1}{1+t^2}\big(1 - t^2,\; -2t\big).$$
+    This line reaches the right edge $x = 1$ after travelling a distance $\frac{1+t^2}{1+t}$, at height
+    $$h(t) = 1 - \frac{2t}{1+t} = \frac{1-t}{1+t}.$$
+    At $t = \tfrac12$ this gives $h = \tfrac13$, which is Haga's theorem. The triangle cut off in the top-right corner has legs $\tfrac12$ and $\tfrac23$ and hypotenuse $\tfrac56$: a $3$–$4$–$5$ triangle hiding in a single fold.</p>
+
+    <h2>The pun is real</h2>
+    <p>The map $h(t) = \frac{1-t}{1+t}$ is a Möbius transformation, and it is an involution:
+    $$h(h(t)) = \frac{1 - \frac{1-t}{1+t}}{1 + \frac{1-t}{1+t}} = \frac{2t}{2} = t.$$
+    So the fold runs both ways. Sending the corner to $t = \tfrac13$ marks the right edge at $\tfrac12$, and in general $t = \tfrac1n$ marks $h = \frac{n-1}{n+1}$:</p>
+    <div class="table-wrap"><table class="nice">
+      <thead><tr><th>corner at $t$</th><th>$1/2$</th><th>$1/3$</th><th>$1/4$</th><th>$1/5$</th><th>$1/n$</th></tr></thead>
+      <tbody><tr><td>mark at $h$</td><td>$1/3$</td><td>$1/2$</td><td>$3/5$</td><td>$2/3$</td><td>$\frac{n-1}{n+1}$</td></tr></tbody>
+    </table></div>
+    <p>Since halving is free and $h$ sends rationals to rationals, repeated Haga folds and halvings produce many fractions from nothing but a square.</p>
+
+    <h2>Something to try</h2>
+    <p>Starting from the endpoints $0$ and $1$, which fractions can you reach using only the moves $x \mapsto \tfrac{x}{2}$, $x \mapsto \tfrac{x+1}{2}$ (fold to a known mark) and $x \mapsto \frac{1-x}{1+x}$? Can you reach $\tfrac17$?</p>
+    <details class="proof"><summary>Answer: yes, and in fact every fraction in [0, 1]</summary><div class="proof-body">
+<p>$\tfrac17 = h\big(\tfrac34\big)$, and $\tfrac34 = \tfrac{1/2 + 1}{2}$ with $\tfrac12 = \tfrac{0 + 1}{2}$, so three moves suffice. In general, run the moves backwards from a reduced fraction $a/b$. If $a$ and $b$ are both odd, then $a/b = h(x)$ with $x = \frac{(b-a)/2}{(b+a)/2}$, whose denominator $(b+a)/2$ is smaller than $b$. If $a$ is even, then $a/b$ is $\tfrac{x}{2}$ with $x = \tfrac{2a}{b}$ or $\tfrac{x+1}{2}$ with $x = \tfrac{2a - b}{b}$, whichever lies in $[0, 1]$; repeating this at most $\log_2 b$ times produces an odd numerator. If $b$ is even, a halving move undone gives denominator $b/2$. Each round strictly lowers the denominator, so by induction every fraction in $[0, 1]$ is reachable from $0$ and $1$. $\square$</p>
+    </div></details>
+
+    <h2>Further reading</h2>
+    <ul>
+      <li>K. Haga, <em>Origamics: Mathematical Explorations Through Paper Folding</em>, World Scientific, 2008.</li>
+      <li>T. C. Hull, <em>Origametry: Mathematical Methods in Paper Folding</em>, Cambridge University Press, 2020.</li>
+    </ul>
+  </div>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

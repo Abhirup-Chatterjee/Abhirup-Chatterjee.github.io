@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Talk notes: L-functions over function fields · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Talk notes: L-functions over function fields · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <h1>Talk notes: L-functions over function fields</h1>
+    <div class="byline"><span class="date">IMSc, July 2025</span><span class="tag">talk notes</span><span class="tag">function fields</span><span class="date">≈ 8 min read</span></div>
+  </header>
+  <div class="prose">
+<p>These are notes from a talk I gave at IMSc in July 2025. The talk followed the framework of Rosen's <em>Number Theory in Function Fields</em> and a paper of J. L. Thunder, and the aim was the same as here: to see why Dirichlet $L$-functions over $\mathbb{F}_q[t]$ are polynomials, what the Riemann hypothesis says about them, and how one computes their average values over a family.</p>
+
+<h2>Characters and L-functions</h2>
+<p>Fix a monic modulus $m \in \mathbb{F}_q[t]$ of degree $M \ge 1$. A Dirichlet character modulo $m$ is a homomorphism $\chi : (\mathbb{F}_q[t]/m)^\times \to \mathbb{C}^\times$, extended by $\chi(f) = 0$ when $\gcd(f, m) \ne 1$. Its $L$-function is
+$$L(s, \chi) = \sum_{f \text{ monic}} \frac{\chi(f)}{|f|^s} = \prod_{P} \left(1 - \frac{\chi(P)}{|P|^s}\right)^{-1}, \qquad |f| = q^{\deg f}.$$
+Writing $u = q^{-s}$ and grouping by degree, $L(u, \chi) = \sum_{n \ge 0} c_n(\chi)\,u^n$ with $c_n(\chi) = \sum_{\deg f = n,\ f \text{ monic}} \chi(f)$.</p>
+  <details class="proof">
+    <summary>Full proof: for nontrivial χ, L(u, χ) is a polynomial of degree less than deg m</summary>
+    <div class="proof-body">
+<p><em>Proof.</em> Let $n \ge M$. Every monic $f$ of degree $n$ can be written uniquely as $f = g\,m + r$ with $g$ monic of degree $n - M$ and $\deg r < M$; as $r$ runs over all $q^M$ polynomials of degree less than $M$, $f$ runs over a complete set of residues modulo $m$, for each fixed $g$. So
+$$c_n(\chi) = \sum_{g} \sum_{r \bmod m} \chi(r) = q^{\,n-M}\sum_{r \bmod m}\chi(r) = 0,$$
+because the sum of a nontrivial character over the group $(\mathbb{F}_q[t]/m)^\times$ vanishes (multiply by $\chi(a) \ne 1$ for some unit $a$; the sum is unchanged, so it is $0$), and non-units contribute $0$. Hence $c_n(\chi) = 0$ for $n \ge M$. $\square$</p>
+    </div>
+  </details>
+<p>So $L(u, \chi)$ has at most $M - 1$ zeros, and we can write $L(u, \chi) = \prod_{j}(1 - \alpha_j u)$. For a primitive character Weil's theorem gives $|\alpha_j| = \sqrt q$, apart from a trivial zero at $u = 1$ when $\chi$ is "even" (trivial on the constants $\mathbb{F}_q^\times$). This is the generalised Riemann hypothesis, proved. Its first consequence is square-root cancellation in character sums over primes, and hence the prime polynomial theorem in arithmetic progressions with error $O(q^{n/2})$; see the post on the <a href="rh-curves.html">Riemann hypothesis for curves</a>.</p>
+
+<h2>Mean values in families</h2>
+<p>With the Riemann hypothesis available, the interesting questions are statistical. Take the family of quadratic characters $\chi_D(f) = \big(\tfrac{D}{f}\big)$ for monic squarefree $D$ of degree $2g + 1$. Then $L(u, \chi_D)$ is the numerator $L_C(u)$ of the zeta function of the hyperelliptic curve $C_D : y^2 = D(x)$, of genus $g$, and its central value $L(\tfrac12, \chi_D)$ is $L_C(q^{-1/2})$. The first moment over the family was computed by Andrade and Keating (2012):
+$$\sum_{\substack{D \text{ monic squarefree} \\ \deg D = 2g+1}} L\big(\tfrac12, \chi_D\big) = |D|\,\mathcal{P}(g) + O\big(|D|^{3/4 + \varepsilon}\big), \qquad |D| = q^{2g+1},$$
+with $\mathcal{P}$ an explicit linear polynomial, the exact analogue of Jutila's theorem over $\mathbb{Q}$. Florea later improved the error term and computed the second, third and fourth moments, where the function-field setting reveals secondary terms that are invisible over the integers. All these results start from an approximate functional equation, which over $\mathbb{F}_q[t]$ is an exact identity because $L$ is a polynomial, and a Poisson summation formula over $\mathbb{F}_q[t]$.</p>
+
+<h2>What the talk tried to convey</h2>
+<p>Three things. First, finiteness: $L$-functions are polynomials, so analytic difficulties (convergence, contour shifting) become algebra. Second, the Riemann hypothesis is a theorem, but it does not make moment problems trivial: the hard part is uniformity in the degree. Third, the random matrix heuristics of Katz and Sarnak predict the leading constants, and in the large-$q$ limit they can be proved; the <a href="../labs/zeros-circle.html">zeros on the unit circle</a> lab shows the symplectic statistics of this family.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>M. Rosen, <em>Number Theory in Function Fields</em>, Springer GTM 210, 2002, Chapters 4 and 9.</li>
+  <li>J. C. Andrade and J. P. Keating, <em>The mean value of $L(\tfrac12, \chi)$ in the hyperelliptic ensemble</em>, Journal of Number Theory 132 (2012).</li>
+  <li>A. Florea, <em>The fourth moment of quadratic Dirichlet L-functions over function fields</em>, Geometric and Functional Analysis 27 (2017).</li>
+  <li>N. M. Katz and P. Sarnak, <em>Random Matrices, Frobenius Eigenvalues, and Monodromy</em>, AMS Colloquium Publications 45, 1999.</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

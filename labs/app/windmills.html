@@ -1,0 +1,389 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);addEventListener("message",function(e){var d=e.data;if(d&&typeof d.acTheme==="string"&&v.test(d.acTheme))document.documentElement.setAttribute("data-theme",d.acTheme)});addEventListener("storage",function(e){if(e.key==="ac-theme"&&e.newValue)document.documentElement.setAttribute("data-theme",e.newValue)});addEventListener("DOMContentLoaded",function(){if(window.top===window.self){var b=document.querySelector(".ac-back");if(b)b.hidden=false}})})();</script><style>.ac-back{display:inline-block;margin-bottom:10px;font:500 12px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.04em;color:inherit;opacity:.75;text-decoration:none}.ac-back:hover{opacity:1;text-decoration:underline}</style>
+<title>Zagier's Windmills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: a working bench — controls on top, the big windmill with its ledger beside it, then the chain, the whole set S, and the written proof. */
+:root{
+  --bg:#EDF1EC; --surface:#F8FAF6; --ink:#15221C; --muted:#56685E; --line:#C9D4CC;
+  --sq:#1E5C46; --arm:#B5394A; --arm2:#CF5F70; --gold:#B7821A; --blue:#2C5C8C; --grid:rgba(255,255,255,.35);
+  --display:"Instrument Serif",Georgia,serif; --body:"IBM Plex Sans",system-ui,sans-serif;
+  --math:"STIX Two Text","Cambria Math",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1613; --surface:#15201B; --ink:#E3ECE6; --muted:#93A69B; --line:#2A3B33;
+  --sq:#3E9C79; --arm:#DD6476; --arm2:#EE8D9B; --gold:#E2B14A; --blue:#7FAAD8; --grid:rgba(0,0,0,.28); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1613; --surface:#15201B; --ink:#E3ECE6; --muted:#93A69B; --line:#2A3B33;
+  --sq:#3E9C79; --arm:#DD6476; --arm2:#EE8D9B; --gold:#E2B14A; --blue:#7FAAD8; --grid:rgba(0,0,0,.28); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--body);padding-inline:20px;padding-block:28px 64px}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:44px}
+h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:.005em}
+h1{font-size:clamp(2.6rem,7vw,4.4rem);line-height:1}
+h2{font-size:clamp(1.7rem,4vw,2.2rem);line-height:1.1}
+p{margin:0}
+.eyebrow{font:500 .72rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.m{font-family:var(--math);font-style:italic;font-size:1.08em}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header{display:grid;gap:18px}
+.lede{max-width:64ch;font-size:1.06rem;color:var(--ink)}
+.theorem{border-left:3px solid var(--sq);padding:4px 0 4px 16px;max-width:64ch;font-family:var(--math);font-size:1.12rem}
+.theorem b{font-family:var(--body);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--sq);margin-right:6px}
+.sec{display:grid;gap:16px}
+.sec>p,.sec .note{max-width:68ch;color:var(--muted)}
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:500 .9rem var(--mono);padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--sq)}
+.chip[aria-pressed="true"]{background:var(--sq);border-color:var(--sq);color:var(--surface)}
+.chip:focus-visible,.btn:focus-visible,.thumb:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.custom{display:flex;gap:6px;align-items:center;margin-left:4px}
+.custom input{width:92px;font:500 .9rem var(--mono);padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.msg{font-size:.85rem;color:var(--arm);min-height:1.2em}
+/* bench */
+.bench{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.bench{grid-template-columns:1fr}}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px}
+.stage svg{width:100%;height:auto;aspect-ratio:1/1;display:block}
+.stagebar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;font-size:.82rem;color:var(--muted)}
+.legend{display:flex;gap:14px;flex-wrap:wrap}
+.sw{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.ledger{display:grid;gap:16px;min-width:0}
+.triple{font:500 1.9rem/1.1 var(--mono)}
+.eq{font-family:var(--math);font-size:1.15rem}
+.badges{display:flex;gap:6px;flex-wrap:wrap;min-height:26px}
+.badge{font:500 .72rem var(--mono);letter-spacing:.02em;padding:4px 8px;border-radius:6px;border:1px solid}
+.badge.z{color:var(--gold);border-color:var(--gold)}
+.badge.t{color:var(--blue);border-color:var(--blue)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:500 .92rem var(--body);padding:9px 14px;border-radius:9px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--surface)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn .m{font-size:1.1em}
+.cases{display:grid;gap:6px;font-size:.92rem}
+.case{display:grid;grid-template-columns:1fr;gap:2px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);color:var(--muted)}
+.case.on{border-color:var(--gold);color:var(--ink);background:color-mix(in srgb,var(--gold) 9%,transparent)}
+.case .res{font-family:var(--mono);font-size:.82rem}
+.caption{font-size:.9rem;color:var(--muted);min-height:3em}
+/* chain */
+.chainbox{overflow-x:auto;padding-bottom:6px}
+.chain{display:flex;align-items:center;gap:4px;width:max-content}
+.arrow{font-family:var(--math);font-style:italic;color:var(--muted);text-align:center;width:30px;font-size:1.1rem}
+.arrow small{display:block;font:400 .65rem var(--mono);font-style:normal}
+.thumb{display:grid;gap:4px;justify-items:center;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;color:var(--ink)}
+.thumb:hover{border-color:var(--ink)}
+.thumb svg{width:84px;height:84px;display:block}
+.thumb .lab{font:400 .74rem var(--mono)}
+.thumb.zf{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.thumb.tf{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.thumb.sel{outline:2px solid var(--ink);outline-offset:1px}
+.result{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:16px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.result svg{width:200px;max-width:100%;height:auto}
+.result .big{font-family:var(--math);font-size:clamp(1.4rem,4vw,2rem)}
+/* set S */
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.toggle button{font:500 .88rem var(--body);padding:6px 14px;border:0;background:var(--surface);color:var(--ink);cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.groups{display:flex;flex-wrap:wrap;gap:10px}
+.group{display:flex;align-items:center;gap:2px;padding:4px;border-radius:12px;border:1px dashed var(--line)}
+.group.single{border:1px solid currentColor}
+.link{font-family:var(--math);font-style:italic;color:var(--muted);padding:0 2px}
+.count{font-family:var(--math);font-size:1.1rem}
+/* proof */
+.proof{display:grid;gap:14px;max-width:70ch;counter-reset:st}
+.step{display:grid;grid-template-columns:2.2rem 1fr;gap:6px}
+.step::before{counter-increment:st;content:counter(st);font:400 1.6rem/1 var(--display);color:var(--sq)}
+.step p{color:var(--ink)}
+.disp{font-family:var(--math);font-size:1.05rem;padding:8px 0 8px 14px;overflow-x:auto}
+.fine{font-size:.85rem;color:var(--muted);max-width:70ch}
+.more{max-width:70ch;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.more summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;font-weight:600}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"+";font:400 1.3rem/1 var(--mono);color:var(--sq);width:1ch;transition:transform .2s}
+.more[open] summary::before{content:"−"}
+.more summary>span:first-child{flex:1}
+.more .hint{font:400 .78rem var(--mono);color:var(--muted)}
+.more summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:12px}
+.more-body{display:grid;gap:14px;padding:4px 16px 16px;border-top:1px solid var(--line);padding-top:14px}
+.lemma{display:grid;gap:8px;padding-left:12px;border-left:2px solid var(--sq)}
+.pf{font-style:italic;font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<script>try{if(window.frameElement&&window.frameElement.classList.contains("lab-frame"))document.documentElement.classList.add("embedded")}catch(e){}</script>
+<style>.embedded body{padding-block:20px 28px}.embedded header,.embedded #proof-sec{display:none}</style>
+<div class="wrap">
+<a class="ac-back" href="../windmills.html" hidden>← Back to the notes</a>
+<header>
+  <span class="eyebrow">Fermat's Christmas theorem · interactive proof</span>
+  <h1>Zagier's Windmills</h1>
+  <p class="theorem"><b>Theorem</b>Every prime <span class="m">p</span> ≡ 1 (mod 4) is a sum of two squares.</p>
+  <p class="lede">Fermat announced this in a letter to Mersenne dated 25 December 1640. In 1990 Don Zagier gave a proof one sentence long; Alexander Spivak later noticed that the sentence describes pictures of windmills. Pick a prime, play with its windmills, and watch the proof hand you the two squares.</p>
+</header>
+
+<section class="sec" aria-labelledby="h-pick">
+  <span class="eyebrow" id="h-pick">Choose a prime, 1 mod 4</span>
+  <div class="controls" id="primes"></div>
+  <div class="msg" id="msg" role="status"></div>
+</section>
+
+<section class="sec" aria-labelledby="h-wm">
+  <h2 id="h-wm">One windmill, two involutions</h2>
+  <p>A triple <span class="m">(x, y, z)</span> of positive integers with <span class="m">x</span>² + 4<span class="m">yz</span> = <span class="m">p</span> is drawn as an <span class="m">x</span>×<span class="m">x</span> square with four <span class="m">y</span>×<span class="m">z</span> sails attached in a pinwheel. Every cell is one unit, so the picture has exactly <span class="m">p</span> cells. Call the set of all such triples <span class="m">S</span>.</p>
+  <div class="bench">
+    <div class="stage">
+      <svg id="big" viewBox="-10 -10 20 20" role="img" aria-label="Windmill diagram"></svg>
+      <div class="stagebar">
+        <div class="legend"><span><i class="sw" style="background:var(--sq)"></i>square <span class="m">x</span>²</span><span><i class="sw" style="background:var(--arm)"></i>four sails <span class="m">y</span>×<span class="m">z</span></span><span>thick line = outline</span></div>
+        <span id="cellcount" class="num"></span>
+      </div>
+    </div>
+    <div class="ledger">
+      <div>
+        <div class="triple" id="triple">(1, 1, 10)</div>
+        <div class="eq" id="eqn"></div>
+      </div>
+      <div class="badges" id="badges"></div>
+      <div class="btns">
+        <button class="btn primary" id="bz">Apply <span class="m">ζ</span> (Zagier)</button>
+        <button class="btn" id="bt">Apply <span class="m">τ</span> (swap sails)</button>
+        <button class="btn" id="bwalk">Walk to the answer</button>
+      </div>
+      <p class="caption" id="caption"></p>
+      <div class="cases" id="cases"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-chain">
+  <h2 id="h-chain">The proof as a walk</h2>
+  <p>Start at the one windmill that <span class="m">ζ</span> leaves alone, (1, 1, <span class="m">k</span>) with <span class="m">p</span> = 4<span class="m">k</span> + 1. Apply <span class="m">τ</span>, then <span class="m">ζ</span>, then <span class="m">τ</span>, and so on. Each map undoes itself, so the walk can never revisit a windmill, and it can only stop at a fixed point. The only <span class="m">ζ</span>-fixed point is where we started, so the walk ends at a windmill with square sails.</p>
+  <div class="chainbox"><div class="chain" id="chain"></div></div>
+  <div class="result" id="result"></div>
+</section>
+
+<section class="sec" aria-labelledby="h-set">
+  <h2 id="h-set">All of <span class="m">S</span>, sorted into pairs</h2>
+  <p>An involution splits a finite set into 2-element orbits and fixed points, so the parity of |<span class="m">S</span>| equals the parity of the number of fixed points. Toggle between the two involutions and count.</p>
+  <div class="controls">
+    <div class="toggle" role="group" aria-label="Pair by">
+      <button id="pz" aria-pressed="true">pair by <span class="m">ζ</span></button>
+      <button id="pt" aria-pressed="false">pair by <span class="m">τ</span></button>
+    </div>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="groups" id="groups"></div>
+</section>
+
+<section class="sec" id="proof-sec" aria-labelledby="h-proof">
+  <h2 id="h-proof">The proof, written out</h2>
+  <div class="disp">S = { (x, y, z) ∈ ℕ³ : x² + 4yz = p }</div>
+  <div class="proof">
+    <div class="step"><p><b>S is finite and nonempty.</b> Each coordinate is at most <span class="m">p</span>, and (1, 1, <span class="m">k</span>) ∈ <span class="m">S</span> because <span class="m">p</span> = 4<span class="m">k</span> + 1. Note <span class="m">x</span> is always odd.</p></div>
+    <div class="step"><p><b>Zagier's map is an involution of S.</b> Define</p></div>
+    <div class="disp">ζ(x, y, z) =
+      &nbsp;(x + 2z, z, y − x − z) &nbsp;if x &lt; y − z,<br>
+      &emsp;&emsp;&emsp;&emsp;&emsp;(2y − x, y, x − y + z) &nbsp;if y − z &lt; x &lt; 2y,<br>
+      &emsp;&emsp;&emsp;&emsp;&emsp;(x − 2y, x − y + z, y) &nbsp;if x &gt; 2y.</div>
+    <div class="step"><p>The boundary cases cannot occur: <span class="m">x</span> = <span class="m">y</span> − <span class="m">z</span> would give <span class="m">p</span> = (<span class="m">y</span> + <span class="m">z</span>)², and <span class="m">x</span> = 2<span class="m">y</span> would make <span class="m">p</span> even. A direct substitution shows each output again satisfies <span class="m">x</span>² + 4<span class="m">yz</span> = <span class="m">p</span> with positive entries, that case 1 is sent to case 3 and back, and case 2 to itself; in every case ζ(ζ(<span class="m">w</span>)) = <span class="m">w</span>. In pictures: ζ keeps the outline of the windmill and redraws the inside with a different central square (mirrored in case 2). The applet checks this cell by cell for every windmill you load.</p></div>
+    <div class="step"><p><b>ζ has exactly one fixed point.</b> A fixed point must lie in case 2 (cases 1 and 3 change <span class="m">x</span>), and there 2<span class="m">y</span> − <span class="m">x</span> = <span class="m">x</span> forces <span class="m">x</span> = <span class="m">y</span>. Then <span class="m">p</span> = <span class="m">x</span>(<span class="m">x</span> + 4<span class="m">z</span>), and primality gives <span class="m">x</span> = 1, so the fixed point is (1, 1, <span class="m">k</span>): the plus-sign windmill.</p></div>
+    <div class="step"><p><b>So |S| is odd.</b> The non-fixed points of ζ come in pairs, and there is one fixed point.</p></div>
+    <div class="step"><p><b>Hence τ has a fixed point.</b> The swap τ(<span class="m">x</span>, <span class="m">y</span>, <span class="m">z</span>) = (<span class="m">x</span>, <span class="m">z</span>, <span class="m">y</span>) is also an involution of <span class="m">S</span>; it flips each sail across the diagonal of the square through the sail's corner. An involution of a set of odd size has an odd number of fixed points, in particular at least one: some (<span class="m">x</span>, <span class="m">y</span>, <span class="m">y</span>) ∈ <span class="m">S</span>.</p></div>
+    <div class="step"><p><b>Conclusion.</b> Then <span class="m">p</span> = <span class="m">x</span>² + 4<span class="m">y</span>² = <span class="m">x</span>² + (2<span class="m">y</span>)². Geometrically, the four <span class="m">y</span>×<span class="m">y</span> sails slide together into one 2<span class="m">y</span>×2<span class="m">y</span> square. ∎</p></div>
+  </div>
+  <details class="more" id="full-proof">
+    <summary><span>Full proof: the parity lemmas</span><span class="hint">Lemmas 2.3 and 2.4</span></summary>
+    <div class="more-body">
+      <div class="lemma">
+        <p><b>Lemma 2.3.</b> <i>Let <span class="m">f</span> : <span class="m">S</span> → <span class="m">S</span> be an involution which fixes only one point. Then |<span class="m">S</span>| is odd.</i></p>
+        <p><span class="pf">Proof.</span> For all points <span class="m">x</span> ≠ <span class="m">q</span>, <span class="m">f</span>(<span class="m">x</span>) ≠ <span class="m">x</span>, and <span class="m">f</span>(<span class="m">f</span>(<span class="m">x</span>)) = <span class="m">x</span>. Then we can express <span class="m">f</span> as a permutation consisting of <span class="m">k</span> disjoint 2-cycles and one 1-cycle. As the <span class="m">k</span> transpositions are disjoint, no element appears in two transpositions, so there are 2<span class="m">k</span> elements which are not fixed by <span class="m">f</span>. As <span class="m">f</span> fixes 1 element, <span class="m">f</span> acts on a set of order 2<span class="m">k</span> + 1 for some natural number <span class="m">k</span>; equivalently, |<span class="m">S</span>| is odd. □</p>
+      </div>
+      <p>As (2.1) has exactly one fixed point, |<span class="m">S</span>| = 2<span class="m">k</span> + 1 is odd. Now let <span class="m">g</span> : (<span class="m">x</span>, <span class="m">y</span>, <span class="m">z</span>) ↦ (<span class="m">x</span>, <span class="m">z</span>, <span class="m">y</span>) be an involution on <span class="m">S</span>.</p>
+      <div class="lemma">
+        <p><b>Lemma 2.4.</b> <i>Let <span class="m">f</span> : <span class="m">S</span> → <span class="m">S</span> be a function, and let |<span class="m">S</span>| be odd. If <span class="m">f</span> has no fixed points, then <span class="m">f</span> isn't an involution.</i></p>
+        <p><span class="pf">Proof.</span> If <span class="m">f</span> is an involution, then <span class="m">f</span> can be written as the product of disjoint 2-cycles, yet each 2-cycle acts on exactly 2 elements of <span class="m">S</span> and fixes all the others, so any composition of <span class="m">n</span> disjoint transpositions acts on 2<span class="m">n</span> elements of <span class="m">S</span>. So if <span class="m">f</span> acts on 2<span class="m">k</span> + 1 elements of <span class="m">S</span>, then it cannot be expressed as the product of disjoint transpositions, and therefore <span class="m">f</span> isn't an involution. □</p>
+      </div>
+      <p class="fine">Here (2.1) is Zagier's map ζ, whose unique fixed point is (1, 1, <span class="m">k</span>), and <span class="m">g</span> is the swap τ. By Lemma 2.4, <span class="m">g</span> has a fixed point (<span class="m">x</span>, <span class="m">y</span>, <span class="m">y</span>), which gives <span class="m">p</span> = <span class="m">x</span>² + (2<span class="m">y</span>)².</p>
+    </div>
+  </details>
+  <p class="fine">Zagier's original: D. Zagier, “A one-sentence proof that every prime p ≡ 1 (mod 4) is a sum of two squares”, <i>Amer. Math. Monthly</i> 97 (1990), 144. The proof is non-constructive as written, but the walk above, which alternates the two involutions, turns it into an algorithm. For p ≡ 3 (mod 4) the set S is empty, since x² + 4yz ≡ 1 (mod 4) for odd x.</p>
+</section>
+</div>
+
+<script>
+(()=>{
+const PRIMES=[5,13,17,29,37,41,53,61,73,89,97,101,109,113,137,149,157,173,181,193,197];
+const $=id=>document.getElementById(id);
+const key=t=>t.join(',');
+const isPrime=n=>{if(n<2)return false;for(let d=2;d*d<=n;d++)if(n%d===0)return false;return true};
+
+/* ---------- arithmetic ---------- */
+function setS(p){const out=[];for(let x=1;x*x<p;x+=2){const r=(p-x*x)/4;for(let y=1;y<=r;y++)if(r%y===0)out.push([x,y,r/y]);}return out}
+function zcase([x,y,z]){return x<y-z?1:(x<2*y?2:3)}
+function zeta(t){const[x,y,z]=t;switch(zcase(t)){case 1:return[x+2*z,z,y-x-z];case 2:return[2*y-x,y,x-y+z];default:return[x-2*y,x-y+z,y]}}
+const tau=([x,y,z])=>[x,z,y];
+const eq=(a,b)=>a[0]===b[0]&&a[1]===b[1]&&a[2]===b[2];
+
+/* ---------- geometry (math coords, y up) ---------- */
+function pieces(x,y,z,c){
+  const h=x/2;let arm={x0:-h,x1:-h+y,y0:-h-z,y1:-h};
+  const rot=r=>({x0:-r.y1,x1:-r.y0,y0:r.x0,y1:r.x1});
+  const mir=r=>({x0:-r.x1,x1:-r.x0,y0:r.y0,y1:r.y1});
+  const arms=[];for(let k=0;k<4;k++){arms.push(arm);arm=rot(arm)}
+  let sq={x0:-h,x1:h,y0:-h,y1:h};
+  return {sq,arms:c<0?arms.map(mir):arms};
+}
+function bbox(P){const all=[P.sq,...P.arms];return{x0:Math.min(...all.map(r=>r.x0)),x1:Math.max(...all.map(r=>r.x1)),y0:Math.min(...all.map(r=>r.y0)),y1:Math.max(...all.map(r=>r.y1))}}
+function cellset(P){const s=new Set();for(const r of [P.sq,...P.arms])for(let i=r.x0;i<r.x1;i++)for(let j=r.y0;j<r.y1;j++)s.add(i+','+j);return s}
+function sameOutline(a,b){const A=cellset(a),B=cellset(b);if(A.size!==B.size)return false;for(const v of A)if(!B.has(v))return false;return true}
+/* chirality of ζ(w) so that its outline matches w's */
+function zetaChir(t,c){const u=zeta(t);return sameOutline(pieces(...t,c),pieces(...u,c))?c:-c}
+function vb(b,pad){const w=b.x1-b.x0,h=b.y1-b.y0,s=Math.max(w,h)*(1+pad*2),cx=(b.x0+b.x1)/2,cy=(b.y0+b.y1)/2;return [cx-s/2,-cy-s/2,s,s]}
+const R=(r,cls,extra='')=>`<rect class="${cls}" x="${r.x0}" y="${-r.y1}" width="${r.x1-r.x0}" height="${r.y1-r.y0}" ${extra}/>`;
+
+function piecesSVG(P,{outline=true,grid=false,id='g',labels=false,t=null,fs=1}={}){
+  const all=[P.sq,...P.arms];let s='';
+  if(outline) s+=`<g>${all.map(r=>R(r,'',`fill="var(--ink)" stroke="var(--ink)" stroke-width="5" vector-effect="non-scaling-stroke" stroke-linejoin="miter"`)).join('')}</g>`;
+  s+=R(P.sq,'',`fill="var(--sq)" stroke="var(--surface)" stroke-width="1.4" vector-effect="non-scaling-stroke"`);
+  P.arms.forEach((r,i)=>s+=R(r,'',`fill="var(${i%2?'--arm2':'--arm'})" stroke="var(--surface)" stroke-width="1.4" vector-effect="non-scaling-stroke"`));
+  if(grid){
+    const b=bbox(P);let d='';
+    for(let i=Math.ceil(b.x0);i<=b.x1;i++)d+=`M${i} ${-b.y1}V${-b.y0}`;
+    for(let j=Math.ceil(b.y0);j<=b.y1;j++)d+=`M${b.x0} ${-j}H${b.x1}`;
+    // align to half-integers
+    s+=`<clipPath id="${id}c">${all.map(r=>R(r,'')).join('')}</clipPath><path d="${d}" transform="translate(0.5 0.5)" clip-path="url(#${id}c)" stroke="var(--grid)" stroke-width="1" vector-effect="non-scaling-stroke" fill="none"/>`;
+  }
+  if(labels&&t){
+    const [x,y,z]=t;const txt=(r,str)=>{const w=r.x1-r.x0,h=r.y1-r.y0;if(Math.min(w,h)<fs*1.25||Math.max(w,h)<fs*str.length*.5)return'';const cx=(r.x0+r.x1)/2,cy=-(r.y0+r.y1)/2;return `<text x="${cx}" y="${cy}" font-size="${fs}" text-anchor="middle" dominant-baseline="central" fill="var(--surface)" font-family="STIX Two Text,Georgia,serif" font-style="italic">${str}</text>`};
+    s+=txt(P.sq,`${x}×${x}`);s+=txt(P.arms[0],`${y}×${z}`);
+  }
+  return s;
+}
+function thumbSVG(t,c=1){const P=pieces(...t,c);const v=vb(bbox(P),.06);return `<svg viewBox="${v.join(' ')}" aria-hidden="true">${piecesSVG(P)}</svg>`}
+
+/* ---------- state ---------- */
+let p=41,S=[],cur={t:[1,1,10],c:1},busy=false,pairMode='z';
+const big=$('big');
+
+function renderBig(t,c){
+  const P=pieces(...t,c),b=bbox(P),v=vb(b,.05);const fs=Math.max(b.x1-b.x0,b.y1-b.y0)/16;
+  big.setAttribute('viewBox',v.join(' '));
+  const n=t[0]===1&&t[1]===1;const grid=Math.max(b.x1-b.x0,b.y1-b.y0)<=90;
+  big.innerHTML=`<g id="L0">${piecesSVG(P,{grid,id:'b0',labels:true,t,fs})}</g>`;
+  $('cellcount').textContent=`${cellset(P).size} cells`;
+}
+function ledger(){
+  const [x,y,z]=cur.t;
+  $('triple').textContent=`(${x}, ${y}, ${z})`;
+  $('eqn').innerHTML=`${x}² + 4·${y}·${z} = ${x*x} + ${4*y*z} = ${p}`;
+  const zf=eq(zeta(cur.t),cur.t),tf=y===z;
+  $('badges').innerHTML=(zf?'<span class="badge z">ζ-fixed: the plus sign</span>':'')+(tf?'<span class="badge t">τ-fixed: square sails</span>':'')+(!zf&&!tf?'<span class="badge" style="color:var(--muted);border-color:var(--line)">moved by both ζ and τ</span>':'');
+  const k=zcase(cur.t),u=zeta(cur.t);
+  const rows=[
+    ['x < y − z',`${x} < ${y-z}`,'(x + 2z, z, y − x − z)','The sails are long. The new square, of side x + 2z, takes in the inner ends of all four sails.'],
+    ['y − z < x < 2y',`${y-z} < ${x} < ${2*y}`,'(2y − x, y, x − y + z)','Middle case. The new square has side 2y − x and the windmill comes out mirrored.'],
+    ['x > 2y',`${x} > ${2*y}`,'(x − 2y, x − y + z, y)','The square is big. It shrinks to side x − 2y and the shaved strips join the sails.']];
+  $('cases').innerHTML=rows.map((r,i)=>`<div class="case${k===i+1?' on':''}"><span>Case ${i+1}: <span class="m">${r[0]}</span>${k===i+1?` &nbsp;<span class="mono">(${r[1]})</span>`:''}</span><span class="res">↦ ${r[2]}${k===i+1?` = (${u.join(', ')})`:''}</span></div>`).join('');
+  if(!$('caption').dataset.keep) $('caption').textContent=zf?'ζ maps this windmill to itself: reading the outline the other way gives the same picture.':`ζ will use case ${k}. ${rows[k-1][3]}`;
+  $('caption').dataset.keep='';
+  $('bz').disabled=$('bt').disabled=busy;
+  document.querySelectorAll('.thumb').forEach(el=>el.classList.toggle('sel',el.dataset.k===key(cur.t)));
+}
+function load(t,c=1){cur={t,c};renderBig(t,c);ledger()}
+
+/* ζ animation: outline fixed, inside redrawn */
+function animZeta(){return new Promise(res=>{
+  const t=cur.t,c=cur.c,u=zeta(t);
+  if(eq(u,t)){$('caption').textContent='Fixed point: ζ returns the same windmill. This happens only for (1, 1, k).';$('caption').dataset.keep='1';flash();setTimeout(res,600);return}
+  const c2=zetaChir(t,c);const Po=pieces(...t,c),Pn=pieces(...u,c2);
+  const ok=sameOutline(Po,Pn);
+  const b=bbox(Po),fs=Math.max(b.x1-b.x0,b.y1-b.y0)/16,grid=Math.max(b.x1-b.x0,b.y1-b.y0)<=90;
+  const dash=[Pn.sq,...Pn.arms].map(r=>R(r,'',`fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"`)).join('');
+  big.innerHTML=`<g id="L0" style="transition:opacity .7s">${piecesSVG(Po,{grid,id:'a0',labels:true,t,fs})}</g><g id="L1" style="opacity:0;transition:opacity .7s">${piecesSVG(Pn,{grid,id:'a1',labels:true,t:u,fs})}</g><g id="D" style="opacity:0;transition:opacity .45s">${dash}</g>`;
+  const k=zcase(t);
+  $('caption').textContent=`Case ${k}: the dashed gold lines show the new dissection of the same outline${ok?' (cell-by-cell match confirmed)':''}.`;$('caption').dataset.keep='1';
+  requestAnimationFrame(()=>{$('D').style.opacity=1});
+  setTimeout(()=>{$('L0').style.opacity=0;$('L1').style.opacity=1},900);
+  setTimeout(()=>{$('D').style.opacity=0},1700);
+  setTimeout(()=>{cur={t:u,c:c2};renderBig(u,c2);$('caption').textContent=`ζ(${t.join(', ')}) = (${u.join(', ')}). Same outline, new square of side ${u[0]}${c2!==c?', mirrored':''}.`;$('caption').dataset.keep='1';ledger();res()},2200);
+})}
+function flash(){big.animate?.([{opacity:1},{opacity:.45},{opacity:1}],{duration:600})}
+/* τ animation: each sail flips across the square's diagonal (y and z exchange continuously) */
+function animTau(){return new Promise(res=>{
+  const [x,y,z]=cur.t,c=cur.c;
+  if(y===z){$('caption').textContent='Square sails: τ changes nothing. This is the fixed point the proof is after.';$('caption').dataset.keep='1';flash();setTimeout(res,600);return}
+  const b0=vb(bbox(pieces(x,y,z,c)),.05),b1=vb(bbox(pieces(x,z,y,c)),.05);
+  const T=900,st=performance.now(),ease=s=>s<.5?2*s*s:1-Math.pow(-2*s+2,2)/2;
+  const step=now=>{const s=Math.min(1,(now-st)/T),e=ease(s);const yy=y+(z-y)*e,zz=z+(y-z)*e;
+    big.setAttribute('viewBox',b0.map((v,i)=>v+(b1[i]-v)*e).join(' '));
+    big.innerHTML=piecesSVG(pieces(x,yy,zz,c));
+    if(s<1)requestAnimationFrame(step);else{cur={t:[x,z,y],c};renderBig(cur.t,c);$('caption').textContent=`τ(${x}, ${y}, ${z}) = (${x}, ${z}, ${y}). Each sail flipped across the diagonal through its corner; the outline changed.`;$('caption').dataset.keep='1';ledger();res()}};
+  requestAnimationFrame(step);
+})}
+async function run(fn){if(busy)return;busy=true;ledger();await fn();busy=false;ledger()}
+$('bz').onclick=()=>run(animZeta);
+$('bt').onclick=()=>run(animTau);
+$('bwalk').onclick=()=>run(async()=>{
+  const k=(p-1)/4;load([1,1,k],1);busy=true;ledger();
+  await new Promise(r=>setTimeout(r,700));let op='t';
+  for(let i=0;i<400;i++){const nxt=op==='t'?tau(cur.t):zeta(cur.t);if(eq(nxt,cur.t))break;await(op==='t'?animTau():animZeta());busy=true;ledger();await new Promise(r=>setTimeout(r,350));op=op==='t'?'z':'t'}
+  const [x,y]=cur.t;$('caption').textContent=`Arrived at a τ-fixed point: ${p} = ${x}² + ${2*y}² = ${x*x} + ${4*y*y}.`;$('caption').dataset.keep='1';
+});
+
+/* ---------- chain ---------- */
+function chain(){
+  const k=(p-1)/4;let v=[1,1,k],c=1,op='t';const L=[{t:v,c,op:null}];
+  for(let i=0;i<2000;i++){const w=op==='t'?tau(v):zeta(v);if(eq(w,v))break;if(op==='z')c=zetaChir(v,c);L.push({t:w,c,op});v=w;op=op==='t'?'z':'t'}
+  return L;
+}
+function thumb(t,c,extra=''){const zf=eq(zeta(t),t),tf=t[1]===t[2];return `<button class="thumb${zf?' zf':''}${tf?' tf':''}" data-k="${key(t)}" data-c="${c}" ${extra} aria-label="windmill ${t.join(', ')}">${thumbSVG(t,c)}<span class="lab">${t.join(',')}</span></button>`}
+function renderChain(){
+  const L=chain();
+  $('chain').innerHTML=L.map((e,i)=>(i?`<div class="arrow" aria-hidden="true">${e.op==='t'?'τ':'ζ'}<small>→</small></div>`:'')+thumb(e.t,e.c)).join('');
+  const [x,y]=L[L.length-1].t;
+  $('result').innerHTML=`${twoSquares(x,y)}<div><div class="eyebrow">After ${L.length-1} step${L.length===2?'':'s'}</div><div class="big">${p} = ${x}² + ${2*y}²</div><p class="note" style="color:var(--muted);max-width:44ch">The last windmill is (${x}, ${y}, ${y}). Its four ${y}×${y} sails fit together into a ${2*y}×${2*y} square beside the ${x}×${x} centre.</p></div>`;
+}
+function twoSquares(x,y){
+  const s=2*y,g=1,W=x+g+s,H=Math.max(x,s);const cols=['--arm','--arm2','--arm','--arm2'];
+  let r=`<rect x="0" y="${H-x}" width="${x}" height="${x}" fill="var(--sq)"/>`;
+  [[0,0],[y,0],[0,y],[y,y]].forEach(([a,b],i)=>r+=`<rect x="${x+g+a}" y="${H-s+b}" width="${y}" height="${y}" fill="var(${cols[i^(b?1:0)]})" stroke="var(--surface)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>`);
+  return `<svg viewBox="-0.5 -0.5 ${W+1} ${H+1}" role="img" aria-label="${x} squared plus ${s} squared">${r}</svg>`;
+}
+
+/* ---------- set S grouped ---------- */
+function renderGroups(){
+  const f=pairMode==='z'?zeta:tau,seen=new Set();let pairs=0,fixed=0,html='';
+  for(const t of S){if(seen.has(key(t)))continue;const u=f(t);seen.add(key(t));seen.add(key(u));
+    if(eq(u,t)){fixed++;html+=`<div class="group single" style="color:var(${pairMode==='z'?'--gold':'--blue'})">${thumb(t,1)}</div>`}
+    else{pairs++;html+=`<div class="group">${thumb(t,1)}<span class="link">${pairMode==='z'?'ζ':'τ'}</span>${thumb(u,1)}</div>`}}
+  $('groups').innerHTML=html;
+  $('count').innerHTML=`|S| = ${S.length} = 2·${pairs} + ${fixed} &nbsp;<span style="color:var(--muted);font-size:.85em">(${fixed} fixed point${fixed===1?'':'s'} of ${pairMode==='z'?'ζ':'τ'})</span>`;
+  ledger();
+}
+$('pz').onclick=()=>{pairMode='z';$('pz').setAttribute('aria-pressed','true');$('pt').setAttribute('aria-pressed','false');renderGroups()};
+$('pt').onclick=()=>{pairMode='t';$('pt').setAttribute('aria-pressed','true');$('pz').setAttribute('aria-pressed','false');renderGroups()};
+document.addEventListener('click',e=>{const b=e.target.closest('.thumb');if(!b||busy)return;load(b.dataset.k.split(',').map(Number),+b.dataset.c);$('h-wm').scrollIntoView({behavior:'smooth',block:'start'})});
+
+/* ---------- primes ---------- */
+function setP(n){
+  p=n;S=setS(p);load([1,1,(p-1)/4],1);renderChain();renderGroups();
+  document.querySelectorAll('#primes .chip').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.p===p?'true':'false'));
+  try{localStorage.setItem('zw-p',String(p))}catch(e){}
+}
+$('primes').innerHTML=PRIMES.map(q=>`<button class="chip" data-p="${q}" aria-pressed="false">${q}</button>`).join('')+
+  `<form class="custom" id="cf"><label for="cp" class="eyebrow">other</label><input id="cp" inputmode="numeric" placeholder="e.g. 1009"><button class="chip" type="submit">Go</button></form>`;
+$('primes').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(b&&!busy){$('msg').textContent='';setP(+b.dataset.p)}});
+$('cf').addEventListener('submit',e=>{e.preventDefault();if(busy)return;const n=parseInt($('cp').value,10);
+  if(!Number.isFinite(n)||n<5){$('msg').textContent='Enter a prime of the form 4k + 1, such as 1009.';return}
+  if(n>20000){$('msg').textContent='Keep it at 20000 or below so the pictures stay readable.';return}
+  if(!isPrime(n)){$('msg').textContent=`${n} is not prime. Zagier's map can have several fixed points (x, x, z) when x(x + 4z) = n has more than one solution.`;return}
+  if(n%4!==1){$('msg').textContent=`${n} ≡ 3 (mod 4): x² + 4yz is always ≡ 1 (mod 4), so S is empty and no windmills exist.`;return}
+  $('msg').textContent='';setP(n)});
+let start=41;try{const v=+localStorage.getItem('zw-p');if(isPrime(v)&&v%4===1&&v<=20000)start=v}catch(e){}
+setP(start);
+})();
+</script>
+
+</body></html>

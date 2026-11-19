@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shadow Projection · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Shadow Projection · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Projective geometry</p>
+    <h1>Shadow Projection</h1>
+    <p class="lead">A lamp, a card and its shadow: central projection as a 3 × 3 matrix.</p>
+    <div class="byline"><span class="tag">projective geometry</span><span class="tag">linear algebra</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Hold a card under a lamp and look at its shadow on the table. A square card casts a quadrilateral that is usually not a square: lengths, angles and parallel lines are all distorted. Yet straight edges stay straight. The applet below makes this exact. A point light $L$ projects a quadrilateral on a tilted plane $\pi_1$ onto the floor $\pi_2$, and the panel shows the $3 \times 3$ matrix that does it.</p>
+<p>Drag the vertices or the light, change the tilt of $\pi_1$, and orbit the camera. Watch the dashed <em>vanishing line</em>: points of $\pi_1$ that sit level with the light cast shadows that run off to infinity. Then switch the light to <strong>At infinity (parallel)</strong>, which models sunlight, and watch the vanishing line disappear.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/shadow-projection.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame fixed" src="app/shadow-projection.html" title="Shadow Projection: a 3D scene projecting a quadrilateral onto a plane from a point light" loading="lazy" data-autoheight=""></iframe>
+  </div>
+  <div class="prose">
+<h2>Where this comes from: projective geometry</h2>
+<p>Shadows from a point source are <em>central projections</em>, the same operation a Renaissance painter uses to draw a tiled floor in perspective. Desargues studied these maps in the 17th century, and Poncelet's <em>Traité des propriétés projectives des figures</em> (1822) turned them into a subject: projective geometry studies exactly the properties of figures that survive projection.</p>
+
+<h3>What survives a projection</h3>
+<ul>
+  <li><strong>Lines and incidence.</strong> Lines go to lines, and a point on a line stays on that line.</li>
+  <li><strong>Cross-ratio.</strong> For four points $A, B, C, D$ on a line, the number $\dfrac{AC \cdot BD}{BC \cdot AD}$ is unchanged, even though every individual length changes.</li>
+  <li><strong>Not parallelism.</strong> Parallel lines on $\pi_1$ usually cast shadows that meet. The meeting point is the image of a "point at infinity", and all such points form the line at infinity.</li>
+</ul>
+
+<h3>Homogeneous coordinates</h3>
+<p>The clean way to handle points at infinity is to write a point $(u, v)$ of the plane as $(u : v : 1)$, a line through the origin in $\mathbb{R}^3$. Points $(u : v : 0)$ are the points at infinity. Every projection between planes is then a linear map
+$$\begin{pmatrix} x' \\ y' \\ w' \end{pmatrix} = M \begin{pmatrix} u \\ v \\ 1 \end{pmatrix}, \qquad (x, y) = \Big(\frac{x'}{w'}, \frac{y'}{w'}\Big),$$
+with $M$ an invertible $3 \times 3$ matrix defined up to a scalar, which is an element of $\mathrm{PGL}(3, \mathbb{R})$. The applet scales $M$ so that $\det M = 1$. The bottom row of $M$ is the vanishing line: where $w' = 0$, the shadow is at infinity. When $\pi_1$ is parallel to the floor that row becomes $(0, 0, 1)$, and the shadow is just a scaled copy of the card.</p>
+
+<h3>A light at infinity</h3>
+<p>The sun is so far away that its rays are effectively parallel. Projectively this is not a new kind of light: it is a point light placed at a point at infinity, $L = (s_x : s_y : s_z : 0)$, where $s$ is the direction of the rays. The same formula for $M$ applies, but now its bottom row is $(0, 0, c)$. No finite point of $\pi_1$ is sent to infinity, so there is no vanishing line, and the shadow map is <em>affine</em>: parallel edges cast parallel shadows and midpoints go to midpoints. In general, the affine maps are exactly the projective maps that send the line at infinity to itself. Point lights give the full projective group; parallel light gives only its affine part.</p>
+
+<h3>How the matrix is computed</h3>
+<p>Here is exactly how the applet produces the matrix shown in its panel, for any choice of light and plane.</p>
+<p><strong>1. The plane $\pi_1$.</strong> With tilt $\alpha$, hinge angle $\beta$ and height $h$, the applet uses
+$$O = (0, 0, h), \quad e_1 = (\cos\beta,\ \sin\beta,\ 0), \quad e_2 = (-\sin\beta\cos\alpha,\ \cos\beta\cos\alpha,\ \sin\alpha).$$
+The point with plane coordinates $(u, v)$ is $P = O + u\,e_1 + v\,e_2$. In homogeneous coordinates,
+$$\begin{pmatrix} P \\ 1 \end{pmatrix} = B \begin{pmatrix} u \\ v \\ 1 \end{pmatrix}, \qquad B = \begin{pmatrix} e_1 & e_2 & O \\ 0 & 0 & 1 \end{pmatrix} \quad (4 \times 3).$$</p>
+<p><strong>2. Casting the shadow.</strong> Write the light as $L = (L_x : L_y : L_z : L_w)$, with $L_w = 1$ for a point light and $L = (s_x : s_y : s_z : 0)$ for a light at infinity. The shadow of $X = (X_x : X_y : X_z : X_w)$ is where the line through $L$ and $X$ meets the floor. The point $L_z X - X_z L$ lies on that line and has $z$-coordinate $0$, so it is the shadow. Dropping the zero coordinate gives
+$$\Pi = \begin{pmatrix} L_z & 0 & -L_x & 0 \\ 0 & L_z & -L_y & 0 \\ 0 & 0 & -L_w & L_z \end{pmatrix} \quad (3 \times 4).$$</p>
+<p><strong>3. The raw matrix.</strong> Composing, $M_{\text{raw}} = \Pi B$:
+$$M_{\text{raw}} = \begin{pmatrix} L_z\cos\beta & -L_z\sin\beta\cos\alpha - L_x\sin\alpha & -L_x h \\ L_z\sin\beta & L_z\cos\beta\cos\alpha - L_y\sin\alpha & -L_y h \\ 0 & -L_w\sin\alpha & L_z - L_w h \end{pmatrix}.$$
+The bottom row cuts out the vanishing line, the points with $w' = 0$. For a light at infinity ($L_w = 0$) it is $(0, 0, L_z)$, which is why parallel light always gives an affine map.</p>
+<p><strong>4. Normalising.</strong> With $n = e_1 \times e_2$ the unit normal of $\pi_1$,
+$$\det M_{\text{raw}} = L_z^2 \big( n \cdot (L_x, L_y, L_z) - L_w\, n \cdot O \big).$$
+For a point light this is $L_z^2\, n \cdot (L - O)$, which vanishes exactly when the light lies on $\pi_1$. For parallel light it is $L_z^2\, n \cdot s$, which vanishes exactly when the rays run parallel to $\pi_1$. The applet sets $M = M_{\text{raw}} / \sqrt[3]{\det M_{\text{raw}}}$, using the real cube root, so $\det M = 1$. Rescaling does not change the projective map. In dimension $3$ the only scalar matrix of determinant $1$ is the identity, so $SL(3, \mathbb{R}) = PSL(3, \mathbb{R}) \cong PGL(3, \mathbb{R})$, and each shadow map has exactly one representative with determinant $1$. That is the matrix shown in the panel.</p>
+<div class="callout"><span class="eyebrow">Worked example: the applet's starting position</span>
+<p>$L = (2, 1, 5)$ (point light), $h = 2$, $\alpha = 25^\circ$, $\beta = 0^\circ$:
+$$M_{\text{raw}} = \begin{pmatrix} 5 & -0.84524 & -4 \\ 0 & 4.10892 & -2 \\ 0 & -0.42262 & 3 \end{pmatrix}, \qquad \det M_{\text{raw}} = 57.40763,$$
+$$M = \begin{pmatrix} 1.29612 & -0.21911 & -1.03690 \\ 0 & 1.06513 & -0.51845 \\ 0 & -0.10955 & 0.77768 \end{pmatrix}.$$
+These are the numbers the panel shows when the page first loads.</p></div>
+
+<h3>Why a quadrilateral</h3>
+<p>The <em>fundamental theorem of projective geometry</em> says that a projective map of the plane is determined by where it sends four points in general position, no three on a line. So the four corners of the card, together with their four shadows, pin down $M$ completely. That is why the applet uses a quadrilateral and not a triangle.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>H. S. M. Coxeter, <em>Projective Geometry</em>, 2nd ed., Springer, 1987.</li>
+  <li>J. Richter-Gebert, <em>Perspectives on Projective Geometry</em>, Springer, 2011.</li>
+</ul>
+</div>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

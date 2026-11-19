@@ -1,0 +1,1406 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);addEventListener("message",function(e){var d=e.data;if(d&&typeof d.acTheme==="string"&&v.test(d.acTheme))document.documentElement.setAttribute("data-theme",d.acTheme)});addEventListener("storage",function(e){if(e.key==="ac-theme"&&e.newValue)document.documentElement.setAttribute("data-theme",e.newValue)});addEventListener("DOMContentLoaded",function(){if(window.top===window.self){var b=document.querySelector(".ac-back");if(b)b.hidden=false}})})();</script><style>.ac-back{display:inline-block;margin-bottom:10px;font:500 12px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.04em;color:inherit;opacity:.75;text-decoration:none}.ac-back:hover{opacity:1;text-decoration:underline}</style>
+<title>Erdős–Kac Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,400;7..72,600&family=STIX+Two+Text:ital,wght@0,400;1,400&display=swap">
+<style>
+/* Layout: a lab bench. Controls on a left rail, readouts and two plots on the right; the plots carry the page. */
+:root {
+  --bg: #f4f5f7; --panel: #ffffff; --sunk: #eef0f4; --ink: #151821; --ink-2: #4a5061; --ink-3: #7b8192;
+  --rule: #dcdfe6; --grid: #e9ebf0; --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --focus: #2a78d6; --warn: #b4441c;
+  --f-display: "Literata", "Iowan Old Style", Georgia, serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --f-math: "STIX Two Text", "Cambria Math", "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111318; --panel: #181b22; --sunk: #1f232c; --ink: #eef0f4; --ink-2: #b6bbc7; --ink-3: #868c9a;
+  --rule: #2b303b; --grid: #232731; --s1: #3987e5; --s2: #d95926; --s3: #199e70; --focus: #5a9cf0; --warn: #ec8a62; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111318; --panel: #181b22; --sunk: #1f232c; --ink: #eef0f4; --ink-2: #b6bbc7; --ink-3: #868c9a;
+  --rule: #2b303b; --grid: #232731; --s1: #3987e5; --s2: #d95926; --s3: #199e70; --focus: #5a9cf0; --warn: #ec8a62; color-scheme: dark; }
+
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; }
+.m { font-family: var(--f-math); font-style: italic; font-size: 1.08em; white-space: nowrap; }
+.m .u { font-style: normal; }
+.m sub, .m sup { font-size: 0.7em; }
+header.top { display: grid; gap: 6px; margin-bottom: 22px; max-width: 72ch; }
+.eyebrow { font: 500 12px/1 var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+h1 { font: 600 34px/1.1 var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.lead { margin: 4px 0 0; color: var(--ink-2); font-size: 16px; }
+.lead .m { color: var(--ink); }
+
+.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 920px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.rail { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 18px; }
+@media (max-width: 920px) { .rail { position: static; } }
+.group { display: grid; gap: 8px; }
+.glabel { font: 600 11px/1 var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.fnlist { display: grid; gap: 4px; }
+.fn { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 10px; text-align: left; width: 100%; padding: 7px 10px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--ink); font: inherit; cursor: pointer; }
+.fn:hover { background: var(--sunk); }
+.fn[aria-pressed="true"] { background: var(--sunk); border-color: var(--rule); box-shadow: inset 3px 0 0 var(--s1); }
+.fn .m { font-size: 17px; min-width: 7.2ch; }
+.fn small { color: var(--ink-3); font-size: 12.5px; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--sunk); border-radius: 8px; padding: 3px; gap: 3px; }
+.seg button { border: 0; background: transparent; color: var(--ink-2); font: 500 13px/1.2 var(--f-body); padding: 7px 6px; border-radius: 6px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.field { display: grid; gap: 5px; }
+.field label { font-size: 13px; color: var(--ink-2); display: flex; justify-content: space-between; gap: 8px; }
+.field output { font: 500 13px var(--f-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--s1); }
+input[type="text"], input[type="number"], select { width: 100%; box-sizing: border-box; padding: 7px 9px; border: 1px solid var(--rule); border-radius: 7px; background: var(--bg); color: var(--ink); font: 15px var(--f-mono); }
+.err { color: var(--warn); font-size: 12.5px; min-height: 0; }
+.checks { display: grid; gap: 6px; }
+.checks label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.sw { display: inline-block; width: 18px; height: 0; border-top: 2px solid; vertical-align: middle; }
+.sw.dot { width: 9px; height: 9px; border: 0; border-radius: 50%; }
+.sw.bar { width: 10px; height: 10px; border: 0; border-radius: 2px; }
+.sw.dash { border-top-style: dashed; }
+.sw.dotted { border-top-style: dotted; border-top-width: 3px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 4px 10px; font: 13px var(--f-math); font-style: italic; cursor: pointer; }
+.chip:hover { border-color: var(--s1); }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+main { display: grid; gap: 18px; min-width: 0; }
+.status { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+.status h2 { font: 400 24px/1.25 var(--f-display); margin: 0; }
+.status h2 .m { font-size: 1.05em; }
+.timing button { font: 500 12px var(--f-body); border: 1px solid var(--rule); background: var(--panel); color: var(--ink); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+.timing { font: 13px var(--f-mono); color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
+.busy-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--s1); animation: pulse 0.9s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .busy-dot { animation: none; } }
+
+.tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: 10px; background: var(--panel); }
+.tile { padding: 12px 14px; display: grid; gap: 2px; border-left: 1px solid var(--rule); min-width: 0; }
+.tile:first-child { border-left: 0; }
+.tile .k { font-size: 12px; color: var(--ink-3); }
+.tile .v { font: 500 21px/1.2 var(--f-mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.tile .s { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+@media (max-width: 1100px) { .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } .tile:nth-child(4) { border-left: 0; } .tile:nth-child(n+4) { border-top: 1px solid var(--rule); } }
+@media (max-width: 520px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tile { border-left: 0; border-top: 1px solid var(--rule); } .tile:nth-child(even) { border-left: 1px solid var(--rule); } .tile:nth-child(-n+2) { border-top: 0; } .tile:nth-child(4) { border-left: 1px solid var(--rule); } }
+
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 16px 12px; display: grid; gap: 10px; min-width: 0; }
+.cardhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.cardhead h3 { margin: 0; font: 600 15px/1.3 var(--f-body); }
+.cardhead h3 .m { font-weight: 400; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.plot { position: relative; width: 100%; }
+.plot svg { display: block; width: 100%; height: auto; overflow: visible; }
+.plot text { font-family: var(--f-mono); font-size: 11px; fill: var(--ink-3); }
+.plot text.axt { font-family: var(--f-body); font-size: 12px; fill: var(--ink-2); }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; line-height: 1.45; box-shadow: 0 4px 16px rgba(0,0,0,.14); min-width: 170px; z-index: 3; font-variant-numeric: tabular-nums; }
+.tip b { font-weight: 600; }
+.tip .row { display: flex; justify-content: space-between; gap: 14px; }
+.tip .row span:first-child { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+.caption { font-size: 13px; color: var(--ink-2); margin: 0; max-width: 80ch; }
+details.table summary { cursor: pointer; font-size: 13px; color: var(--ink-2); }
+.tablewrap { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; font: 12.5px var(--f-mono); font-variant-numeric: tabular-nums; min-width: 420px; }
+th, td { padding: 4px 12px 4px 0; text-align: right; border-bottom: 1px solid var(--grid); }
+th { font: 600 12px var(--f-body); color: var(--ink-2); }
+
+.notes { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 22px; }
+@media (max-width: 760px) { .notes { grid-template-columns: minmax(0, 1fr); } }
+.notes h3 { margin: 0 0 6px; font: 600 15px var(--f-display); }
+.notes p { margin: 0 0 10px; max-width: 68ch; }
+.notes ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 13.5px; display: grid; gap: 4px; }
+.small { font-size: 13px; color: var(--ink-3); }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="ac-back" href="../erdos-kac.html" hidden>← Back to the notes</a>
+    <span class="eyebrow">Probabilistic number theory</span>
+    <h1>Erdős–Kac Lab</h1>
+    <p class="lead">For <span class="m">n ≤ x</span>, the count <span class="m">ω(n)</span> of distinct prime factors is approximately normal with mean and variance <span class="m"><span class="u">log log</span> x</span>. Pick an <span class="m">ω</span>-like function, compute it exactly over a range, and compare the histogram with the Gaussian and with a prime-by-prime probabilistic model.</p>
+  </header>
+
+  <div class="layout">
+    <aside class="rail" aria-label="Controls">
+      <div class="group">
+        <span class="glabel">Function</span>
+        <div class="fnlist" id="fnlist"></div>
+      </div>
+      <div class="group">
+        <span class="glabel">Count primes</span>
+        <div class="seg" id="segOm">
+          <button type="button" id="omD" data-v="0" aria-pressed="true">distinct, <span class="m">ω</span></button>
+          <button type="button" id="omM" data-v="1" aria-pressed="false">with multiplicity, <span class="m">Ω</span></button>
+        </div>
+      </div>
+      <div class="group" id="params">
+        <span class="glabel">Parameters</span>
+        <div class="field" id="fPoly">
+          <label for="poly"><span>Polynomial <span class="m">f(n)</span></span></label>
+          <input type="text" id="poly" value="n^2+1" spellcheck="false" autocomplete="off" aria-describedby="polyErr">
+          <div class="err" id="polyErr"></div>
+        </div>
+        <div class="field" id="fA">
+          <label for="shiftA"><span>Shift <span class="m">a</span></span></label>
+          <input type="number" id="shiftA" value="-1" step="1" min="-100000" max="100000">
+          <div class="err" id="aErr"></div>
+        </div>
+        <div class="field" id="fMethod">
+          <label><span>Method</span></label>
+          <div class="seg" id="segMethod">
+            <button type="button" data-v="exact" aria-pressed="true">Every <span class="m">n ≤ N</span></button>
+            <button type="button" data-v="sample" aria-pressed="false">Random sample</button>
+          </div>
+        </div>
+        <div class="field" id="fBig">
+          <label for="logBig"><span>Range <span class="m">n ≤ N</span></span><output id="bigOut"></output></label>
+          <input type="range" id="logBig" min="8" max="40" step="1" value="20">
+        </div>
+        <div class="field" id="fTarget">
+          <label for="target"><span>Sample size</span></label>
+          <select id="target"><option value="5000">5,000</option><option value="20000" selected>20,000</option><option value="50000">50,000</option><option value="200000">200,000</option></select>
+          <div class="small">Uniform random integers with known factorization, from Kalai's algorithm. Runs in the background and refines the histogram as it goes.</div>
+        </div>
+        <div class="field" id="fN">
+          <label for="logN"><span id="nLabel">Range <span class="m">N</span></span><output id="nOut"></output></label>
+          <input type="range" id="logN" min="3" max="7" step="0.1" value="6">
+        </div>
+        <div class="field" id="fY">
+          <label for="logY"><span>Prime cutoff <span class="m">y</span></span><output id="yOut"></output></label>
+          <input type="range" id="logY" min="0.31" max="6" step="0.05" value="3">
+        </div>
+        <div class="field" id="fQ">
+          <label for="fq"><span>Field <span class="m">F<sub>q</sub></span></span></label>
+          <select id="fq"><option value="2">q = 2</option><option value="3">q = 3</option><option value="4">q = 4</option><option value="5">q = 5</option><option value="7">q = 7</option><option value="8">q = 8</option><option value="9">q = 9</option><option value="11">q = 11</option><option value="16">q = 16</option><option value="25">q = 25</option><option value="27">q = 27</option><option value="49">q = 49</option><option value="101">q = 101</option><option value="1009">q = 1009</option></select>
+        </div>
+        <div class="field" id="fDeg">
+          <label for="deg"><span>Degree <span class="m">n</span></span><output id="degOut"></output></label>
+          <input type="range" id="deg" min="0" max="1000" step="1" value="500">
+          <div class="small">Exact for every degree up to 2000, computed from the generating function rather than by listing polynomials.</div>
+        </div>
+      </div>
+      <div class="group">
+        <span class="glabel">Normalize by</span>
+        <div class="seg" id="segNorm">
+          <button type="button" data-v="cls" aria-pressed="true" id="nCls">Classical</button>
+          <button type="button" data-v="ref" aria-pressed="false" id="nRef">Model</button>
+          <button type="button" data-v="emp" aria-pressed="false" id="nEmp">Sample</button>
+        </div>
+        <div class="small" id="normHint"></div>
+      </div>
+      <div class="group">
+        <span class="glabel">Overlay</span>
+        <div class="checks">
+          <label><input type="checkbox" id="showNormal" checked> <span class="sw" style="border-color:var(--s2)"></span> Standard normal</label>
+          <label><input type="checkbox" id="showModel" checked> <span class="sw dot" style="background:var(--s3)"></span> <span id="modelName">Prime model</span></label>
+        </div>
+      </div>
+      <div class="group">
+        <span class="glabel">Examples</span>
+        <div class="presets" id="presets"></div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="status">
+        <h2 id="title">…</h2>
+        <div class="timing" id="timing"></div>
+      </div>
+      <div class="tiles" id="tiles"></div>
+
+      <section class="card" aria-labelledby="h-dist">
+        <div class="cardhead">
+          <h3 id="h-dist">Distribution of <span class="m">(<span id="fnSym">ω</span> − μ)/σ</span></h3>
+          <div class="seg" id="segView" style="min-width:190px">
+            <button type="button" data-v="hist" aria-pressed="true" id="vHist">Histogram</button>
+            <button type="button" data-v="cdf" aria-pressed="false" id="vCdf">CDF</button>
+          </div>
+        </div>
+        <div class="legend" id="legDist"></div>
+        <div class="plot" id="plotDist"></div>
+        <p class="caption" id="capDist"></p>
+        <details class="table"><summary>Show values as a table</summary><div class="tablewrap" id="tbl"></div></details>
+      </section>
+
+      <section class="card" aria-labelledby="h-run">
+        <div class="cardhead"><h3 id="h-run">Mean and variance as the range grows</h3></div>
+        <div class="legend" id="legRun"></div>
+        <div class="plot" id="plotRun"></div>
+        <p class="caption" id="capRun"></p>
+      </section>
+
+      <section class="card notes" aria-label="Background">
+        <div id="theory"></div>
+        <div>
+          <h3>This computation</h3>
+          <ul id="info"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+// ===== Erdős–Kac lab: computation core (no DOM) =====
+const EK = (() => {
+  const LN = Math.log;
+
+  function sievePrimes(M) {
+    const comp = new Uint8Array(M + 1), ps = [];
+    for (let i = 2; i <= M; i++) {
+      if (!comp[i]) { ps.push(i); if (i * i <= M) for (let j = i * i; j <= M; j += i) comp[j] = 1; }
+    }
+    return ps;
+  }
+  function omegaArray(M, primes, ymax, Om) {
+    const w = new Uint8Array(M + 1);
+    for (const p of primes) {
+      if (p > M || p > ymax) break;
+      for (let m = p; m <= M; m += p) w[m]++;
+      if (Om) for (let pk = p * p; pk <= M; pk *= p) for (let m = pk; m <= M; m += pk) w[m]++;
+    }
+    return w;
+  }
+  function phiArray(N) {
+    const phi = new Int32Array(N + 1), comp = new Uint8Array(N + 1), pr = [];
+    phi[1] = 1;
+    for (let i = 2; i <= N; i++) {
+      if (!comp[i]) { pr.push(i); phi[i] = i - 1; }
+      for (let j = 0; j < pr.length; j++) {
+        const p = pr[j], ip = i * p; if (ip > N) break;
+        comp[ip] = 1;
+        if (i % p === 0) { phi[ip] = phi[i] * p; break; }
+        phi[ip] = phi[i] * (p - 1);
+      }
+    }
+    return phi;
+  }
+
+  // ---------- running accumulator ----------
+  function checkpoints(lo, hi, count) {
+    const out = []; const a = Math.log10(lo), b = Math.log10(hi);
+    for (let j = 0; j <= count; j++) {
+      const x = Math.round(Math.pow(10, a + (b - a) * j / count));
+      if (!out.length || x > out[out.length - 1]) out.push(x);
+    }
+    if (out[out.length - 1] !== hi) out.push(hi);
+    return out;
+  }
+  class Acc {
+    constructor(cp) { this.cp = cp; this.ci = 0; this.s = 0; this.s2 = 0; this.c = 0; this.run = []; this.hist = new Float64Array(256); }
+    flush(x) { while (this.ci < this.cp.length && this.cp[this.ci] < x) { this.rec(this.cp[this.ci]); this.ci++; } }
+    rec(x) { if (this.c > 5) { const m = this.s / this.c; this.run.push({ x, m, v: this.s2 / this.c - m * m, c: this.c }); } }
+    add(x, v) { if (x > this.cp[this.ci]) this.flush(x); this.c++; this.s += v; this.s2 += v * v; this.hist[v]++; }
+    finish() { this.flush(Infinity); }
+  }
+
+  // ---------- model (independent primes) ----------
+  function prefixModel(keys, alpha, beta) {
+    const n = keys.length, cm = new Float64Array(n + 1), cs = new Float64Array(n + 1);
+    for (let i = 0; i < n; i++) {
+      const a = alpha[i], b = beta[i];
+      const m = a / (1 - b), e2 = a * (1 + b) / ((1 - b) * (1 - b));
+      cm[i + 1] = cm[i] + m; cs[i + 1] = cs[i] + (e2 - m * m);
+    }
+    const idx = z => { let lo = 0, hi = n; while (lo < hi) { const mid = (lo + hi) >> 1; if (keys[mid] <= z) lo = mid + 1; else hi = mid; } return lo; };
+    return { at(z) { const i = idx(z); return { m: cm[i], v: cs[i] }; }, total: { m: cm[n], v: cs[n] } };
+  }
+  function modelDist(alpha, beta, tail, K, mult) {
+    // mult[i] (optional): number of identical copies of item i
+    let d = new Float64Array(K + 1), tmp = new Float64Array(K + 1); d[0] = 1;
+    for (let i = 0; i < alpha.length; i++) {
+      const a = alpha[i]; if (a <= 0) continue; const b = beta[i];
+      const reps = mult ? mult[i] : 1;
+      for (let r = 0; r < reps; r++) {
+        if (a * b < 1e-13) {
+          for (let k = K; k >= 1; k--) d[k] = d[k] * (1 - a) + d[k - 1] * a; d[0] *= (1 - a);
+        } else {
+          const pv = [1 - a]; let t = a * (1 - b);
+          for (let j = 1; j <= K && (j < 2 || t > 1e-17); j++) { pv.push(t); t *= b; }
+          tmp.fill(0);
+          for (let k = 0; k <= K; k++) { const dk = d[k]; if (!dk) continue; for (let j = 0; j < pv.length && k + j <= K; j++) tmp[k + j] += dk * pv[j]; }
+          const s = d; d = tmp; tmp = s;
+        }
+      }
+    }
+    if (tail > 0) {
+      const pois = []; let t = Math.exp(-tail); for (let j = 0; j <= K; j++) { pois.push(t); t *= tail / (j + 1); }
+      tmp.fill(0);
+      for (let k = 0; k <= K; k++) for (let j = 0; k + j <= K; j++) tmp[k + j] += d[k] * pois[j];
+      d = tmp;
+    }
+    return d;
+  }
+
+  // ---------- polynomial parsing over Z ----------
+  function parsePoly(src) {
+    const s = src.replace(/\s+/g, '').replace(/\*\*/g, '^').replace(/[xX]/g, 'n'); let i = 0;
+    const add = (a, b) => { const r = []; for (let k = 0; k < Math.max(a.length, b.length); k++) r.push((a[k] || 0) + (b[k] || 0)); return r; };
+    const neg = a => a.map(c => -c);
+    const mul = (a, b) => { const r = new Array(a.length + b.length - 1).fill(0); for (let x = 0; x < a.length; x++) for (let y = 0; y < b.length; y++) r[x + y] += a[x] * b[y]; return r; };
+    const err = m => { throw new Error(m); };
+    function expr() {
+      let r; if (s[i] === '-') { i++; r = neg(term()); } else { if (s[i] === '+') i++; r = term(); }
+      while (s[i] === '+' || s[i] === '-') { const op = s[i++]; const t = term(); r = op === '+' ? add(r, t) : add(r, neg(t)); }
+      return r;
+    }
+    function term() {
+      let r = factor();
+      while (i < s.length) {
+        if (s[i] === '*') { i++; r = mul(r, factor()); }
+        else if (s[i] === '(' || s[i] === 'n' || /[0-9]/.test(s[i])) r = mul(r, factor());
+        else break;
+      }
+      return r;
+    }
+    function factor() {
+      let b = base();
+      if (s[i] === '^') { i++; const m = /^[0-9]+/.exec(s.slice(i)); if (!m) err('Exponent must be a whole number'); i += m[0].length; const e = +m[0]; if (e > 12) err('Exponent too large'); let r = [1]; for (let k = 0; k < e; k++) r = mul(r, b); b = r; }
+      return b;
+    }
+    function base() {
+      if (s[i] === '(') { i++; const r = expr(); if (s[i] !== ')') err('Missing )'); i++; return r; }
+      if (s[i] === 'n') { i++; return [0, 1]; }
+      const m = /^[0-9]+/.exec(s.slice(i)); if (m) { i += m[0].length; return [+m[0]]; }
+      err(i < s.length ? `Unexpected “${s[i]}”` : 'Expression ends early');
+    }
+    if (!s.length) err('Enter a polynomial in n');
+    const r = expr(); if (i < s.length) err(`Unexpected “${s[i]}”`);
+    while (r.length > 1 && r[r.length - 1] === 0) r.pop();
+    if (r.length < 2) err('Polynomial must have degree ≥ 1');
+    if (r.length > 5) err('Degree is limited to 4');
+    if (r.some(c => !Number.isSafeInteger(c) || Math.abs(c) > 1e6)) err('Coefficients must be at most 10⁶ in size');
+    return r; // low -> high
+  }
+
+  // ---------- polynomial roots mod p ----------
+  function trim(a) { while (a.length && a[a.length - 1] === 0) a.pop(); return a; }
+  function powN(b, e, p) { let r = 1; b %= p; while (e > 0) { if (e & 1) r = (r * b) % p; b = (b * b) % p; e = Math.floor(e / 2); } return r; }
+  function inv(a, p) { return powN(a, p - 2, p); }
+  function monic(a, p) { const c = inv(a[a.length - 1], p); return a.map(x => (x * c) % p); }
+  function pmod(a, f, p) { // f monic
+    a = a.slice(); const df = f.length - 1;
+    for (let i = a.length - 1; i >= df; i--) {
+      const c = a[i]; if (!c) continue;
+      for (let j = 0; j <= df; j++) { const k = i - df + j; a[k] = (a[k] - c * f[j]) % p; if (a[k] < 0) a[k] += p; }
+    }
+    a.length = Math.min(a.length, df); return trim(a);
+  }
+  function pdiv(a, f, p) { // quotient, f monic
+    a = a.slice(); const df = f.length - 1, q = new Array(Math.max(0, a.length - df)).fill(0);
+    for (let i = a.length - 1; i >= df; i--) {
+      const c = a[i]; if (!c) continue; q[i - df] = c;
+      for (let j = 0; j <= df; j++) { const k = i - df + j; a[k] = (a[k] - c * f[j]) % p; if (a[k] < 0) a[k] += p; }
+    }
+    return trim(q);
+  }
+  function pmulmod(a, b, f, p) {
+    if (!a.length || !b.length) return [];
+    const r = new Array(a.length + b.length - 1).fill(0);
+    for (let i = 0; i < a.length; i++) { const ai = a[i]; if (!ai) continue; for (let j = 0; j < b.length; j++) r[i + j] = (r[i + j] + ai * b[j]) % p; }
+    return pmod(r, f, p);
+  }
+  function ppow(base, e, f, p) {
+    let r = [1], b = pmod(base, f, p);
+    while (e > 0) { if (e & 1) r = pmulmod(r, b, f, p); e = Math.floor(e / 2); if (e) b = pmulmod(b, b, f, p); }
+    return r;
+  }
+  function pgcd(a, b, p) {
+    a = trim(a.slice()); b = trim(b.slice());
+    while (b.length) { const bm = monic(b, p); const r = pmod(a, bm, p); a = bm; b = r; }
+    return a.length ? monic(a, p) : a;
+  }
+  function sqrtMod(n, p) {
+    n %= p; if (n === 0) return 0; if (p === 2) return n;
+    if (p % 4 === 3) return powN(n, (p + 1) / 4, p);
+    let q = p - 1, s = 0; while (q % 2 === 0) { q /= 2; s++; }
+    let z = 2; while (powN(z, (p - 1) / 2, p) !== p - 1) z++;
+    let m = s, c = powN(z, q, p), t = powN(n, q, p), r = powN(n, (q + 1) / 2, p);
+    while (t !== 1) { let i = 0, tt = t; while (tt !== 1) { tt = (tt * tt) % p; i++; } let b = c; for (let j = 0; j < m - i - 1; j++) b = (b * b) % p; m = i; c = (b * b) % p; t = (t * c) % p; r = (r * b) % p; }
+    return r;
+  }
+  function split(g, p, out) {
+    const d = g.length - 1; if (d <= 0) return;
+    if (d === 1) { out.push((p - g[0]) % p); return; }
+    if (d === 2) {
+      const b = g[1], c = g[0]; let disc = (b * b - 4 * c) % p; if (disc < 0) disc += p;
+      const s = sqrtMod(disc, p), i2 = (p + 1) / 2;
+      out.push((((p - b + s) % p) * i2) % p, ((((2 * p - b - s) % p)) * i2) % p); return;
+    }
+    for (let tries = 0; tries < 200; tries++) {
+      const a = 1 + Math.floor(Math.random() * (p - 1));
+      let h = ppow([a, 1], (p - 1) / 2, g, p).slice(); if (!h.length) h = [0];
+      h[0] = (h[0] - 1 + p) % p; trim(h); if (!h.length) continue;
+      const d1 = pgcd(g, h, p), k = d1.length - 1;
+      if (k > 0 && k < d) { split(d1, p, out); split(pdiv(g, d1, p), p, out); return; }
+    }
+  }
+  function polyRoots(coef, p) { // returns null if f ≡ 0 mod p
+    const a = trim(coef.map(c => ((c % p) + p) % p));
+    if (!a.length) return null;
+    if (a.length === 1) return [];
+    if (p < 64) { const out = []; for (let r = 0; r < p; r++) { let v = 0; for (let k = a.length - 1; k >= 0; k--) v = (v * r + a[k]) % p; if (v === 0) out.push(r); } return out; }
+    const f = monic(a, p);
+    const h = ppow([0, 1], p, f, p).slice(); while (h.length < 2) h.push(0);
+    h[1] = (h[1] - 1 + p) % p; trim(h);
+    const g = h.length ? pgcd(f, h, p) : f;
+    const out = []; split(g, p, out); return out;
+  }
+
+  // ---------- BigInt primality & factoring ----------
+  function bpow(b, e, m) { let r = 1n; b %= m; while (e > 0n) { if (e & 1n) r = r * b % m; b = b * b % m; e >>= 1n; } return r; }
+  function isPrimeB(n) {
+    if (n < 2n) return false;
+    for (const p of [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n]) { if (n === p) return true; if (n % p === 0n) return false; }
+    let d = n - 1n, s = 0; while ((d & 1n) === 0n) { d >>= 1n; s++; }
+    outer: for (const a of [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n, 41n]) {
+      let x = bpow(a, d, n); if (x === 1n || x === n - 1n) continue;
+      for (let r = 1; r < s; r++) { x = x * x % n; if (x === n - 1n) continue outer; }
+      return false;
+    }
+    return true;
+  }
+  function isqrtB(n) { if (n < 2n) return n; let x = BigInt(Math.floor(Math.sqrt(Number(n)))); while (x * x > n) x--; while ((x + 1n) * (x + 1n) <= n) x++; return x; }
+  function gcdB(a, b) { while (b) { [a, b] = [b, a % b]; } return a < 0n ? -a : a; }
+  function rho(n) {
+    if (n % 2n === 0n) return 2n;
+    for (let c = 1n; c < 50n; c++) {
+      let y = 2n, x, g = 1n, r = 1, q = 1n, ys = 2n; const m = 64;
+      do {
+        x = y; for (let i = 0; i < r; i++) y = (y * y + c) % n;
+        let k = 0;
+        do { ys = y; for (let i = 0; i < Math.min(m, r - k); i++) { y = (y * y + c) % n; q = q * (x > y ? x - y : y - x) % n; } g = gcdB(q, n); k += m; } while (k < r && g === 1n);
+        r *= 2;
+      } while (g === 1n && r < (1 << 22));
+      if (g === n) { do { ys = (ys * ys + c) % n; g = gcdB(x > ys ? x - ys : ys - x, n); } while (g === 1n); }
+      if (g !== n && g !== 1n) return g;
+    }
+    return null;
+  }
+  function factorB(n, out) {
+    if (n === 1n) return;
+    if (isPrimeB(n)) { out.push(n); return; }
+    const s = isqrtB(n); if (s * s === n) { factorB(s, out); factorB(s, out); return; }
+    const d = rho(n); if (!d) { out.push(n); return; }
+    factorB(d, out); factorB(n / d, out);
+  }
+
+  // ---------- F_q[t] ----------
+  function ffCompute(q, n, Om, onDegree) {
+    const pw = [1]; for (let j = 1; j <= n + 1; j++) pw.push(pw[j - 1] * q);
+    const irr = [null]; // irr[d] = Int32Array of lower-digit encodings
+    const toDig = (idx, d) => { const a = new Int8Array(d + 1); for (let j = 0; j < d; j++) { a[j] = idx % q; idx = Math.floor(idx / q); } a[d] = 1; return a; };
+    const pmulq = (a, b) => { const r = new Int8Array(a.length + b.length - 1); for (let i = 0; i < a.length; i++) for (let j = 0; j < b.length; j++) r[i + j] = (r[i + j] + a[i] * b[j]) % q; return r; };
+    function mark(P, e, k, arr) { // all monic multiples P*Q, deg Q = k; P digit array (monic deg e)
+      const D = e + k;
+      if (q === 2) {
+        let Pint = 0; for (let j = 0; j <= e; j++) if (P[j]) Pint |= (1 << j);
+        let prod = Pint << k; const mask = (1 << D) - 1; arr[prod & mask]++;
+        const tot = 1 << k;
+        for (let s = 1; s < tot; s++) { const i = 31 - Math.clz32(s & -s); prod ^= Pint << i; arr[prod & mask]++; }
+        return;
+      }
+      const prod = new Int8Array(D + 1); for (let j = 0; j <= e; j++) prod[k + j] = P[j];
+      let idx = 0; for (let j = 0; j < D; j++) idx += prod[j] * pw[j];
+      arr[idx]++;
+      const c = new Int8Array(k + 1), tot = pw[k];
+      for (let s = 1; s < tot; s++) {
+        let i = 0;
+        for (;;) {
+          for (let j = 0; j <= e; j++) { const pos = i + j, old = prod[pos]; let nw = old + P[j]; if (nw >= q) nw -= q; prod[pos] = nw; idx += (nw - old) * pw[pos]; }
+          if (++c[i] === q) { c[i] = 0; i++; } else break;
+        }
+        arr[idx]++;
+      }
+    }
+    const irrDig = [null];
+    for (let m = 1; m <= n; m++) {
+      const cnt = new Uint8Array(pw[m]);
+      for (let e = 1; e < m; e++) {
+        for (const P of irrDig[e]) {
+          mark(P, e, m - e, cnt);
+          if (Om) { let Pj = P, je = e; for (;;) { Pj = pmulq(Pj, P); je += e; if (je > m) break; if (je === m) { let id = 0; for (let j = 0; j < m; j++) id += Pj[j] * pw[j]; cnt[id]++; } else mark(Pj, je, m - je, cnt); } }
+        }
+      }
+      const list = []; for (let i = 0; i < cnt.length; i++) if (cnt[i] === 0) list.push(i);
+      for (const i of list) cnt[i] = 1;
+      irr.push(list.length); irrDig.push(list.map(i => toDig(i, m)));
+      onDegree(m, cnt, list.length);
+    }
+    return irr;
+  }
+
+  // Taylor coefficients of H(z)^g, H(z) = e^{-γ(z-1)}/Γ(z): the large-prime (Selberg–Delange) correction
+  const GAMMA = 0.5772156649015329;
+  function zeta(k) { if (k === 2) return Math.PI * Math.PI / 6; let s = 0; const M = 30; for (let n = 1; n < M; n++) s += Math.pow(n, -k); return s + Math.pow(M, 1 - k) / (k - 1) + Math.pow(M, -k) / 2 + k * Math.pow(M, -k - 1) / 12; }
+  function gammaCorr(K, g) {
+    const sj = [0]; for (let j = 1; j <= K; j++) sj.push((j % 2 ? -1 : 1) * zeta(j + 1));
+    // D'(z)/D(z) = sum_{j>=1} s_j z^j  =>  n d_n = sum_{j=1}^{n-1} s_j d_{n-1-j}
+    const d2 = [1]; for (let n = 1; n <= K; n++) { let t = 0; for (let j = 1; j <= n - 1; j++) t += sj[j] * d2[n - 1 - j]; d2.push(t / n); }
+    const h = new Float64Array(K + 1); for (let k = 1; k <= K; k++) h[k] = Math.exp(GAMMA) * d2[k - 1];
+    let r = new Float64Array(K + 1); r[0] = 1;
+    for (let i = 0; i < g; i++) { const t = new Float64Array(K + 1); for (let a = 0; a <= K; a++) if (r[a]) for (let b = 0; a + b <= K; b++) t[a + b] += r[a] * h[b]; r = t; }
+    return r;
+  }
+  function applyCorr(dist, g) {
+    if (!g) return dist;
+    const K = dist.length - 1, h = gammaCorr(K, g), out = new Float64Array(K + 1);
+    for (let a = 0; a <= K; a++) if (dist[a]) for (let b = 0; a + b <= K; b++) out[a + b] += dist[a] * h[b];
+    let s = 0; for (let k = 0; k <= K; k++) { if (out[k] < 0) out[k] = 0; s += out[k]; }
+    for (let k = 0; k <= K; k++) out[k] /= s;
+    return out;
+  }
+  const Z2 = Math.PI * Math.PI / 6;
+  function gammaFn(x) { // Lanczos, real x > 0
+    if (x < 0.5) return Math.PI / (Math.sin(Math.PI * x) * gammaFn(1 - x));
+    const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    x -= 1; let a = c[0]; const t = x + 7.5; for (let i = 1; i < 9; i++) a += c[i] / (x + i);
+    return Math.sqrt(2 * Math.PI) * Math.pow(t, x + 0.5) * Math.exp(-t) * a;
+  }
+  // Sathe–Selberg-type correction: P(k) ≈ P_indep(k) · H(r_k)^g, r_k the saddle point of the independent model's PGF.
+  function sdCorrect(dist, alpha, beta, mult, tail, g) {
+    if (!g) return dist;
+    const K = dist.length - 1, ex = [], CUT = 1e-4; let S1 = 0, S2 = 0;
+    for (let i = 0; i < alpha.length; i++) {
+      const a = alpha[i], m = mult ? mult[i] : 1; if (a <= 0) continue;
+      if (a < CUT && beta[i] < CUT) { S1 += m * a; S2 += m * a * a; } else ex.push([a, beta[i], m]);
+    }
+    const zdlog = z => { // z * d/dz log M(z)
+      let s = z * (S1 - (z - 1) * S2) + tail * z;
+      for (const [a, b, m] of ex) { const den = 1 - b * z; const pg = 1 - a + a * (1 - b) * z / den; s += m * z * a * (1 - b) / (den * den) / pg; }
+      return s;
+    };
+    let zmax = 50; for (const [a, b] of ex) if (b > 0) zmax = Math.min(zmax, (1 / b) * 0.999);
+    const H = r => Math.exp(-0.5772156649015329 * (r - 1)) / gammaFn(r);
+    const out = new Float64Array(K + 1); let tot = 0;
+    for (let k = 1; k <= K; k++) {
+      if (!dist[k]) continue;
+      let lo = 1e-9, hi = zmax;
+      if (zdlog(hi) < k) lo = hi; else for (let it = 0; it < 80; it++) { const mid = Math.sqrt(lo * hi); if (zdlog(mid) < k) lo = mid; else hi = mid; }
+      out[k] = dist[k] * Math.pow(Math.max(H(lo), 0), g); tot += out[k];
+    }
+    for (let k = 0; k <= K; k++) out[k] /= tot;
+    return out;
+  }
+
+  function invMod(a, p) { return powN(a, p - 2, p); }
+  function factorOverQ(coef) {
+    // pull out content, then distinct rational roots a/b (as primitive linear factors b·n − a); R is what remains
+    const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; };
+    let content = coef.reduce((g, c) => gcd(g, c), 0);
+    let f = coef.map(c => BigInt(c / content));
+    const lin = [];
+    const divisors = m => { m = Math.abs(m); const d = []; for (let i = 1; i * i <= m; i++) if (m % i === 0) { d.push(i); if (i * i !== m) d.push(m / i); } return d; };
+    const divide = (f, a, b) => { // f / (b n - a), exact
+      const d = f.length - 1, q = new Array(d).fill(0n); let r = f.slice();
+      for (let k = d; k >= 1; k--) { const c = r[k] / b; q[k - 1] = c; r[k] -= c * b; r[k - 1] += c * a; }
+      return q;
+    };
+    while (f.length > 1 && f[0] === 0n) { f = f.slice(1); const L0 = lin.find(([a]) => a === 0); if (L0) L0[2]++; else lin.push([0, 1, 1]); }
+    let changed = true;
+    while (changed && f.length > 1) {
+      changed = false;
+      const c0 = Number(f[0]), cl = Number(f[f.length - 1]);
+      for (const a0 of divisors(c0)) { for (const b of divisors(cl)) {
+        if (gcd(a0, b) !== 1) continue;
+        for (const a of [a0, -a0]) {
+          const A = BigInt(a), Bq = BigInt(b), d = f.length - 1; let v = 0n;
+          for (let k = 0; k <= d; k++) v += f[k] * A ** BigInt(k) * Bq ** BigInt(d - k);
+          if (v === 0n) { f = divide(f, A, Bq); { const L = lin.find(([x, y]) => x === a && y === b); if (L) L[2]++; else lin.push([a, b, 1]); } changed = true; break; }
+        }
+        if (changed) break; } if (changed) break; }
+    }
+    return { content, lin, R: f.map(Number) };
+  }
+  function factorString(fac) {
+    const lf = ([a, b, e]) => { const n = b === 1 ? 'n' : `${b}n`; return (a === 0 ? n : `(${n} ${a > 0 ? '−' : '+'} ${Math.abs(a)})`) + (e > 1 ? '⁰¹²³⁴⁵⁶⁷⁸⁹'[e] : ''); };
+    const pf = c => { const t = []; for (let k = c.length - 1; k >= 0; k--) { const v = c[k]; if (!v) continue; const m = Math.abs(v); const coefS = (m === 1 && k > 0) ? '' : String(m); const mon = k === 0 ? '' : k === 1 ? 'n' : `n${'⁰¹²³⁴⁵⁶⁷⁸⁹'[k]}`; t.push([v < 0 ? '−' : '+', coefS + mon]); } return t.map((x, i) => i === 0 ? (x[0] === '−' ? '−' : '') + x[1] : ` ${x[0]} ${x[1]}`).join(''); };
+    const parts = [];
+    if (fac.content !== 1) parts.push(String(fac.content));
+    fac.lin.forEach(l => parts.push(lf(l)));
+    if (fac.R.length > 1) parts.push(fac.lin.length || fac.content !== 1 ? `(${pf(fac.R)})` : pf(fac.R));
+    else if (Math.abs(fac.R[0]) !== 1) parts.push(String(fac.R[0]));
+    return parts.join('·') || '1';
+  }
+  return { invMod, factorOverQ, factorString, gammaCorr, applyCorr, sdCorrect, Z2, sievePrimes, omegaArray, phiArray, checkpoints, Acc, prefixModel, modelDist, parsePoly, polyRoots, isPrimeB, isqrtB, factorB, ffCompute };
+})();
+
+// ===== mode drivers =====
+function ekCompute(cfg) {
+  const { applyCorr, sdCorrect, Z2, sievePrimes, omegaArray, phiArray, checkpoints, Acc, prefixModel, modelDist, parsePoly, polyRoots, isPrimeB, isqrtB, factorB, ffCompute } = EK;
+  const Om = cfg.Om, N = cfg.N; const LL = x => Math.log(Math.log(x));
+  const res = { mode: cfg.mode, Om, info: [], axis: 'loglog' };
+  const fin = (acc) => { acc.finish(); let K = 0; for (let k = 0; k < 256; k++) if (acc.hist[k]) K = k; res.hist = Array.from(acc.hist.slice(0, K + 1)); res.total = acc.c; res.run = acc.run; };
+  const distStats = d => { let m = 0, v = 0; d.forEach((p, k) => m += k * p); d.forEach((p, k) => v += (k - m) ** 2 * p); return { m, v }; };
+  const finishModel = (keys, alpha, beta, tail, g, mult) => {
+    const pm = prefixModel(keys, alpha, beta);
+    let mean = pm.total.m + tail, vr = pm.total.v + tail;
+    const K = Math.min(160, Math.max(res.hist.length + 8, Math.ceil(mean + 9 * Math.sqrt(vr) + 8)));
+    const dist = applyCorr(modelDist(alpha, beta, tail, K, mult), g);
+    const st = distStats(dist);
+    res.model = { dist: Array.from(dist), mean: st.m, var: st.v, g };
+    return pm;
+  };
+  function hybrid(d, alpha, beta, mult, tail, g) {
+    if (!g) return d;
+    const A = applyCorr(d, g), S = sdCorrect(d, alpha, beta, mult, tail, g);
+    let mode = 0; for (let k = 0; k < A.length; k++) if (A[k] > A[mode]) mode = k;
+    const out = Float64Array.from(A); let ks = -1;
+    for (let k = mode + 1; k < A.length; k++) if (A[k] < 0.6 * S[k]) { ks = k; break; }
+    if (ks > 0) { const sc = S[ks - 1] > 0 ? A[ks - 1] / S[ks - 1] : 1; for (let k = ks; k < A.length; k++) out[k] = S[k] * sc; }
+    const t = out.reduce((a, b) => a + b, 0); for (let k = 0; k < out.length; k++) out[k] /= t;
+    return out;
+  }
+  const corrV = (r, g) => ({ m: r.m, v: r.v - g * Z2 });
+
+  if (cfg.mode === 'omega' || cfg.mode === 'smooth') {
+    const y = cfg.mode === 'smooth' ? Math.max(2, Math.min(cfg.y, N)) : Infinity;
+    const primes = sievePrimes(N);
+    const w = omegaArray(N, primes, y, Om);
+    const acc = new Acc(checkpoints(Math.min(30, N), N, 48));
+    for (let n = 2; n <= N; n++) acc.add(n, w[n]);
+    fin(acc);
+    const ps = primes.filter(p => p <= y);
+    const alpha = new Float64Array(ps.length), beta = new Float64Array(ps.length);
+    ps.forEach((p, i) => { alpha[i] = 1 / p; beta[i] = Om ? 1 / p : 0; });
+    const gc = cfg.mode === 'smooth' && y < N ? 0 : 1;
+    const pm = finishModel(ps, alpha, beta, 0, gc);
+    res.cls = x => { const z = Math.min(x, y); const t = LL(Math.max(z, 3)); return { m: t, v: t }; };
+    res.ref = x => corrV(pm.at(Math.min(x, y)), cfg.mode === 'smooth' && y < x ? 0 : 1);
+    res.info.push(`${(N - 1).toLocaleString()} integers 2 ≤ n ≤ N`);
+    if (cfg.mode === 'smooth') res.info.push(`${ps.length.toLocaleString()} primes p ≤ y; u = log N / log y = ${(Math.log(N) / Math.log(y)).toFixed(2)}`);
+  }
+  else if (cfg.mode === 'shift') {
+    const a = cfg.a, M = N + Math.abs(a) + 2;
+    const primes = sievePrimes(M);
+    const w = omegaArray(M, primes, Infinity, Om);
+    const acc = new Acc(checkpoints(Math.min(100, N), N, 48));
+    for (const p of primes) { if (p > N) break; const v = p + a; if (v < 2) continue; acc.add(p, w[v]); }
+    fin(acc);
+    const alpha = new Float64Array(primes.length), beta = new Float64Array(primes.length);
+    primes.forEach((l, i) => { alpha[i] = (a % l === 0) ? 0 : 1 / (l - 1); beta[i] = Om ? 1 / l : 0; });
+    const pm = finishModel(primes, alpha, beta, 0, 1);
+    res.cls = x => { const t = LL(Math.max(x, 3)); return { m: t, v: t }; };
+    res.ref = x => corrV(pm.at(x + Math.abs(a)), 1);
+    res.info.push(`${res.total.toLocaleString()} primes p ≤ N with p ${a < 0 ? '−' : '+'} ${Math.abs(a)} ≥ 2`);
+  }
+  else if (cfg.mode === 'phi') {
+    const primes = sievePrimes(N);
+    const w = omegaArray(N, primes, Infinity, Om);
+    const phi = phiArray(N);
+    const acc = new Acc(checkpoints(Math.min(30, N), N, 48));
+    for (let n = 3; n <= N; n++) acc.add(n, w[phi[n]]);
+    fin(acc);
+    res.model = null;
+    res.cls = x => { const t = LL(Math.max(x, 3)); return { m: t * t / 2, v: t * t * t / 3 }; };
+    res.ref = null;
+    res.info.push(`${(N - 2).toLocaleString()} integers 3 ≤ n ≤ N`);
+  }
+  else if (cfg.mode === 'poly') {
+    const coef = parsePoly(cfg.poly); const deg = coef.length - 1;
+    const fac = EK.factorOverQ(coef);
+    let bound = 0; for (let k = 0; k <= deg; k++) bound += Math.abs(coef[k]) * Math.pow(N, k);
+    const useBig = bound >= 2 ** 53;
+    const B = Math.max(100, Math.min(3e6, Math.max(N, Math.ceil(Math.cbrt(bound)) + 1)));
+    const res_ = useBig ? new Array(N + 1) : new Float64Array(N + 1);
+    const zero = new Uint8Array(N + 1);
+    const fa = x => { let v = 0; for (let k = deg; k >= 0; k--) v = v * x + coef[k]; return v; };
+    const cb = coef.map(BigInt);
+    for (let n = 1; n <= N; n++) {
+      if (useBig) { let v = 0n; const nb = BigInt(n); for (let k = deg; k >= 0; k--) v = v * nb + cb[k]; if (v < 0n) v = -v; res_[n] = v; if (v === 0n) zero[n] = 1; }
+      else { const v = Math.abs(fa(n)); res_[n] = v; if (v === 0) zero[n] = 1; }
+    }
+    const cnt = new Uint8Array(N + 1), mul = new Uint8Array(N + 1);
+    const primes = sievePrimes(B), np = primes.length;
+    const R = fac.R, dR = R.length - 1, lin = fac.lin;
+    const aR = new Float64Array(np), aC = new Float64Array(np), aL = lin.map(() => new Float64Array(np)), beta = new Float64Array(np);
+    let rhoSum = 0, rhoCnt = 0;
+    for (let i = 0; i < np; i++) {
+      const p = primes[i]; beta[i] = Om ? 1 / p : 0;
+      let roots;
+      if (fac.content % p === 0) { roots = null; aC[i] = 1; }
+      else {
+        roots = dR >= 1 ? polyRoots(R, p) : [];
+        aR[i] = roots.length / p;
+        if (p > B / 4 && dR >= 1) { rhoSum += roots.length; rhoCnt++; }
+        lin.forEach(([a, b], j) => { if (b % p !== 0) { const r = (((a % p) + p) % p) * EK.invMod(((b % p) + p) % p, p) % p; aL[j][i] = 1 / p; if (!roots.includes(r)) roots.push(r); } });
+      }
+      if (roots && !roots.length) continue;
+      if (Om && roots && p <= 20000) { // β_p = P(p² | f(n)) / P(p | f(n)) from roots mod p²
+        const p2 = p * p, c2 = coef.map(c => ((c % p2) + p2) % p2); let r2 = 0;
+        for (const r0 of roots) for (let j = 0; j < p; j++) { const r = r0 + j * p; let v = 0; for (let k = deg; k >= 0; k--) v = (v * r + c2[k]) % p2; if (v === 0) r2++; }
+        beta[i] = Math.min(0.9, r2 / (p * roots.length));
+      }
+      const P = useBig ? BigInt(p) : p;
+      const hit = n => {
+        if (zero[n]) return;
+        cnt[n]++; let e = 0;
+        if (useBig) { let v = res_[n]; while (v % P === 0n) { v /= P; e++; } res_[n] = v; }
+        else { let v = res_[n]; while (v % p === 0) { v /= p; e++; } res_[n] = v; }
+        mul[n] += e;
+      };
+      if (roots === null) { for (let n = 1; n <= N; n++) hit(n); }
+      else for (const r of roots) for (let n = r === 0 ? p : r; n <= N; n += p) hit(n);
+    }
+    const B2 = B * B, Bb = BigInt(B), B3 = Bb * Bb * Bb;
+    let rhoCalls = 0;
+    for (let n = 1; n <= N; n++) {
+      if (zero[n]) continue;
+      const L = res_[n];
+      if (useBig ? L === 1n : L === 1) continue;
+      if (!useBig && L < B2) { cnt[n]++; mul[n]++; continue; }
+      const Lb = useBig ? L : BigInt(L);
+      if (Lb < BigInt(B2)) { cnt[n]++; mul[n]++; continue; }
+      if (isPrimeB(Lb)) { cnt[n]++; mul[n]++; continue; }
+      if (Lb < B3) { const s = isqrtB(Lb); if (s * s === Lb) { cnt[n]++; mul[n] += 2; } else { cnt[n] += 2; mul[n] += 2; } continue; }
+      rhoCalls++; const fs = []; factorB(Lb, fs); cnt[n] += new Set(fs.map(String)).size; mul[n] += fs.length;
+    }
+    const vals = Om ? mul : cnt;
+    const acc = new Acc(checkpoints(Math.min(30, N), N, 48));
+    for (let n = 1; n <= N; n++) if (!zero[n]) acc.add(n, vals[n]);
+    fin(acc);
+    // factor groups: content primes, each linear factor, and the non-linear part R (gR parts of degree dR/gR)
+    const gR = dR >= 1 ? Math.max(1, Math.round(rhoSum / Math.max(1, rhoCnt))) : 0;
+    const g = lin.length + gR;
+    const groups = [{ alpha: aC, size: () => Infinity, parts: 0 }];
+    lin.forEach(([a, b], j) => groups.push({ alpha: aL[j], size: x => Math.abs(b) * x + Math.abs(a), parts: 1 }));
+    if (gR) { const dpart = dR / gR, lc = Math.abs(R[dR]) ** (1 / gR); groups.push({ alpha: aR, size: x => Math.max(lc, 1) * Math.pow(x, dpart), parts: gR }); }
+    groups.forEach(G => { G.pm = prefixModel(primes, G.alpha, beta); });
+    const tailOf = (G, x) => !G.parts ? 0 : G.parts * Math.max(0, Math.log(Math.log(Math.max(G.size(x), 3)) / Math.log(B)));
+    const alpha = new Float64Array(np);
+    for (let i = 0; i < np; i++) { let s = 0; for (const G of groups) if (primes[i] <= G.size(N)) s += G.alpha[i]; alpha[i] = Math.min(1, s); }
+    const tail = groups.reduce((s, G) => s + tailOf(G, N), 0);
+    finishModel(primes, alpha, beta, tail, g);
+    res.cls = x => { const t = g * LL(Math.max(x, 3)); return { m: t, v: t }; };
+    res.ref = x => { let m = 0, v = 0; for (const G of groups) { const r = G.pm.at(Math.min(B, G.size(x))), tl = tailOf(G, x); m += r.m + tl; v += r.v + tl; } return corrV({ m, v }, g); };
+    res.g = g; res.deg = deg; res.B = B;
+    const facStr = EK.factorString(fac);
+    res.info.push(`${res.total.toLocaleString()} values f(n), 1 ≤ n ≤ N, f(n) ≠ 0`);
+    res.info.push(`f = ${facStr}; g = ${g} distinct irreducible factor${g === 1 ? '' : 's'}` + (gR && dR > 1 ? ` (the degree-${dR} part has average ρ(p) = ${(rhoSum / Math.max(1, rhoCnt)).toFixed(3)} near B)` : ''));
+    res.info.push(`ρ(p) found for all ${np.toLocaleString()} primes p ≤ B = ${B.toLocaleString()}` + (rhoCalls ? `; ${rhoCalls.toLocaleString()} large cofactors split by Pollard ρ` : ''));
+  }
+  else if (cfg.mode === 'ff') {
+    // Exact distribution via generating functions: sum_F z^{ω(F)} u^{deg F} = prod_d (1 + z u^d/(1-u^d))^{π_q(d)},
+    // evaluated at K roots of unity in z (exp of the log-series in u, O(n²) each), then an inverse DFT in z.
+    const q = cfg.q, n = cfg.n; res.axis = 'logm';
+    const mob = k => { let r = 1; for (let p = 2; p * p <= k; p++) if (k % p === 0) { k /= p; if (k % p === 0) return 0; r = -r; } if (k > 1) r = -r; return r; };
+    const r = [0]; for (let d = 1; d <= n; d++) { let s = 0; for (let e = 1; e <= d; e++) if (d % e === 0) { const mu = mob(e); if (mu) s += mu * Math.pow(q, d / e - d); } r.push(s / d); } // π_q(d)/q^d
+    const K = Om ? 128 : 64;
+    const sel = []; { const S = new Set(); for (let j = 0; j <= 70; j++) S.add(Math.max(1, Math.round(Math.exp(Math.log(n) * j / 70)))); for (let m = 1; m <= Math.min(n, 30); m++) S.add(m); S.add(n); sel.push(...[...S].sort((a, b) => a - b)); }
+    const selRe = sel.map(() => new Float64Array(K)), selIm = sel.map(() => new Float64Array(K));
+    const modRe = new Float64Array(K), modIm = new Float64Array(K);
+    const lr = new Float64Array(n + 1), li = new Float64Array(n + 1), Pr = new Float64Array(n + 1), Pi = new Float64Array(n + 1);
+    for (let s = 0; s < K; s++) {
+      const zr = Math.cos(2 * Math.PI * s / K), zi = Math.sin(2 * Math.PI * s / K);
+      lr.fill(0); li.fill(0);
+      for (let d = 1; d <= n; d++) {
+        const qd = Math.pow(q, -d);
+        // b = (1 - z) q^{-d} for ω, z q^{-d} for Ω; term_k = r_d/k [ q^{-d(k-1)}·(ω ? 1 : 0) ∓ q^d b^k ]
+        const br = (Om ? zr : 1 - zr) * qd, bi = (Om ? zi : -zi) * qd;
+        let pr = 1, pi = 0, qk = 1; // qk = q^{-d(k-1)}
+        const big = qd < 1e-280, cr = Om ? zr : 1 - zr, ci = Om ? zi : -zi; // for huge q^d, k ≤ n/d is tiny: use c^k·q^{-d(k-1)}
+        for (let k = 1; d * k <= n; k++) {
+          let tr, ti, w = r[d] / k;
+          if (big) { const nr = pr * cr - pi * ci, ni = pr * ci + pi * cr; pr = nr; pi = ni; tr = w * pr * qk; ti = w * pi * qk; }
+          else { const nr = pr * br - pi * bi, ni = pr * bi + pi * br; pr = nr; pi = ni; const sc = w / qd; tr = sc * pr; ti = sc * pi; }
+          if (Om) { lr[d * k] += tr; li[d * k] += ti; }
+          else { lr[d * k] += w * qk - tr; li[d * k] += -ti; }
+          qk *= qd;
+        }
+      }
+      Pr.fill(0); Pi.fill(0); Pr[0] = 1;
+      for (let m = 1; m <= n; m++) { let ar = 0, ai = 0; for (let i = 1; i <= m; i++) { const xr = i * lr[i], xi = i * li[i], yr = Pr[m - i], yi = Pi[m - i]; ar += xr * yr - xi * yi; ai += xr * yi + xi * yr; } Pr[m] = ar / m; Pi[m] = ai / m; }
+      sel.forEach((m, j) => { selRe[j][s] = Pr[m]; selIm[j][s] = Pi[m]; });
+      // independent model: each irreducible of degree d ≤ n divides F independently with prob q^{-d}
+      let Lr = 0, Li = 0;
+      for (let d = 1; d <= n; d++) {
+        const qd = Math.pow(q, -d);
+        if (qd > 1e-4) {
+          const R = r[d] / qd; let ur, ui;
+          if (Om) { const dr = 1 - qd * zr, di = -qd * zi; ur = Math.log(1 - qd) - 0.5 * Math.log(dr * dr + di * di); ui = -Math.atan2(di, dr); }
+          else { const xr = 1 + (zr - 1) * qd, xi = zi * qd, mag = xr * xr + xi * xi; if (mag < 1e-300) { Lr = -Infinity; continue; } ur = 0.5 * Math.log(mag); ui = Math.atan2(xi, xr); }
+          Lr += R * ur; Li += R * ui;
+        } else {
+          let pr = 1, pi = 0, zr2 = 1, zi2 = 0, qk = 1;
+          for (let k = 1; k <= 4; k++) {
+            if (Om) { const nr = zr2 * zr - zi2 * zi, ni = zr2 * zi + zi2 * zr; zr2 = nr; zi2 = ni; Lr += r[d] * qk * (zr2 - 1) / k; Li += r[d] * qk * zi2 / k; }
+            else { const nr = pr * (zr - 1) - pi * zi, ni = pr * zi + pi * (zr - 1); pr = nr; pi = ni; const sg = k % 2 ? 1 : -1; Lr += sg * r[d] * qk * pr / k; Li += sg * r[d] * qk * pi / k; }
+            qk *= qd;
+          }
+        }
+      }
+      const e = Math.exp(Lr); modRe[s] = e * Math.cos(Li); modIm[s] = e * Math.sin(Li);
+    }
+    const idft = (re, im) => { const out = new Float64Array(K); for (let k = 0; k < K; k++) { let a = 0; for (let s = 0; s < K; s++) { const t = -2 * Math.PI * s * k / K; a += re[s] * Math.cos(t) - im[s] * Math.sin(t); } out[k] = Math.max(0, a / K); } const t = out.reduce((x, y) => x + y, 0); for (let k = 0; k < K; k++) out[k] /= t; return out; };
+    const per = sel.map((m, j) => { const d = idft(selRe[j], selIm[j]); const st = distStats(d); return { x: m, m: st.m, v: st.v, c: 1 }; });
+    const last = idft(selRe[sel.length - 1], selIm[sel.length - 1]);
+    let KK = 0; for (let k = 0; k < K; k++) if (last[k] > 1e-7) KK = k;
+    res.hist = Array.from(last.slice(0, KK + 1)); res.total = 1; res.isProb = true; res.run = per;
+    const ind = idft(modRe, modIm);
+    const fd = applyCorr(ind, 1), fst = distStats(fd);
+    res.model = { dist: Array.from(fd), mean: fst.m, var: fst.v, g: 1 };
+    const cm = [0], cs = [0];
+    for (let d = 1; d <= n; d++) { const a = Math.pow(q, -d); const mm = Om ? r[d] / (1 - a) : r[d], vv = Om ? r[d] / ((1 - a) * (1 - a)) : r[d] * (1 - a); cm.push(cm[d - 1] + mm); cs.push(cs[d - 1] + vv); }
+    res.cls = m => { const t = Math.log(Math.max(m, 1)); return { m: t, v: t }; };
+    res.ref = m => corrV({ m: cm[Math.min(m, n)], v: cs[Math.min(m, n)] }, 1);
+    const ex = n * Math.log10(q);
+    res.totalLabel = ex < 9 ? Math.pow(q, n).toLocaleString() : `${q}<sup>${n}</sup>`;
+    res.qn = { q, n };
+    res.info.push(`exact distribution over all q<sup>n</sup> = ${q}<sup>${n}</sup> ${ex >= 9 ? `≈ 10<sup>${Math.floor(ex)}</sup> ` : ''}monic polynomials of degree ${n}, from the generating function ∏<sub>d</sub>(1 + z u<sup>d</sup>/(1 − u<sup>d</sup>))<sup>π<sub>q</sub>(d)</sup>`);
+    res.info.push(`π<sub>${q}</sub>(${n}) ≈ ${(r[n] * n).toFixed(4)}·${q}<sup>${n}</sup>/${n} irreducibles of degree ${n}`);
+    res.info.push(`log n = ${Math.log(n).toFixed(2)}, which equals log log x for integers up to x = e<sup>n</sup> ≈ 10<sup>${Math.round(n / Math.LN10)}</sup>`);
+  }
+  return res;
+}
+if (typeof module !== 'undefined') module.exports = { EK, ekCompute };
+
+// ===== random factored integers (Kalai's algorithm), for N far beyond what can be enumerated =====
+// Self-contained so it can be shipped to a Web Worker via toString().
+function ekSamplerFactory() {
+  const SP = []; { const c = new Uint8Array(3000); for (let i = 2; i < 3000; i++) if (!c[i]) { SP.push(i); for (let j = i * i; j < 3000; j += i) c[j] = 1; } }
+  const SPset = new Set(SP);
+  const GROUPS = []; { let cur = [], prod = 1; for (const p of SP) { if (prod * p > 2 ** 52) { GROUPS.push([BigInt(prod), cur]); cur = []; prod = 1; } cur.push(p); prod *= p; } GROUPS.push([BigInt(prod), cur]); }
+  const bpow = (b, e, m) => { let r = 1n; b %= m; while (e > 0n) { if (e & 1n) r = r * b % m; b = b * b % m; e >>= 1n; } return r; };
+  const tdPass = n => { for (const [P, ps] of GROUPS) { const r = Number(n % P); for (const p of ps) if (r % p === 0) return false; } return true; };
+  const mr = n => { let d = n - 1n, s = 0; while (!(d & 1n)) { d >>= 1n; s++; }
+    outer: for (const a of [2n, 3n, 5n, 7n, 11n, 13n, 17n]) { let x = bpow(a, d, n); if (x === 1n || x === n - 1n) continue; for (let r = 1; r < s; r++) { x = x * x % n; if (x === n - 1n) continue outer; } return false; } return true; };
+  let rs = ((Math.random() * 4294967296) >>> 0) || 1; const rnd32 = () => { rs ^= rs << 13; rs ^= rs >>> 17; rs ^= rs << 5; return rs >>> 0; };
+  const randBelow = M => { const bits = M.toString(2).length, words = Math.ceil(bits / 32), mask = (1n << BigInt(bits)) - 1n;
+    for (;;) { let x = 0n; for (let i = 0; i < words; i++) x = (x << 32n) | BigInt(rnd32()); x &= mask; if (x < M) return x + 1n; } };
+  const blog = n => { const s = n.toString(16); return s.length > 13 ? Math.log(parseInt(s.slice(0, 13), 16)) + (s.length - 13) * 4 * Math.LN2 : Math.log(parseInt(s, 16)); };
+  // Kalai: draw N ≥ s1 ≥ s2 ≥ … ≥ 1 uniformly; keep the primes; r = their product; accept with probability r/N if r ≤ N.
+  // The accepted r is uniform on [1, N], and we already know its factorization.
+  function sample(N, logN) {
+    for (;;) {
+      const U = Math.random(), target = logN + Math.log(U);
+      let s = N, bound = 0; const cand = [];
+      for (;;) { s = randBelow(s); if (s === 1n) break; if (s < 3000n) { if (SPset.has(Number(s))) { const l = Math.log(Number(s)); cand.push([s, l, true]); bound += l; } } else if (tdPass(s)) { const l = blog(s); cand.push([s, l, false]); bound += l; } }
+      if (bound < target) continue;
+      let ok = true;
+      for (const c of cand) { if (c[2]) continue; if (!mr(c[0])) { bound -= c[1]; c[3] = true; if (bound < target) { ok = false; break; } } }
+      if (!ok || bound > logN + 1e-12) continue;
+      const ps = cand.filter(c => !c[3]).map(c => c[0]);
+      let w = 0; for (let i = 0; i < ps.length; i++) if (i === 0 || ps[i] !== ps[i - 1]) w++; // sequence is non-increasing
+      return [w, ps.length];
+    }
+  }
+  return { sample };
+}
+function ekSamplerWorkerSource() {
+  return `const S=(${ekSamplerFactory.toString()})();
+onmessage=ev=>{const e=ev.data.e,N=10n**BigInt(e),logN=e*Math.LN10;const w=new Float64Array(64),W=new Float64Array(64);let n=0,t=Date.now();
+for(;;){const r=S.sample(N,logN);w[r[0]]++;W[r[1]]++;n++;if(Date.now()-t>150){postMessage({w,W,n});w.fill(0);W.fill(0);n=0;t=Date.now();}}};`;
+}
+// model for ω(n) / Ω(n) with n ≤ 10^e: exact Bernoulli/geometric for p ≤ 10^6, Poisson for 10^6 < p ≤ N (Mertens), Sathe–Selberg correction
+function ekSampleModel(e, Om) {
+  const { sievePrimes, prefixModel, modelDist, applyCorr, Z2 } = EK;
+  const P = 1e6, ps = sievePrimes(P);
+  const alpha = new Float64Array(ps.map(p => 1 / p)), beta = new Float64Array(ps.map(p => Om ? 1 / p : 0));
+  const pm = prefixModel(ps, alpha, beta);
+  const tailAt = x => Math.max(0, Math.log(Math.log(x) / Math.log(P)));
+  const logN = e * Math.LN10, tail = Math.max(0, Math.log(logN / Math.log(P)));
+  const mean0 = pm.total.m + tail, var0 = pm.total.v + tail;
+  const K = Math.min(120, Math.ceil(mean0 + 10 * Math.sqrt(var0) + 10));
+  const dist = applyCorr(modelDist(alpha, beta, tail, K), 1);
+  let m = 0, v = 0; dist.forEach((p, k) => m += k * p); dist.forEach((p, k) => v += (k - m) ** 2 * p);
+  return {
+    model: { dist: Array.from(dist), mean: m, var: v, g: 1 },
+    cls: x => { const t = Math.log(Math.log(Math.max(x, 3))); return { m: t, v: t }; },
+    ref: x => { const r = pm.at(Math.min(x, P)), tl = tailAt(x); return { m: r.m + tl, v: r.v + tl - Z2 }; },
+  };
+}
+</script>
+<script>
+// ===== Erdős–Kac lab: interface =====
+(() => {
+  const $ = id => document.getElementById(id);
+  const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  const sup = k => String(k).split('').map(c => c === '-' ? '⁻' : SUP[+c]).join('');
+  const LL = x => Math.log(Math.log(x));
+
+  const MODES = {
+    omega:  { btn: L => `${L}(n)`, cap: 'all integers n ≤ N', N: [2, 7, 6] },
+    poly:   { btn: L => `${L}(f(n))`, cap: 'polynomial values', N: [2, 6, 5.3] },
+    shift:  { btn: L => `${L}(p + a)`, cap: 'shifted primes', N: [3, 7, 6] },
+    smooth: { btn: L => `${L}<sub>y</sub>(n)`, cap: 'only primes p ≤ y', N: [3, 7, 6] },
+    phi:    { btn: L => `${L}(φ(n))`, cap: 'Erdős–Pomerance', N: [3, 6.7, 6] },
+    ff:     { btn: L => `${L}(F)`, cap: 'F monic in 𝔽<sub>q</sub>[t]', N: null },
+  };
+  const degFromSlider = v => Math.max(2, Math.round(2 * Math.pow(1000, v / 1000)));
+  const sliderFromDeg = n => Math.round(1000 * Math.log(n / 2) / Math.log(1000));
+
+  const state = {
+    mode: 'omega', Om: false, logN: { omega: 6, poly: 5.3, shift: 6, smooth: 6, phi: 6 },
+    poly: 'n^2+1', a: -1, logY: 3, q: 2, deg: 300, method: 'exact', logBig: 20, target: 20000, norm: 'cls', view: 'hist', showNormal: true, showModel: true,
+  };
+  let data = null, cur = null, reqId = 0, polyDeg = 2, samp = null, workers = [], renderTimer = 0;
+  const sampling = () => state.mode === 'omega' && state.method === 'sample';
+
+  // ---------- helpers ----------
+  const roundN = v => { let k = Math.floor(v), c = Math.round(Math.pow(10, v - k) * 10) / 10; if (c >= 10) { c = 1; k++; } return Math.round(c * Math.pow(10, k)); };
+  const fmtN = N => { const k = Math.floor(Math.log10(N) + 1e-9), c = N / Math.pow(10, k); if (k < 4) return N.toLocaleString(); if (Math.abs(c - 1) < 1e-9) return `10${sup(k)}`; return `${+c.toFixed(1)}·10${sup(k)}`; };
+  const f3 = v => (v == null || !isFinite(v)) ? '—' : v.toFixed(3);
+  const pct = v => v >= 0.0995 ? (100 * v).toFixed(1) + '%' : v >= 0.000995 ? (100 * v).toFixed(2) + '%' : v > 0 ? (100 * v).toPrecision(2) + '%' : '0%';
+  const Phi = z => { const t = 1 / (1 + 0.2316419 * Math.abs(z)); const d = 0.3989422804014327 * Math.exp(-z * z / 2); const p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z >= 0 ? 1 - p : p; };
+  const phi = z => 0.3989422804014327 * Math.exp(-z * z / 2);
+  const niceStep = (span, n) => { const raw = span / n, p = Math.pow(10, Math.floor(Math.log10(raw))); for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= raw) return m * p; return 10 * p; };
+  const L = () => state.Om ? 'Ω' : 'ω';
+  const fNice = s => s.replace(/\s+/g, '').replace(/\*\*/g, '^').replace(/\^(\d)/g, (_, d) => SUP[+d]).replace(/\*/g, '·').replace(/([+-])/g, ' $1 ').replace(/^ - /, '−').replace(/ - /g, ' − ').trim();
+  const N = () => roundN(state.logN[state.mode]);
+  const Y = () => Math.max(2, Math.round(Math.pow(10, state.logY)));
+
+  // ---------- controls ----------
+  function buildFnList() {
+    $('fnlist').innerHTML = Object.entries(MODES).map(([k, m]) =>
+      `<button type="button" class="fn" data-mode="${k}" aria-pressed="${k === state.mode}"><span class="m">${m.btn(L())}</span><small>${m.cap}</small></button>`).join('');
+    $('fnlist').querySelectorAll('.fn').forEach(b => b.onclick = () => { state.mode = b.dataset.mode; syncControls(); run(); });
+  }
+  function setSeg(id, v) { $(id).querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === String(v)))); }
+  function syncControls() {
+    buildFnList();
+    const m = state.mode;
+    $('fPoly').hidden = m !== 'poly'; $('fA').hidden = m !== 'shift'; $('fY').hidden = m !== 'smooth';
+    $('fQ').hidden = m !== 'ff'; $('fDeg').hidden = m !== 'ff'; $('fN').hidden = m === 'ff' || sampling();
+    $('fMethod').hidden = m !== 'omega'; $('fBig').hidden = !sampling(); $('fTarget').hidden = !sampling();
+    setSeg('segMethod', state.method); $('logBig').value = state.logBig; $('target').value = state.target;
+    if (m !== 'ff') {
+      const r = MODES[m].N; let max = r[1];
+      if (m === 'poly') max = polyDeg <= 2 ? 6 : polyDeg === 3 ? 5 : 4.5;
+      const s = $('logN'); s.min = r[0]; s.max = max; state.logN[m] = Math.min(Math.max(state.logN[m], r[0]), max); s.value = state.logN[m];
+      $('nLabel').innerHTML = m === 'shift' ? 'Primes <span class="m">p ≤ N</span>' : m === 'poly' ? 'Range <span class="m">1 ≤ n ≤ N</span>' : 'Range <span class="m">n ≤ N</span>';
+    }
+    if (m === 'smooth') { const s = $('logY'); s.max = state.logN.smooth; state.logY = Math.min(state.logY, state.logN.smooth); s.value = state.logY; }
+    $('fq').value = state.q; $('deg').value = sliderFromDeg(state.deg);
+    $('poly').value = state.poly; $('shiftA').value = state.a;
+    setSeg('segOm', state.Om ? 1 : 0); setSeg('segNorm', state.norm); setSeg('segView', state.view);
+    $('nRef').disabled = m === 'phi'; $('showModel').disabled = m === 'phi';
+    $('modelName').textContent = m === 'smooth' ? 'Kubilius model' : 'Prime model';
+    labels();
+  }
+  function labels() {
+    const n = N(); $('nOut').textContent = `${n.toLocaleString()}`;
+    const y = Y(); $('yOut').textContent = `${y.toLocaleString()}  (u = ${(Math.log(roundN(state.logN.smooth)) / Math.log(y)).toFixed(2)})`;
+    const ex = state.deg * Math.log10(state.q);
+    $('degOut').innerHTML = `${state.deg}  (${ex < 7 ? Math.pow(state.q, state.deg).toLocaleString() : '≈ 10' + sup(Math.floor(ex))} polys)`;
+    $('bigOut').textContent = `10${sup(state.logBig)}`;
+  }
+
+  // ---------- compute ----------
+  function cfg() {
+    const m = state.mode;
+    return { mode: m, Om: state.Om, N: m === 'ff' ? 0 : N(), poly: state.poly, a: state.a, y: Y(), q: state.q, n: state.deg };
+  }
+  function run() {
+    if (sampling()) { startSampling(); return; }
+    stopSampling();
+    const id = ++reqId, c = cfg();
+    $('timing').innerHTML = '<span class="busy-dot" aria-hidden="true"></span>Computing…';
+    document.body.style.cursor = 'progress';
+    setTimeout(() => {
+      if (id !== reqId) return;
+      const t0 = performance.now();
+      try {
+        const d = ekCompute(c); d.cfg = c; d.ms = performance.now() - t0; data = d;
+        $('polyErr').textContent = '';
+      } catch (e) {
+        if (c.mode === 'poly') $('polyErr').textContent = e.message; else console.error(e);
+      }
+      document.body.style.cursor = '';
+      render();
+    }, 30);
+  }
+
+  // ---------- random sampling for huge N ----------
+  function stopSampling() { workers.forEach(w => w.terminate()); workers = []; if (samp) { samp.running = false; clearTimeout(samp.timer); } }
+  function samplingData() {
+    const e = samp.e, M = state.Om ? samp.mW : samp.mw, H = state.Om ? samp.hW : samp.hw;
+    let K = 0; for (let k = 0; k < 64; k++) if (H[k]) K = k;
+    const runX = []; for (let j = 0; j <= 60; j++) runX.push(Math.pow(10, 2 + (e - 2) * j / 60));
+    return { cfg: { mode: 'omega', Om: state.Om, N: Math.pow(10, e), e, sampled: true }, sampled: true, hist: Array.from(H.slice(0, K + 1)), total: samp.n,
+      model: M.model, cls: M.cls, ref: M.ref, run: [], runX, ms: performance.now() - samp.t0,
+      info: [`${samp.n.toLocaleString()} uniformly random integers n ≤ 10${sup(e)}, generated together with their factorizations (Kalai's algorithm: draw N ≥ s₁ ≥ s₂ ≥ … ≥ 1, keep the primes, accept their product r with probability r/N)`,
+        `model: exact for p ≤ 10⁶, Poisson with mean log(log N / log 10⁶) for 10⁶ < p ≤ N, then the Sathe–Selberg correction`] };
+  }
+  function startSampling() {
+    const e = state.logBig;
+    if (samp && samp.e === e && samp.target === state.target && (samp.running || samp.n >= samp.target)) { data = samplingData(); render(); return; }
+    stopSampling(); reqId++; samp = null;
+    samp = { e, target: state.target, n: 0, hw: new Float64Array(64), hW: new Float64Array(64), t0: performance.now(), running: true,
+      mw: ekSampleModel(e, false), mW: ekSampleModel(e, true) };
+    spawnSamplers();
+    data = samplingData(); render();
+  }
+
+  function onBatch(d) {
+    if (!samp || !samp.running) return;
+    for (let k = 0; k < 64; k++) { samp.hw[k] += d.w[k]; samp.hW[k] += d.W[k]; }
+    samp.n += d.n;
+    if (samp.n >= samp.target) { stopSampling(); samp.t1 = performance.now(); }
+    if (!renderTimer) renderTimer = setTimeout(() => { renderTimer = 0; if (sampling() && samp) { data = samplingData(); render(); } }, 250);
+  }
+  function spawnSamplers() {
+    const e = samp.e; samp.running = true;
+    try {
+      const url = URL.createObjectURL(new Blob([ekSamplerWorkerSource()], { type: 'text/javascript' }));
+      const k = Math.max(1, Math.min(6, (navigator.hardwareConcurrency || 2) - 1));
+      for (let i = 0; i < k; i++) { const w = new Worker(url); w.onmessage = ev => onBatch(ev.data); w.postMessage({ e }); workers.push(w); }
+      return;
+    } catch (err) { /* fall through to the main thread */ }
+    const S = ekSamplerFactory(), N = 10n ** BigInt(e), logN = e * Math.LN10;
+    const tick = () => { if (!samp.running) return; const w = new Float64Array(64), W = new Float64Array(64); let n = 0; const t = performance.now();
+      while (performance.now() - t < 40) { const r = S.sample(N, logN); w[r[0]]++; W[r[1]]++; n++; }
+      onBatch({ w, W, n }); samp.timer = setTimeout(tick, 15); };
+    tick();
+  }
+  function resumeSampling() { if (!samp) return; samp.target = Math.max(samp.target, samp.n + state.target); samp.t0 = performance.now() - ((samp.t1 || performance.now()) - samp.t0); samp.t1 = null; spawnSamplers(); data = samplingData(); render(); }
+
+  // ---------- derived numbers ----------
+  function derive() {
+    const d = data, c = d.cfg, P = d.hist.map(h => h / d.total);
+    let mean = 0, v = 0, m3 = 0; P.forEach((p, k) => mean += k * p); P.forEach((p, k) => { v += (k - mean) ** 2 * p; m3 += (k - mean) ** 3 * p; });
+    const skew = v > 0 ? m3 / Math.pow(v, 1.5) : 0;
+    const xEnd = c.mode === 'ff' ? c.n : c.N;
+    const cls = d.cls(xEnd);
+    const ref = d.model ? { m: d.model.mean, v: d.model.var } : null;
+    let norm = state.norm; if (norm === 'ref' && !ref) norm = 'cls';
+    const use = norm === 'cls' ? cls : norm === 'ref' ? ref : { m: mean, v };
+    const mu = use.m, sig = Math.sqrt(Math.max(use.v, 1e-6));
+    let kmin = P.findIndex(p => p > 0), kmax = P.length - 1;
+    // KS against Φ at lattice points
+    let F = 0, ks = 0;
+    for (let k = 0; k < P.length; k++) { if (!P[k]) continue; const z = (k - mu) / sig, ph = Phi(z); ks = Math.max(ks, Math.abs(F - ph)); F += P[k]; ks = Math.max(ks, Math.abs(F - ph)); }
+    let tv = null;
+    if (d.model) { tv = 0; const K = Math.max(P.length, d.model.dist.length); for (let k = 0; k < K; k++) tv += Math.abs((P[k] || 0) - (d.model.dist[k] || 0)); tv /= 2; }
+    let noise = null; if (d.sampled && d.model) { noise = 0; d.model.dist.forEach(p => noise += Math.sqrt(p * (1 - p) / Math.max(d.total, 1)) * 0.7979); noise /= 2; }
+    cur = { P, mean, v, skew, cls, ref, norm, mu, sig, kmin, kmax, ks, tv, noise, model: d.model ? d.model.dist : null };
+  }
+
+  // ---------- text ----------
+  function titleHTML() {
+    const c = data.cfg, l = L();
+    switch (c.mode) {
+      case 'omega': return c.sampled ? `<span class="m">${l}(n)</span>, &nbsp;random <span class="m">n ≤ 10${sup(c.e)}</span>` : `<span class="m">${l}(n)</span>, &nbsp;<span class="m">2 ≤ n ≤ ${fmtN(c.N)}</span>`;
+      case 'poly': return `<span class="m">${l}(${fNice(c.poly)})</span>, &nbsp;<span class="m">1 ≤ n ≤ ${fmtN(c.N)}</span>`;
+      case 'shift': return `<span class="m">${l}(p ${c.a < 0 ? '−' : '+'} ${Math.abs(c.a)})</span>, &nbsp;primes <span class="m">p ≤ ${fmtN(c.N)}</span>`;
+      case 'smooth': return `<span class="m">${l}<sub>y</sub>(n)</span> with <span class="m">y = ${c.y.toLocaleString()}</span>, &nbsp;<span class="m">n ≤ ${fmtN(c.N)}</span>`;
+      case 'phi': return `<span class="m">${l}(φ(n))</span>, &nbsp;<span class="m">3 ≤ n ≤ ${fmtN(c.N)}</span>`;
+      case 'ff': return `<span class="m">${l}(F)</span>, &nbsp;<span class="m">F ∈ 𝔽<sub>${c.q}</sub>[t]</span> monic of degree ${c.n}`;
+    }
+  }
+  function clsText() {
+    const c = data.cfg;
+    switch (c.mode) {
+      case 'poly': return `μ = σ² = g·log log N with g = ${data.g}`;
+      case 'smooth': return 'μ = σ² = log log y';
+      case 'phi': return 'μ = ½(log log N)², σ² = ⅓(log log N)³';
+      case 'ff': return 'μ = σ² = log n';
+      case 'shift': return 'μ = σ² = log log N';
+      default: return 'μ = σ² = log log N';
+    }
+  }
+  function normHint() {
+    if (cur.norm === 'cls') return clsText();
+    if (cur.norm === 'ref') return data.cfg.mode === 'smooth' && data.model.g === 0 ? 'Mean and variance of the Kubilius model: independent events p | n, p ≤ y' : 'Mean and variance of the prime model, including the Sathe–Selberg correction';
+    return 'Mean and variance of the sample itself';
+  }
+  const THEORY = {
+    omega: () => `<h3>Erdős–Kac (1940)</h3>
+      <p>For <span class="m">n ≤ x</span>, <span class="m">(ω(n) − log log x)/√(log log x)</span> converges in distribution to <span class="m">N(0, 1)</span>. The same holds for <span class="m">Ω(n)</span>. Rényi and Turán showed the error in the distribution function is of exact order <span class="m">1/√(log log x)</span>.</p>
+      <p>That rate is the whole story of this picture. At <span class="m">x = 10⁷</span>, <span class="m">log log x ≈ 2.78</span>, so the histogram has only a handful of bars and the normal curve fits only roughly. Mertens gives the mean <span class="m">Σ<sub>p≤x</sub> 1/p = log log x + 0.2615…</span>, and the variance is <span class="m">log log x − 1.83…</span>, so the classical normalization is visibly off at every computable <span class="m">x</span>.</p>
+      <p>The prime model treats the events <span class="m">p | n</span> as independent with probability <span class="m">1/p</span>, then multiplies the generating function by <span class="m">e<sup>−γ(z−1)</sup>/Γ(z)</span>, the Sathe–Selberg correction for the large primes. It matches the histogram well up to about twice the mean.</p>
+      <p>Every <span class="m">n ≤ 10⁷</span> gives a total-variation gap to the model of about 0.04, visible by eye. Switch the method to <b>Random sample</b> to go to <span class="m">10²⁰</span> or beyond: there the gap drops to the level of sampling noise. The normal curve still fits poorly, because <span class="m">log log 10²⁰ ≈ 3.8</span>.</p>`,
+    poly: () => `<h3>Halberstam (1956)</h3>
+      <p>If <span class="m">f ∈ ℤ[x]</span> has <span class="m">g</span> distinct irreducible factors, then <span class="m">ω(f(n))</span> for <span class="m">n ≤ x</span> is asymptotically normal with mean and variance <span class="m">g log log x</span>. A prime <span class="m">p</span> divides <span class="m">f(n)</span> with frequency <span class="m">ρ(p)/p</span>, where <span class="m">ρ(p) = #{r mod p : f(r) ≡ 0}</span>. By Chebotarev, <span class="m">ρ(p)</span> averages to the number of irreducible factors.</p>
+      <p>The prime model uses the exact <span class="m">ρ(p)</span> for every <span class="m">p ≤ B</span>, a Poisson term for primes between <span class="m">B</span> and the size of each factor, and the Sathe–Selberg correction once per factor. For <span class="m">Ω</span>, it uses roots modulo <span class="m">p²</span> for the second-order terms.</p>
+      <p>Try <span class="m">n(n+1)</span>, <span class="m">n² + 1</span>, <span class="m">n³ + 2</span>, or <span class="m">n⁴ + 4 = (n² + 2n + 2)(n² − 2n + 2)</span> (g = 2 with no rational roots, detected from <span class="m">ρ(p)</span>).</p>`,
+    shift: () => `<h3>Shifted primes</h3>
+      <p>Halberstam also proved that for primes <span class="m">p ≤ x</span>, <span class="m">ω(p + a)</span> is asymptotically normal with mean and variance <span class="m">log log x</span>. A prime <span class="m">ℓ ∤ a</span> divides <span class="m">p + a</span> with relative frequency <span class="m">1/(ℓ − 1)</span>, by Dirichlet's theorem in progressions. When <span class="m">ℓ | a</span>, it never does, except for <span class="m">p = ℓ</span>.</p>
+      <p>So for odd <span class="m">a</span>, the prime 2 divides every <span class="m">p + a</span>, and the distribution is shifted up by one compared with <span class="m">ω(n)</span>. The case <span class="m">a = −1</span> (shifted primes <span class="m">p − 1</span>) is the input to the Erdős–Pomerance theorem for <span class="m">ω(φ(n))</span>.</p>`,
+    smooth: () => `<h3>Truncated count <span class="m">ω<sub>y</sub></span></h3>
+      <p><span class="m">ω<sub>y</sub>(n) = #{p ≤ y : p | n}</span>. When <span class="m">y</span> is a small power of <span class="m">x</span>, the events <span class="m">p | n</span> for <span class="m">p ≤ y</span> are nearly independent, so <span class="m">ω<sub>y</sub></span> is close to a sum of independent Bernoulli<span class="m">(1/p)</span> variables. This is the Kubilius model, the standard route to Erdős–Kac via the Turán–Kubilius inequality.</p>
+      <p>Its mean is <span class="m">Σ<sub>p≤y</sub> 1/p ≈ log log y + 0.2615</span>. For bounded <span class="m">y</span> the variance stays bounded and the limit is not normal, while the Kubilius model stays exact. Slide <span class="m">y</span> up to watch the Gaussian appear. As <span class="m">u = log N / log y</span> drops toward 1, large primes start to interact and the independent model stops fitting.</p>`,
+    phi: () => `<h3>Erdős–Pomerance (1985)</h3>
+      <p><span class="m">ω(φ(n))</span> and <span class="m">Ω(φ(n))</span> are asymptotically normal with mean <span class="m">½(log log x)²</span> and variance <span class="m">⅓(log log x)³</span>. Each prime <span class="m">p | n</span> contributes the primes of <span class="m">p − 1</span>, about <span class="m">log log p</span> of them, so the count is a sum of a random number of correlated pieces. That makes the variance larger than the mean.</p>
+      <p>Convergence is very slow, because the lower-order terms are a fixed fraction of the main terms at any computable <span class="m">x</span>. With the classical normalization the histogram sits far from the normal curve; the sample normalization shows that its shape is already roughly Gaussian. No simple independent-prime model is shown here.</p>`,
+    ff: () => `<h3>Function field analogue</h3>
+      <p>For a uniformly random monic <span class="m">F ∈ 𝔽<sub>q</sub>[t]</span> of degree <span class="m">n</span>, let <span class="m">ω(F)</span> count its distinct monic irreducible factors. There are <span class="m">π<sub>q</sub>(d) = (1/d)Σ<sub>e|d</sub> μ(e) q<sup>d/e</sup></span> irreducibles of degree <span class="m">d</span>, each dividing <span class="m">F</span> with probability exactly <span class="m">q<sup>−d</sup></span> when <span class="m">d ≤ n</span>. So the mean is <span class="m">Σ<sub>d≤n</sub> π<sub>q</sub>(d) q<sup>−d</sup> ≈ log n + γ</span>, and <span class="m">(ω(F) − log n)/√(log n) → N(0, 1)</span> as <span class="m">n → ∞</span>.</p>
+      <p>Here <span class="m">log n</span> plays the role of <span class="m">log log x</span>, with <span class="m">x = q<sup>n</sup></span>. The histogram is exact: it is read off from the generating function <span class="m">∏<sub>d</sub>(1 + z u<sup>d</sup>/(1 − u<sup>d</sup>))<sup>π<sub>q</sub>(d)</sup></span> at roots of unity in <span class="m">z</span>, so degree 1000 costs a fraction of a second. That is the analogue of <span class="m">x ≈ 10<sup>434</sup></span>, far beyond any computation over the integers. There the histogram and the prime model agree to about 10<sup>−4</sup> in total variation, while the normal curve is still visibly off. As <span class="m">q → ∞</span>, the factorization type tends to the cycle type of a random permutation.</p>`,
+  };
+
+  // ---------- render ----------
+  function render() {
+    if (!data) return;
+    if (data.sampled && !data.total) { $('timing').innerHTML = '<span class="busy-dot" aria-hidden="true"></span>Starting samplers…'; return; }
+    derive();
+    const c = data.cfg;
+    $('title').innerHTML = titleHTML();
+    $('fnSym').textContent = state.Om ? 'Ω' : 'ω';
+    if (data.sampled) {
+      const secs = ((samp.t1 || performance.now()) - samp.t0) / 1000, rate = samp.n / Math.max(secs, 0.001);
+      if (samp.running) { $('timing').innerHTML = `<span class="busy-dot" aria-hidden="true"></span>${samp.n.toLocaleString()} / ${samp.target.toLocaleString()} samples · ${Math.round(rate).toLocaleString()}/s <button type="button" id="stopBtn">Stop</button>`; $('stopBtn').onclick = () => { stopSampling(); samp.t1 = performance.now(); render(); }; }
+      else $('timing').innerHTML = `${samp.n.toLocaleString()} samples in ${secs.toFixed(1)} s` + (samp.n < samp.target ? ` <button type="button" id="resumeBtn">Continue</button>` : '');
+      const rb = document.getElementById('resumeBtn'); if (rb) rb.onclick = () => { resumeSampling(); };
+    } else $('timing').textContent = `computed in ${data.ms < 1000 ? Math.round(data.ms) + ' ms' : (data.ms / 1000).toFixed(1) + ' s'}`;
+    $('normHint').textContent = normHint();
+    setSeg('segNorm', cur.norm);
+    const domain = { omega: 'integers', poly: 'values', shift: 'primes', smooth: 'integers', phi: 'integers', ff: 'polynomials' }[c.mode];
+    const normName = { cls: 'classical', ref: 'model', emp: 'sample' }[cur.norm];
+    const tiles = [
+      ['Sample', data.isProb ? data.totalLabel : data.total.toLocaleString(), data.isProb ? 'polynomials, exact' : data.sampled ? `random integers ≤ 10${sup(c.e)}` : domain],
+      ['Mean', f3(cur.mean), `μ = ${f3(cur.mu)} (${normName})`],
+      ['Variance', f3(cur.v), `σ² = ${f3(cur.sig ** 2)}`],
+      ['Skewness', f3(cur.skew), 'normal: 0'],
+      ['KS distance', f3(cur.ks), 'sup |F − Φ|'],
+      ['TV to model', cur.tv == null ? '—' : cur.tv < 0.001 ? cur.tv.toExponential(1).replace('e-', '·10⁻').replace(/⁻(\d)/, (_, d) => '⁻' + sup(d)) : f3(cur.tv), cur.tv == null ? 'no model for this function' : data.sampled ? `sampling noise alone ≈ ${f3(cur.noise)}` : '½ Σ |P − P_model|'],
+    ];
+    $('tiles').innerHTML = tiles.map(([k, v, s]) => `<div class="tile"><span class="k">${k}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join('');
+    $('theory').innerHTML = THEORY[c.mode]();
+    const info = data.info.slice();
+    if (data.model) info.push(`prime model: mean ${f3(data.model.mean)}, variance ${f3(data.model.var)}`);
+    info.push(`classical: ${clsText().replace('μ = σ² = ', '')} = ${f3(cur.cls.m)}${cur.cls.v !== cur.cls.m ? `, ${f3(cur.cls.v)}` : ''}`);
+    $('info').innerHTML = info.map(s => `<li>${s}</li>`).join('');
+    drawDist(); drawRun(); drawTable();
+  }
+
+  function drawTable() {
+    const { P, mu, sig, model } = cur, rows = [];
+    const K = Math.max(P.length, model ? model.findLastIndex(x => x > 5e-5) + 1 : 0);
+    for (let k = 0; k < K; k++) {
+      const p = P[k] || 0, pm = model ? (model[k] || 0) : null;
+      if (!p && !(pm > 5e-5)) continue;
+      const nb = Phi((k + 0.5 - mu) / sig) - Phi((k - 0.5 - mu) / sig);
+      rows.push(`<tr><td>${k}</td><td>${data.isProb ? '—' : (data.hist[k] || 0).toLocaleString()}</td><td>${pct(p)}</td><td>${pct(nb)}</td><td>${pm == null ? '—' : pct(pm)}</td></tr>`);
+    }
+    $('tbl').innerHTML = `<table><thead><tr><th>${L()} = k</th><th>count</th><th>sample</th><th>normal (bin)</th><th>model</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;
+  }
+
+  function legend(id, items) {
+    $(id).innerHTML = items.map(([cls, color, text]) => `<span><span class="sw ${cls}" style="${cls === 'dot' || cls === 'bar' ? 'background' : 'border-color'}:${color}"></span>${text}</span>`).join('');
+  }
+
+  // distribution plot
+  function drawDist() {
+    const el = $('plotDist'), W = Math.max(300, el.clientWidth || 700), H = W < 560 ? 290 : 350;
+    const M = { l: 40, r: 12, t: 12, b: 54 };
+    const { P, mu, sig, kmin, kmax, model } = cur;
+    const showM = state.showModel && !!model, showN = state.showNormal;
+    const zk = k => (k - mu) / sig;
+    let k0 = kmin, k1 = kmax;
+    if (showM) { model.forEach((p, k) => { if (p > 2e-4) { k0 = Math.min(k0, k); k1 = Math.max(k1, k); } }); }
+    let zlo = Math.min(-3.5, zk(k0 - 0.5)), zhi = Math.max(3.5, zk(k1 + 0.5));
+    zlo = Math.max(zlo, -12); zhi = Math.min(zhi, 14);
+    const pw = W - M.l - M.r, ph = H - M.t - M.b;
+    const sx = z => M.l + (z - zlo) / (zhi - zlo) * pw;
+    const hist = state.view === 'hist';
+    let ymax;
+    if (hist) { ymax = Math.max(...P.map(p => p * sig)); if (showN) ymax = Math.max(ymax, 0.3989); if (showM) ymax = Math.max(ymax, ...model.map(p => p * sig)); ymax *= 1.1; }
+    else ymax = 1;
+    const sy = y => M.t + ph - (y / ymax) * ph;
+    let g = '';
+    // grid + y ticks
+    const st = hist ? niceStep(ymax, 4) : 0.25;
+    for (let y = 0; y <= ymax + 1e-9; y += st) {
+      g += `<line x1="${M.l}" x2="${W - M.r}" y1="${sy(y)}" y2="${sy(y)}" stroke="var(--grid)" stroke-width="1"/>`;
+      g += `<text x="${M.l - 6}" y="${sy(y) + 4}" text-anchor="end">${+y.toFixed(3)}</text>`;
+    }
+    // x ticks (z)
+    for (let z = Math.ceil(zlo); z <= Math.floor(zhi); z++) {
+      g += `<line x1="${sx(z)}" x2="${sx(z)}" y1="${M.t + ph}" y2="${M.t + ph + 4}" stroke="var(--ink-3)"/>`;
+      g += `<text x="${sx(z)}" y="${M.t + ph + 16}" text-anchor="middle">${z < 0 ? '−' + (-z) : z}</text>`;
+    }
+    // k labels
+    const pxPerK = pw / ((zhi - zlo) * sig), every = pxPerK >= 18 ? 1 : pxPerK >= 9 ? 2 : 5;
+    g += `<text x="${M.l - 6}" y="${M.t + ph + 34}" text-anchor="end" class="axt" style="font-style:italic;font-family:var(--f-math)">k</text>`;
+    for (let k = k0; k <= k1; k++) { if (k % every) continue; const x = sx(zk(k)); if (x < M.l || x > W - M.r) continue; g += `<text x="${x}" y="${M.t + ph + 34}" text-anchor="middle" style="fill:var(--ink-2)">${k}</text>`; }
+    g += `<text x="${M.l + pw / 2}" y="${H - 4}" text-anchor="middle" class="axt">z = (k − μ)/σ  (upper row) · value k of ${L()} (lower row)</text>`;
+    g += `<line x1="${M.l}" x2="${W - M.r}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--ink-3)" stroke-width="1"/>`;
+    if (hist) {
+      const bw = pw / ((zhi - zlo) * sig);
+      for (let k = kmin; k <= kmax; k++) {
+        if (!P[k]) continue;
+        let x0 = sx(zk(k) - 0.5 / sig) + 1, x1 = sx(zk(k) + 0.5 / sig) - 1; if (x1 - x0 < 1) { x1 = x0 + 1; }
+        const y0 = sy(0), y1 = sy(P[k] * sig), r = Math.min(4, (x1 - x0) / 2, y0 - y1);
+        g += `<path d="M${x0},${y0} V${y1 + r} Q${x0},${y1} ${x0 + r},${y1} H${x1 - r} Q${x1},${y1} ${x1},${y1 + r} V${y0} Z" fill="var(--s1)" fill-opacity="${bw < 6 ? 1 : 0.85}"/>`;
+      }
+      if (showN) { let d = ''; for (let i = 0; i <= 240; i++) { const z = zlo + (zhi - zlo) * i / 240; d += (i ? 'L' : 'M') + sx(z).toFixed(1) + ',' + sy(phi(z)).toFixed(1); } g += `<path d="${d}" fill="none" stroke="var(--s2)" stroke-width="2"/>`; }
+      if (showM) {
+        let d = '', dots = '';
+        for (let k = k0; k <= k1; k++) { const p = model[k] || 0; const x = sx(zk(k)), y = sy(p * sig); d += (d ? 'L' : 'M') + x.toFixed(1) + ',' + y.toFixed(1); if (p > 2e-4) dots += `<circle cx="${x}" cy="${y}" r="4.5" fill="var(--s3)" stroke="var(--panel)" stroke-width="2"/>`; }
+        g += `<path d="${d}" fill="none" stroke="var(--s3)" stroke-width="1.5" stroke-opacity="0.7"/>` + dots;
+      }
+    } else {
+      const step = (Pk, dash, color, w) => {
+        let F = 0, d = `M${sx(zlo)},${sy(0)}`;
+        for (let k = 0; k < Pk.length; k++) { if (!Pk[k]) continue; const x = Math.min(Math.max(sx(zk(k)), M.l), W - M.r); d += `H${x.toFixed(1)}`; F += Pk[k]; d += `V${sy(Math.min(F, 1)).toFixed(1)}`; }
+        d += `H${W - M.r}`;
+        return `<path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" ${dash ? 'stroke-dasharray="5 4"' : ''}/>`;
+      };
+      if (showN) { let d = ''; for (let i = 0; i <= 240; i++) { const z = zlo + (zhi - zlo) * i / 240; d += (i ? 'L' : 'M') + sx(z).toFixed(1) + ',' + sy(Phi(z)).toFixed(1); } g += `<path d="${d}" fill="none" stroke="var(--s2)" stroke-width="2"/>`; }
+      if (showM) g += step(model, true, 'var(--s3)', 2);
+      g += step(P, false, 'var(--s1)', 2.25);
+    }
+    g += `<g id="dHover"></g><rect x="${M.l}" y="${M.t}" width="${pw}" height="${ph}" fill="transparent" id="dHit"/>`;
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Normalized distribution compared with the normal curve">${g}</svg><div class="tip" id="dTip" hidden></div>`;
+    const items = [[hist ? 'bar' : '', 'var(--s1)', hist ? 'Sample' : 'Sample CDF']];
+    if (showN) items.push(['', 'var(--s2)', hist ? 'Normal density φ' : 'Normal CDF Φ']);
+    if (showM) items.push([hist ? 'dot' : 'dash', 'var(--s3)', $('modelName').textContent]);
+    legend('legDist', items);
+    $('capDist').textContent = hist
+      ? `Each bar is one value k, drawn at z = (k − μ)/σ with width 1/σ and height σ·P(${L()} = k), so its area is the probability. ${normHint()}.`
+      : `Step functions jump at each z = (k − μ)/σ. The KS distance is the largest vertical gap between the sample CDF and Φ; for an integer-valued count it cannot be smaller than about half the largest jump.`;
+    // hover
+    const svg = el.querySelector('svg'), tip = $('dTip');
+    svg.addEventListener('pointermove', ev => {
+      const r = svg.getBoundingClientRect(), sc = W / r.width, px = (ev.clientX - r.left) * sc, py = (ev.clientY - r.top) * sc;
+      if (px < M.l || px > W - M.r || py < M.t || py > M.t + ph) { tip.hidden = true; $('dHover').innerHTML = ''; return; }
+      const z = zlo + (px - M.l) / pw * (zhi - zlo); let k = Math.round(mu + z * sig); k = Math.max(k0, Math.min(k1, k));
+      const x = sx(zk(k));
+      $('dHover').innerHTML = `<line x1="${x}" x2="${x}" y1="${M.t}" y2="${M.t + ph}" stroke="var(--ink-3)" stroke-dasharray="3 3"/>`;
+      const p = P[k] || 0, nb = Phi((k + 0.5 - mu) / sig) - Phi((k - 0.5 - mu) / sig);
+      let Fk = 0; for (let j = 0; j <= k && j < P.length; j++) Fk += P[j];
+      const rows = [[`<span class="sw bar" style="background:var(--s1)"></span>Sample`, data.isProb ? pct(p) : `${pct(p)} · ${(data.hist[k] || 0).toLocaleString()}`]];
+      if (!hist) rows.push(['Sample P(≤ k)', pct(Fk)], ['Φ(z)', pct(Phi(zk(k)))]);
+      if (showN && hist) rows.push([`<span class="sw" style="border-color:var(--s2)"></span>Normal, this bin`, pct(nb)]);
+      if (showM) rows.push([`<span class="sw dot" style="background:var(--s3)"></span>Model`, pct(model[k] || 0)]);
+      tip.innerHTML = `<div><b><span class="m">${L()} = ${k}</span></b> &nbsp;<span class="small">z = ${zk(k).toFixed(2)}</span></div>` + rows.map(([a, b]) => `<div class="row"><span>${a}</span><span>${b}</span></div>`).join('');
+      tip.hidden = false;
+      const cx = (x / sc), tw = tip.offsetWidth; let left = cx + 14; if (left + tw > r.width) left = cx - tw - 14;
+      tip.style.left = Math.max(0, left) + 'px'; tip.style.top = Math.max(0, py / sc - 30) + 'px';
+    });
+    svg.addEventListener('pointerleave', () => { tip.hidden = true; $('dHover').innerHTML = ''; });
+  }
+
+  // running plot
+  function drawRun() {
+    const el = $('plotRun'), W = Math.max(300, el.clientWidth || 700), H = W < 560 ? 250 : 290;
+    const M = { l: 40, r: 14, t: 12, b: 40 };
+    const c = data.cfg, ff = c.mode === 'ff';
+    const T = x => ff ? Math.log(x) : LL(x);
+    const pts = data.runX ? data.runX.map(x => ({ x, m: null, v: null })) : data.run.filter(p => ff || p.x >= 20);
+    if (pts.length < 2) { el.innerHTML = '<p class="small">Increase the range to see the trend.</p>'; legend('legRun', []); return; }
+    const rows = pts.map(p => { const cl = data.cls(p.x), rf = data.ref ? data.ref(p.x) : null; return { x: p.x, t: T(p.x), m: p.m, v: p.v, cm: cl.m, cv: cl.v, rm: rf ? rf.m : null, rv: rf ? rf.v : null }; });
+    const sameCls = c.mode !== 'phi';
+    const showRef = !!data.ref;
+    const series = [
+      { key: 'm', color: 'var(--s1)', dash: '', w: 2.25, name: data.sampled ? 'Sample mean ± 2 SE' : 'Sample mean', sw: data.sampled ? 'dot' : '' },
+      { key: 'v', color: 'var(--s2)', dash: '', w: 2.25, name: data.sampled ? 'Sample variance ± 2 SE' : 'Sample variance', sw: data.sampled ? 'dot' : '' },
+    ];
+    if (showRef) series.push({ key: 'rm', color: 'var(--s1)', dash: '6 4', w: 1.5, name: 'Model mean', sw: 'dash' }, { key: 'rv', color: 'var(--s2)', dash: '6 4', w: 1.5, name: 'Model variance', sw: 'dash' });
+    if (sameCls) series.push({ key: 'cm', color: 'var(--ink-3)', dash: '1.5 4', w: 2, name: ff ? 'Classical μ = σ² = log n' : c.mode === 'poly' && data.g > 1 ? `Classical μ = σ² = ${data.g} log log x` : 'Classical μ = σ² = log log x', sw: 'dotted' });
+    else series.push({ key: 'cm', color: 'var(--ink-3)', dash: '1.5 4', w: 2, name: 'Classical μ = ½(log log x)²', sw: 'dotted' }, { key: 'cv', color: 'var(--ink-2)', dash: '8 3 1.5 3', w: 1.5, name: 'Classical σ² = ⅓(log log x)³', sw: 'dash' });
+    const t0 = rows[0].t, t1 = rows[rows.length - 1].t;
+    let ymax = 0, ymin = 0; rows.forEach(r => series.forEach(s => { const v = r[s.key]; if (v != null && isFinite(v)) { ymax = Math.max(ymax, v); ymin = Math.min(ymin, v); } }));
+    const endPt = data.sampled && data.total > 1 ? { t: T(c.N), m: cur.mean, v: cur.v, em: 2 * Math.sqrt(cur.v / data.total), ev: 2 * cur.v * Math.sqrt(2 / (data.total - 1)) } : null;
+    if (endPt) ymax = Math.max(ymax, endPt.m + endPt.em, endPt.v + endPt.ev);
+    ymin = 0; ymax *= 1.08;
+    const pw = W - M.l - M.r, ph = H - M.t - M.b;
+    const sx = t => M.l + (t - t0) / (t1 - t0 || 1) * pw, sy = y => M.t + ph - (y - ymin) / (ymax - ymin) * ph;
+    let g = '';
+    const st = niceStep(ymax - ymin, 5);
+    for (let y = Math.ceil(ymin / st) * st; y <= ymax + 1e-9; y += st) { g += `<line x1="${M.l}" x2="${W - M.r}" y1="${sy(y)}" y2="${sy(y)}" stroke="var(--grid)"/><text x="${M.l - 6}" y="${sy(y) + 4}" text-anchor="end">${+y.toFixed(2)}</text>`; }
+    if (ymin < 0) g += `<line x1="${M.l}" x2="${W - M.r}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--ink-3)"/>`;
+    // x ticks
+    const ticks = [];
+    if (ff) { const n = c.n; for (let m = 1; m <= n; m++) if (n <= 10 || (m & (m - 1)) === 0 || m === n) ticks.push([m, String(m)]); }
+    else for (let k = 1; k <= 45; k++) { const x = Math.pow(10, k); const t = T(x); if (t >= t0 - 1e-9 && t <= t1 + 1e-9) ticks.push([x, `10${sup(k)}`]); }
+    let lastX = -99;
+    ticks.forEach(([x, lab]) => { const px = sx(T(x)); if (px - lastX < 30) return; lastX = px; g += `<line x1="${px}" x2="${px}" y1="${M.t + ph}" y2="${M.t + ph + 4}" stroke="var(--ink-3)"/><text x="${px}" y="${M.t + ph + 16}" text-anchor="middle">${lab}</text>`; });
+    g += `<text x="${M.l + pw / 2}" y="${H - 4}" text-anchor="middle" class="axt">${ff ? 'degree n (axis is log n)' : 'x (axis is log log x)'}</text>`;
+    series.forEach(s => {
+      let d = '', pen = false;
+      rows.forEach(r => { const v = r[s.key]; if (v == null || !isFinite(v) || v < ymin) { pen = false; return; } d += (pen ? 'L' : 'M') + sx(r.t).toFixed(1) + ',' + sy(v).toFixed(1); pen = true; });
+      g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.w}" ${s.dash ? `stroke-dasharray="${s.dash}"` : ''} stroke-linecap="round"/>`;
+    });
+    const last = rows[rows.length - 1];
+    if (endPt) [['m', 'em', 'var(--s1)'], ['v', 'ev', 'var(--s2)']].forEach(([k, e, col]) => { const x = sx(endPt.t) - (k === 'm' ? 0 : 0); g += `<line x1="${x}" x2="${x}" y1="${sy(endPt[k] - endPt[e])}" y2="${sy(endPt[k] + endPt[e])}" stroke="${col}" stroke-width="2"/><line x1="${x - 5}" x2="${x + 5}" y1="${sy(endPt[k] - endPt[e])}" y2="${sy(endPt[k] - endPt[e])}" stroke="${col}" stroke-width="2"/><line x1="${x - 5}" x2="${x + 5}" y1="${sy(endPt[k] + endPt[e])}" y2="${sy(endPt[k] + endPt[e])}" stroke="${col}" stroke-width="2"/><circle cx="${x}" cy="${sy(endPt[k])}" r="4.5" fill="${col}" stroke="var(--panel)" stroke-width="2"/>`; });
+    else [['m', 'var(--s1)'], ['v', 'var(--s2)']].forEach(([k, col]) => g += `<circle cx="${sx(last.t)}" cy="${sy(last[k])}" r="4" fill="${col}" stroke="var(--panel)" stroke-width="2"/>`);
+    g += `<g id="rHover"></g>`;
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Running mean and variance">${g}</svg><div class="tip" id="rTip" hidden></div>`;
+    legend('legRun', series.map(s => [s.sw, s.color, s.name]));
+    $('capRun').textContent = data.sampled
+      ? `Model and classical curves for x up to 10${sup(c.e)}, plotted against log log x; the points at the right are the sampled mean and variance with ±2 standard errors. Even at this size log log x is only ${LL(c.N).toFixed(2)}.`
+      : ff
+      ? 'Exact mean and variance over all monic polynomials of each degree up to n. On a log n axis the classical prediction is a straight line; the model curves add the constants γ and −ζ(2) that the classical prediction leaves out.'
+      : c.mode === 'phi'
+        ? 'Running mean and variance over n ≤ x, plotted against log log x. The classical curves are the leading terms of Erdős–Pomerance; the gap shows the size of the lower-order terms.'
+        : `Running mean and variance over the sample up to x, plotted against log log x, so the classical prediction is a straight line. The gap between mean and variance is mostly constants: Mertens' constant in the mean and −ζ(2) from the large primes in the variance.`;
+    const svg = el.querySelector('svg'), tip = $('rTip');
+    svg.addEventListener('pointermove', ev => {
+      const r = svg.getBoundingClientRect(), sc = W / r.width, px = (ev.clientX - r.left) * sc;
+      if (px < M.l - 6 || px > W - M.r + 6) { tip.hidden = true; $('rHover').innerHTML = ''; return; }
+      let best = rows[0]; rows.forEach(rw => { if (Math.abs(sx(rw.t) - px) < Math.abs(sx(best.t) - px)) best = rw; });
+      const x = sx(best.t);
+      $('rHover').innerHTML = `<line x1="${x}" x2="${x}" y1="${M.t}" y2="${M.t + ph}" stroke="var(--ink-3)" stroke-dasharray="3 3"/>` + [['m', 'var(--s1)'], ['v', 'var(--s2)']].map(([k, col]) => `<circle cx="${x}" cy="${sy(best[k])}" r="4" fill="${col}" stroke="var(--panel)" stroke-width="2"/>`).join('');
+      tip.innerHTML = `<div><b>${ff ? 'degree ' + best.x : 'x = ' + best.x.toLocaleString()}</b></div>` + series.map(s => { const v = best[s.key]; return `<div class="row"><span><span class="sw ${s.sw}" style="border-color:${s.color}"></span>${s.name.replace(/ =.*$/, '').replace('Classical μ', 'Classical μ').replace('Classical σ²', 'Classical σ²')}</span><span>${v == null ? '—' : v.toFixed(3)}</span></div>`; }).join('');
+      tip.hidden = false;
+      const cx = x / sc, tw = tip.offsetWidth; let left = cx + 14; if (left + tw > r.width) left = cx - tw - 14;
+      tip.style.left = Math.max(0, left) + 'px'; tip.style.top = '8px';
+    });
+    svg.addEventListener('pointerleave', () => { tip.hidden = true; $('rHover').innerHTML = ''; });
+  }
+
+  // ---------- presets ----------
+  const PRESETS = [
+    ['ω(n), x = 10⁷', { mode: 'omega', Om: false, method: 'exact', logN: 7 }],
+    ['ω(n), random n ≤ 10²⁰', { mode: 'omega', Om: false, method: 'sample', logBig: 20 }],
+    ['Ω(n)', { mode: 'omega', Om: true, method: 'exact', logN: 6 }],
+    ['ω(n² + 1)', { mode: 'poly', Om: false, poly: 'n^2+1', logN: 5.5 }],
+    ['ω(n(n + 1))', { mode: 'poly', Om: false, poly: 'n(n+1)', logN: 6 }],
+    ['ω(n³ + 2)', { mode: 'poly', Om: false, poly: 'n^3+2', logN: 4.7 }],
+    ['ω(n⁴ + 4)', { mode: 'poly', Om: false, poly: 'n^4+4', logN: 4.3 }],
+    ['ω(p − 1)', { mode: 'shift', Om: false, a: -1, logN: 7 }],
+    ['ω(p + 2)', { mode: 'shift', Om: false, a: 2, logN: 7 }],
+    ['ω<sub>y</sub>(n), y = 30', { mode: 'smooth', Om: false, logN: 6, logY: Math.log10(30) }],
+    ['ω<sub>y</sub>(n), y = 10⁴', { mode: 'smooth', Om: false, logN: 7, logY: 4 }],
+    ['ω(φ(n))', { mode: 'phi', Om: false, logN: 6.7 }],
+    ['ω(F), 𝔽₂[t], deg 22', { mode: 'ff', Om: false, q: 2, deg: 22 }],
+    ['ω(F), 𝔽₂[t], deg 1000', { mode: 'ff', Om: false, q: 2, deg: 1000 }],
+    ['Ω(F), 𝔽₃[t], deg 300', { mode: 'ff', Om: true, q: 3, deg: 300 }],
+  ];
+  $('presets').innerHTML = PRESETS.map(([lab], i) => `<button type="button" class="chip" data-i="${i}">${lab}</button>`).join('');
+  $('presets').querySelectorAll('.chip').forEach(b => b.onclick = () => {
+    const p = PRESETS[+b.dataset.i][1];
+    state.mode = p.mode; state.Om = p.Om;
+    if (p.poly) { state.poly = p.poly; try { polyDeg = EK.parsePoly(p.poly).length - 1; } catch (e) { } }
+    if (p.a != null) state.a = p.a;
+    if (p.q) state.q = p.q; if (p.deg) state.deg = p.deg;
+    if (p.logY != null) state.logY = p.logY;
+    if (p.logN != null) state.logN[p.mode] = p.logN;
+    if (p.method) state.method = p.method; if (p.logBig) state.logBig = p.logBig;
+    syncControls(); run();
+  });
+
+  // ---------- wiring ----------
+  $('segOm').querySelectorAll('button').forEach(b => b.onclick = () => { state.Om = b.dataset.v === '1'; syncControls(); run(); });
+  $('segNorm').querySelectorAll('button').forEach(b => b.onclick = () => { if (b.disabled) return; state.norm = b.dataset.v; setSeg('segNorm', state.norm); render(); });
+  $('segView').querySelectorAll('button').forEach(b => b.onclick = () => { state.view = b.dataset.v; setSeg('segView', state.view); render(); });
+  $('showNormal').onchange = e => { state.showNormal = e.target.checked; render(); };
+  $('showModel').onchange = e => { state.showModel = e.target.checked; render(); };
+  $('logN').oninput = e => { state.logN[state.mode] = +e.target.value; if (state.mode === 'smooth') { $('logY').max = state.logN.smooth; if (state.logY > state.logN.smooth) { state.logY = state.logN.smooth; $('logY').value = state.logY; } } labels(); };
+  $('logN').onchange = () => run();
+  $('logY').oninput = e => { state.logY = +e.target.value; labels(); };
+  $('logY').onchange = () => run();
+  $('deg').oninput = e => { state.deg = degFromSlider(+e.target.value); labels(); };
+  $('deg').onchange = () => run();
+  $('fq').onchange = e => { state.q = +e.target.value; labels(); run(); };
+  $('segMethod').querySelectorAll('button').forEach(b => b.onclick = () => { state.method = b.dataset.v; syncControls(); run(); });
+  $('logBig').oninput = e => { state.logBig = +e.target.value; labels(); };
+  $('logBig').onchange = () => run();
+  $('target').onchange = e => { state.target = +e.target.value; if (samp && sampling()) { if (samp.n < state.target) { samp.target = state.target; if (!samp.running) { samp.t1 = null; spawnSamplers(); } } } };
+  $('shiftA').onchange = e => { const a = Math.round(+e.target.value); if (!a || !isFinite(a)) { $('aErr').textContent = 'Choose a nonzero integer a.'; return; } $('aErr').textContent = ''; state.a = Math.max(-100000, Math.min(100000, a)); run(); };
+  let polyTimer = 0;
+  $('poly').oninput = e => {
+    clearTimeout(polyTimer);
+    polyTimer = setTimeout(() => {
+      try { const c = EK.parsePoly(e.target.value); polyDeg = c.length - 1; state.poly = e.target.value; $('polyErr').textContent = ''; syncControls(); labels(); run(); }
+      catch (err) { $('polyErr').textContent = err.message; }
+    }, 700);
+  };
+  let rz = 0, lastW = 0; new ResizeObserver(() => { const w = $('plotDist').clientWidth; if (Math.abs(w - lastW) < 2) return; lastW = w; clearTimeout(rz); rz = setTimeout(() => { if (data) { drawDist(); drawRun(); } }, 120); }).observe($('plotDist'));
+
+  syncControls(); run();
+})();
+</script>
+
+</body></html>

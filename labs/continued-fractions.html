@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Continued Fraction Digits · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Continued Fraction Digits · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Metric number theory</p>
+    <h1>The digits of a random number</h1>
+    <p class="lead">Expand a number as a continued fraction and count its digits. For almost every real number the counts follow one law, and nobody knows a single natural constant that provably obeys it.</p>
+    <div class="byline"><span class="tag">continued fractions</span><span class="tag">ergodic theory</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Every real number $x$ has a continued fraction expansion
+$$x = a_0 + \cfrac{1}{a_1 + \cfrac{1}{a_2 + \cfrac{1}{a_3 + \cdots}}} = [a_0; a_1, a_2, a_3, \dots],$$
+with $a_0 \in \mathbb{Z}$ and digits $a_1, a_2, \dots \ge 1$. The digits are produced by the <em>Gauss map</em> $T(x) = 1/x - \lfloor 1/x \rfloor$ on $(0,1)$: the first digit is $\lfloor 1/x \rfloor$, and the rest of the expansion is the expansion of $T(x)$. Decimal digits are evenly spread for almost every number, with each of $0, \dots, 9$ appearing a tenth of the time. Continued fraction digits are not evenly spread, but they too follow one law for almost every $x$, and the lab below lets you watch it appear.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/continued-fractions.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:900px" src="app/continued-fractions.html" title="Continued fraction digits: a histogram against the Gauss–Kuzmin law and the convergence of Khinchin's and Lévy's means" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>Three laws for almost every number</h2>
+<p><strong>Gauss–Kuzmin.</strong> For almost every $x$, the proportion of digits equal to $k$ is
+$$\lim_{n\to\infty} \frac{\#\{ i \le n : a_i = k \}}{n} = -\log_2\!\Big(1 - \frac{1}{(k+1)^2}\Big).$$
+So about $41.5\%$ of digits are $1$, $17.0\%$ are $2$, $9.3\%$ are $3$, and large digits are rare but keep turning up: the share of digits that are at least $k$ is $\log_2\frac{k+1}{k} \approx \frac{1}{k \ln 2}$, which decays so slowly that the average digit is infinite. Gauss found this distribution around 1800, without publishing a proof; Kuzmin proved it in 1928.</p>
+<p><strong>Khinchin.</strong> Since the average digit is infinite, the arithmetic mean is no use, but the geometric mean settles down: for almost every $x$,
+$$\lim_{n\to\infty} (a_1 a_2 \cdots a_n)^{1/n} = K = \prod_{k=1}^{\infty} \Big(1 + \frac{1}{k(k+2)}\Big)^{\log_2 k} = 2.685452\ldots$$
+(Khinchin, 1935).</p>
+<p><strong>Lévy.</strong> The convergents $p_n/q_n = [a_0; a_1, \dots, a_n]$ are the best rational approximations to $x$. Their denominators grow exponentially at a fixed rate: for almost every $x$,
+$$\lim_{n\to\infty} q_n^{1/n} = e^{\pi^2/(12 \ln 2)} = 3.275822\ldots$$
+(Lévy, 1936). Each digit therefore buys about $\pi^2/(6 \ln 2 \ln 10) \approx 1.03$ decimal places of accuracy.</p>
+
+<h3>Why these laws hold</h3>
+<p>The digits of $x$ are the values of the function $a(x) = \lfloor 1/x \rfloor$ along the orbit $x, T(x), T^2(x), \dots$. Gauss noticed that the probability measure
+$$\mu(A) = \frac{1}{\ln 2} \int_A \frac{dx}{1+x}$$
+is invariant under $T$, and $T$ is ergodic for it. Birkhoff's ergodic theorem then says that for almost every $x$, time averages along the orbit equal space averages. Counting digits equal to $k$ is the time average of the indicator of $\big(\tfrac{1}{k+1}, \tfrac1k\big]$, which gives Gauss–Kuzmin. Averaging $\log a$ gives Khinchin. Lévy's law comes the same way from $\log q_n = -\sum_{i<n} \log T^i(x) + O(1)$.</p>
+  <details class="proof">
+    <summary>Full proof: the Gauss measure is invariant, and the digit law follows</summary>
+    <div class="proof-body">
+<p><strong>Lemma 1.</strong> <em>For every $t \in [0,1]$, $\mu\big(T^{-1}[0,t]\big) = \mu([0,t])$.</em></p>
+<p><em>Proof.</em> We have $T(x) \le t$ exactly when $1/x \in [k, k+t]$ for some integer $k \ge 1$, that is $x \in \big[\tfrac{1}{k+t}, \tfrac{1}{k}\big]$. These intervals are disjoint, so
+$$\ln 2 \cdot \mu\big(T^{-1}[0,t]\big) = \sum_{k \ge 1} \Big[\ln\Big(1 + \frac1k\Big) - \ln\Big(1 + \frac{1}{k+t}\Big)\Big] = \sum_{k\ge1} \Big[\ln\frac{k+1}{k} + \ln\frac{k+t}{k+t+1}\Big].$$
+Both sums telescope: the first $N$ terms add up to $\ln(N+1) + \ln\frac{1+t}{N+1+t} = \ln\frac{(N+1)(1+t)}{N+1+t}$, which tends to $\ln(1+t)$. And $\ln 2 \cdot \mu([0,t]) = \ln(1+t)$. $\square$</p>
+<p>Intervals $[0,t]$ generate the Borel sets, so $\mu(T^{-1}A) = \mu(A)$ for every Borel set $A$.</p>
+<p><strong>Lemma 2.</strong> <em>$\mu\{x : a_1(x) = k\} = -\log_2\!\big(1 - \frac{1}{(k+1)^2}\big)$.</em></p>
+<p><em>Proof.</em> $a_1(x) = k$ exactly when $x \in \big(\tfrac{1}{k+1}, \tfrac1k\big]$, and
+$$\mu\Big(\Big(\tfrac{1}{k+1}, \tfrac1k\Big]\Big) = \log_2 \frac{1 + 1/k}{1 + 1/(k+1)} = \log_2 \frac{(k+1)^2}{k(k+2)} = -\log_2\Big(1 - \frac{1}{(k+1)^2}\Big). \qquad \square$$</p>
+<p><strong>Theorem.</strong> <em>For Lebesgue-almost every $x$, the proportion of $i \le n$ with $a_i(x) = k$ tends to $-\log_2\big(1 - \frac{1}{(k+1)^2}\big)$.</em></p>
+<p><em>Proof.</em> Since $a_{i+1}(x) = a_1(T^i x)$, the proportion is $\frac1n \sum_{i<n} f(T^i x)$ with $f$ the indicator of $\big(\tfrac{1}{k+1}, \tfrac1k\big]$. The Gauss map is ergodic for $\mu$ (Knopp, 1926; a short proof uses the bounded distortion of the inverse branches of $T$). By Birkhoff's ergodic theorem the averages tend to $\int f \, d\mu$ for $\mu$-almost every $x$, which is the value in Lemma 2. Finally $\mu$ and Lebesgue measure have the same null sets, because the density $\frac{1}{(1+x)\ln 2}$ lies between $\frac{1}{2 \ln 2}$ and $\frac{1}{\ln 2}$. $\square$</p>
+<p>Taking $f = \log a_1$ instead, which is $\mu$-integrable, gives Khinchin's constant as $\exp \int \log a_1 \, d\mu = \prod_k \big(\frac{(k+1)^2}{k(k+2)}\big)^{\log_2 k}$.</p>
+    </div>
+  </details>
+
+<h3>The numbers you can try</h3>
+<p>The laws hold for almost every $x$, yet it is very hard to prove them for any particular number.</p>
+<ul>
+  <li><strong>A random number.</strong> The applet builds one from 6000 random bits and expands it with exact integer arithmetic, so every digit shown is correct.</li>
+  <li><strong>$\pi$</strong> looks typical: $[3; 7, 15, 1, 292, 1, 1, 1, 2, \dots]$. But nobody can prove it satisfies Khinchin's law, or even that its digits are unbounded.</li>
+  <li><strong>$\sqrt[3]{2}$</strong> also looks typical. It is not known whether the digits of <em>any</em> algebraic number of degree at least $3$ are bounded.</li>
+  <li><strong>$e$</strong> follows Euler's pattern $[2; 1, 2, 1, 1, 4, 1, 1, 6, \dots]$, so its geometric mean grows without bound.</li>
+  <li><strong>$\sqrt2$ and the golden ratio</strong> have periodic expansions, as every quadratic irrational does (Euler and Lagrange). The golden ratio, with every digit equal to $1$, is the number hardest to approximate by fractions.</li>
+  <li><strong>Your own decimal</strong>, such as the Euler–Mascheroni constant. A decimal with $d$ places fixes only roughly the first $d$ digits, and the applet shows exactly as many as the decimal determines.</li>
+</ul>
+
+<h2>Further reading</h2>
+<ul>
+  <li>A. Ya. Khinchin, <em>Continued Fractions</em>, Dover, 1997 (translation of the 1935 Russian edition).</li>
+  <li>M. Einsiedler and T. Ward, <em>Ergodic Theory with a view towards Number Theory</em>, Springer GTM 259, 2011, Chapter 3.</li>
+  <li>D. Bailey, J. Borwein and R. Crandall, <em>On the Khintchine constant</em>, Mathematics of Computation 66 (1997).</li>
+</ul>
+</div>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

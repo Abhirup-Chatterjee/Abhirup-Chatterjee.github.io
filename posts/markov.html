@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Markov numbers and the uniqueness conjecture · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Markov numbers and the uniqueness conjecture · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <h1>Markov numbers and the uniqueness conjecture</h1>
+    <div class="byline"><span class="date">November 2026</span><span class="tag">Diophantine equations</span><span class="tag">open problems</span><span class="date">≈ 7 min read</span></div>
+  </header>
+  <div class="prose">
+<p>The equation
+$$x^2 + y^2 + z^2 = 3xyz$$
+has the obvious solution $(1, 1, 1)$. Fix two of the variables, say $y$ and $z$; then it is a quadratic in $x$, and if $x$ is one root, the other is $x' = 3yz - x$, again a positive integer. This move, called <em>Vieta jumping</em>, turns one solution into three neighbours, and starting from $(1, 1, 1)$ it produces every solution, arranged in a tree.</p>
+<figure class="post-fig"><svg class="fig" viewBox="0 0 680 360" role="img" aria-label="The tree of Markov triples generated from (1,1,1) by Vieta jumping" style="width:100%;height:auto;display:block"><line x1="340.0" y1="35.0" x2="340.0" y2="79.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="340.0" y1="97.0" x2="340.0" y2="141.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="340.0" y1="159.0" x2="170.0" y2="203.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="170.0" y1="221.0" x2="85.0" y2="265.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="85.0" y1="283.0" x2="42.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="85.0" y1="283.0" x2="127.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="170.0" y1="221.0" x2="255.0" y2="265.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="255.0" y1="283.0" x2="212.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="255.0" y1="283.0" x2="297.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="340.0" y1="159.0" x2="510.0" y2="203.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="510.0" y1="221.0" x2="425.0" y2="265.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="425.0" y1="283.0" x2="382.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="425.0" y1="283.0" x2="467.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="510.0" y1="221.0" x2="595.0" y2="265.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="595.0" y1="283.0" x2="552.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><line x1="595.0" y1="283.0" x2="637.5" y2="327.0" style="stroke:var(--rule);stroke-width:1.2"/><text x="340.0" y="30.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:13px;fill:var(--ink)">1, 1, 1</text><text x="340.0" y="92.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:13px;fill:var(--ink)">1, 1, 2</text><text x="340.0" y="154.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:11.5px;fill:var(--ink)">1, 2, 5</text><text x="170.0" y="216.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:11.5px;fill:var(--ink)">2, 5, 29</text><text x="85.0" y="278.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">433</text><text x="42.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">37666</text><text x="127.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">6466</text><text x="255.0" y="278.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">169</text><text x="212.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">14701</text><text x="297.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">985</text><text x="510.0" y="216.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:11.5px;fill:var(--ink)">1, 5, 13</text><text x="425.0" y="278.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">194</text><text x="382.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">7561</text><text x="467.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">2897</text><text x="595.0" y="278.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">34</text><text x="552.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">1325</text><text x="637.5" y="340.0" text-anchor="middle" style="font-family:var(--f-mono);font-size:10px;fill:var(--accent-ink)">89</text><text x="674" y="354" text-anchor="end" style="font-family:var(--f-mono);fill:var(--muted);font-size:11px">last rows: largest entry only</text></svg><figcaption>The Markov tree. Each triple has two children obtained by replacing its smaller entries; in the last two rows only the new, largest entry is shown.</figcaption></figure>
+<p>The numbers that appear are the <strong>Markov numbers</strong> $1, 2, 5, 13, 29, 34, 89, 169, 194, 233, 433, 610, 985, \dots$ Down the right-hand edge of the tree, the triples $(1, 5, 13), (1, 13, 34), (1, 34, 89), \dots$ are made of odd-indexed Fibonacci numbers, and down the branch through $(2, 5, 29)$, the triples $(2, 29, 169), (2, 169, 985), \dots$ are made of odd-indexed Pell numbers.</p>
+
+<h2>Why Markov cared: badly approximable numbers</h2>
+<p>Hurwitz proved in 1891 that every irrational $\alpha$ has infinitely many fractions $p/q$ with $|\alpha - p/q| < \frac{1}{\sqrt5\,q^2}$, and that $\sqrt5$ is optimal because of the golden ratio. Remove the golden ratio and its equivalents, and the constant improves to $\sqrt8$, achieved by $\sqrt2$; remove those, and it improves to $\sqrt{221}/5$; and so on. In 1879–80 Andrey Markov found the whole sequence of these constants below $3$:
+$$\sqrt{9 - \frac{4}{m^2}}, \qquad m \text{ a Markov number},$$
+each achieved by a quadratic irrational built from a Markov triple. So the Markov tree describes the worst-approximable numbers, which is why the golden ratio, at the top, is the hardest number of all to approximate.</p>
+
+<h2>The uniqueness conjecture</h2>
+<p>In 1913 Frobenius asked whether each Markov number is the largest element of <em>exactly one</em> Markov triple. If so, the Markov constants above would correspond to Markov numbers one-to-one. The conjecture has been checked for all Markov numbers up to enormous size and proved for prime powers (Baragar, Button, Schmutz and others), but the general case is still open after more than a century. Aigner's book, listed below, is devoted to it.</p>
+  <details class="proof">
+    <summary>Full proof: every Markov triple comes from (1, 1, 1)</summary>
+    <div class="proof-body">
+<p><strong>Proposition.</strong> <em>Every solution of $x^2 + y^2 + z^2 = 3xyz$ in positive integers is reached from $(1, 1, 1)$ by Vieta jumps.</em></p>
+<p><em>Proof.</em> Take a solution $a \le b \le c$ other than $(1, 1, 1)$ and $(1, 1, 2)$. We show that jumping the largest entry, $c \mapsto c' = 3ab - c$, gives a positive solution with $c' < c$; repeating, the largest entry strictly decreases, so we must reach $(1, 1, 2)$ and then $(1, 1, 1)$.</p>
+<p>The numbers $c$ and $c'$ are the roots of $f(t) = t^2 - 3ab\,t + a^2 + b^2$, so $cc' = a^2 + b^2 > 0$ and $c'$ is a positive integer. First, $b < c$: if $b = c$ the equation gives $a^2 = b^2(3a - 2)$, so $b \mid a$, hence $a = b = c$ and $3a^2 = 3a^3$, so $a = 1$, excluded. Now evaluate $f(b) = 2b^2 + a^2 - 3ab^2$. If $a \ge 2$, then $f(b) \le 3b^2 - 3ab^2 < 0$. If $a = 1$, then $f(b) = 1 - b^2 < 0$ because $b \ge 2$ (as $a = b = 1$ forces $c \in \{1, 2\}$). In either case $f(b) < 0$, so $b$ lies strictly between the two roots, and since $c > b$ is the larger root, $c' < b < c$. $\square$</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>M. Aigner, <em>Markov's Theorem and 100 Years of the Uniqueness Conjecture</em>, Springer, 2013.</li>
+  <li>T. W. Cusick and M. E. Flahive, <em>The Markoff and Lagrange Spectra</em>, AMS Mathematical Surveys and Monographs 30, 1989.</li>
+  <li>A. Markoff, <em>Sur les formes quadratiques binaires indéfinies</em>, Mathematische Annalen 15 (1879) and 17 (1880).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

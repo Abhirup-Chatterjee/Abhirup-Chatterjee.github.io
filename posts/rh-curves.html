@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Riemann hypothesis for curves, from the zeta function of 𝔽q[t] upward · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Riemann hypothesis for curves, from the zeta function of 𝔽q[t] upward · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <h1>Riemann hypothesis for curves, from the zeta function of 𝔽<sub>q</sub>[t] upward</h1>
+    <div class="byline"><span class="date">November 2026</span><span class="tag">function fields</span><span class="tag">zeta functions</span><span class="date">≈ 9 min read</span></div>
+  </header>
+  <div class="prose">
+<p>Over the integers, the Riemann hypothesis is the most famous open problem in mathematics. Over $\mathbb{F}_q[t]$ and its finite extensions it is a theorem, proved by André Weil in 1948. This post climbs from the simplest case, where the zeta function has no zeros at all, to curves of genus $g$, and explains why the resulting bound is the engine behind most of function-field number theory, including the questions on the <a href="mobius-polynomials.html">Möbius function over polynomials</a> that I work on.</p>
+
+<h2>The zeta function of 𝔽<sub>q</sub>[t]</h2>
+<p>Replace positive integers by monic polynomials and the absolute value $n$ by $|f| = q^{\deg f}$. The zeta function is
+$$\zeta_A(s) = \sum_{f \text{ monic}} \frac{1}{|f|^s} = \sum_{n \ge 0} \frac{q^n}{q^{ns}} = \frac{1}{1 - q^{1-s}},$$
+because there are exactly $q^n$ monic polynomials of degree $n$. In the variable $u = q^{-s}$ it is the rational function $Z(u) = \frac{1}{1 - qu}$. Unique factorisation gives an Euler product over monic irreducibles $P$, $Z(u) = \prod_P (1 - u^{\deg P})^{-1}$, and comparing the two expressions gives the <strong>prime polynomial theorem</strong>: the number $\pi_q(n)$ of monic irreducibles of degree $n$ satisfies
+$$\pi_q(n) = \frac1n\sum_{d \mid n}\mu(d)\, q^{n/d} = \frac{q^n}{n} + O\!\left(\frac{q^{n/2}}{n}\right).$$
+The error term has size $\sqrt{q^n}$, exactly what the Riemann hypothesis predicts for the integers, and here it comes for free because $Z(u)$ has no zeros. This $\zeta_A$ is really the zeta function of the projective line over $\mathbb{F}_q$, with the point at infinity removed; adding it back multiplies by $\frac{1}{1-u}$.</p>
+  <details class="proof">
+    <summary>Full proof: the prime polynomial theorem</summary>
+    <div class="proof-body">
+<p><em>Proof.</em> Take logarithmic derivatives of $\frac{1}{1 - qu} = \prod_P (1 - u^{\deg P})^{-1}$ and multiply by $u$:
+$$\frac{qu}{1 - qu} = \sum_P \frac{\deg P\, u^{\deg P}}{1 - u^{\deg P}} = \sum_P \sum_{k \ge 1} \deg P\, u^{k\deg P}.$$
+Comparing coefficients of $u^n$ gives $q^n = \sum_{d \mid n} d\,\pi_q(d)$. Möbius inversion yields $n\pi_q(n) = \sum_{d \mid n}\mu(d)q^{n/d}$. The term $d = 1$ is $q^n$. The other terms are $\pm q^{k}$ for distinct exponents $k = n/d \le n/2$, so their total size is at most $\sum_{k \le n/2} q^k \le \frac{q}{q-1}\,q^{n/2} \le 2q^{n/2}$. Hence $|n\pi_q(n) - q^n| \le 2q^{n/2}$. $\square$</p>
+    </div>
+  </details>
+
+<h2>Curves of genus g</h2>
+<p>Now let $C$ be a smooth projective curve over $\mathbb{F}_q$ of genus $g$, for example the hyperelliptic curve $y^2 = f(x)$ with $f$ squarefree of degree $2g + 1$. Counting its points over each extension $\mathbb{F}_{q^r}$ defines
+$$Z_C(u) = \exp\!\left(\sum_{r \ge 1} \frac{\#C(\mathbb{F}_{q^r})}{r}\,u^r\right).$$
+Artin conjectured in his 1924 thesis (for hyperelliptic curves) and F. K. Schmidt proved in general that
+$$Z_C(u) = \frac{L_C(u)}{(1 - u)(1 - qu)}, \qquad L_C(u) = \prod_{j=1}^{2g}(1 - \alpha_j u),$$
+with $L_C$ a polynomial of degree $2g$ with integer coefficients, and that $Z_C$ satisfies a functional equation under $u \mapsto 1/qu$. Taking logarithms, the point counts are
+$$\#C(\mathbb{F}_{q^r}) = q^r + 1 - \sum_{j=1}^{2g}\alpha_j^{\,r}.$$
+The <strong>Riemann hypothesis for $C$</strong> is the statement $|\alpha_j| = \sqrt q$ for every $j$, equivalently that the zeros of $Z_C(q^{-s})$ lie on $\mathrm{Re}\,s = \tfrac12$. Hasse proved it for elliptic curves in 1933, Weil for all curves in 1948, using the geometry of the Jacobian and intersection theory on $C \times C$. Stepanov (1969) and Bombieri (1973) later found an elementary proof using auxiliary polynomials, and Deligne (1974) proved the analogue for varieties of every dimension.</p>
+<p>The consequence everybody uses is the <strong>Hasse–Weil bound</strong>
+$$\big|\#C(\mathbb{F}_{q^r}) - q^r - 1\big| \le 2g\,q^{r/2}.$$
+You can watch the zeros $\alpha_j/\sqrt q$ sit on the unit circle, and their statistics, in the <a href="../labs/zeros-circle.html">zeros on the unit circle</a> lab.</p>
+
+<h2>Why it is the engine</h2>
+<p>Most counting problems over $\mathbb{F}_q[t]$ reduce to bounding a character sum, and a character sum is the error term in a point count on some curve. Three examples:</p>
+<ul>
+  <li><strong>Primes in progressions.</strong> For a modulus $m \in \mathbb{F}_q[t]$ and a nontrivial Dirichlet character $\chi$, the $L$-function $L(u, \chi)$ is a polynomial of degree less than $\deg m$, and its zeros satisfy the Riemann hypothesis because it divides the zeta function of a curve (a cyclic cover of the line). So primes are equidistributed in residue classes with square-root error: the full generalised Riemann hypothesis, proved.</li>
+  <li><strong>Character sums.</strong> Weil's bound $\big|\sum_{x \in \mathbb{F}_q}\chi(f(x))\big| \le (\deg f - 1)\sqrt q$ for a multiplicative character of order $d$ and $f$ not a $d$-th power is the hyperelliptic Riemann hypothesis in disguise; the <a href="../labs/exp-sums.html">Kloosterman paths</a> lab shows the additive version.</li>
+  <li><strong>Large-$q$ limits.</strong> As $q \to \infty$ with the degree fixed, Deligne's equidistribution theorem turns the Riemann hypothesis into statements about random matrices. This is how Carmon and Rudnick proved the function-field Chowla conjecture in that limit.</li>
+</ul>
+<p>What the Riemann hypothesis does <em>not</em> give is uniformity when $q$ is fixed and the degree grows, because the number of zeros grows with the genus. That regime, fixed $q$ and large degree, is where the hard open problems live, and where the analogy with the integers is closest.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>M. Rosen, <em>Number Theory in Function Fields</em>, Springer GTM 210, 2002, Chapters 2, 4 and 5.</li>
+  <li>H. Stichtenoth, <em>Algebraic Function Fields and Codes</em>, 2nd ed., Springer GTM 254, 2009, Chapter 5.</li>
+  <li>W. M. Schmidt, <em>Equations over Finite Fields: An Elementary Approach</em>, Springer Lecture Notes in Mathematics 536, 1976.</li>
+  <li>D. Carmon and Z. Rudnick, <em>The autocorrelation of the Möbius function and Chowla's conjecture for the rational function field</em>, Quarterly Journal of Mathematics 65 (2014).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

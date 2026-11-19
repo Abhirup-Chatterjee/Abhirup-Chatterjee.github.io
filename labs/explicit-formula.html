@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Primes from the zeros of ζ · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Primes from the zeros of ζ · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <p class="eyebrow">Lab · Analytic number theory</p>
+    <h1>Primes from the zeros of ζ</h1>
+    <p class="lead">Riemann's explicit formula rebuilds the prime powers from the zeros of the zeta function. Add the zeros one at a time and watch a smooth line turn into a staircase.</p>
+    <div class="byline"><span class="tag">zeta function</span><span class="tag">primes</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Chebyshev's function counts primes with weights,
+$$\psi(x) = \sum_{p^k \le x} \log p,$$
+so it climbs by $\log p$ at every prime power $p^k$. The prime number theorem is the statement $\psi(x) \sim x$. Riemann (1859), in the form made rigorous by von Mangoldt (1895), wrote the error exactly: for $x > 1$ not a prime power,
+$$\psi(x) = x - \sum_{\rho} \frac{x^\rho}{\rho} - \log 2\pi - \tfrac12 \log\!\big(1 - x^{-2}\big),$$
+where $\rho$ runs over the nontrivial zeros of $\zeta(s)$, summed in pairs $\rho, \bar\rho$ in order of $|\mathrm{Im}\,\rho|$. Each pair contributes one oscillating wave $-2\,\mathrm{Re}(x^\rho/\rho)$. The applet uses the first 300 zeros, up to height $541.8$, all of which lie on the line $\mathrm{Re}\, s = \tfrac12$.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/explicit-formula.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:1000px" src="app/explicit-formula.html" title="Primes from the zeros of ζ: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>Reading the picture</h2>
+<p>With no zeros the curve is essentially the line $y = x$, the prime number theorem's main term. The first zero, $\rho = \tfrac12 + 14.1347\ldots i$, adds a slow wave of amplitude about $\sqrt{x}/7$. Each later zero oscillates faster, because $x^{\rho} = \sqrt x \, e^{i\gamma \log x}$. Individually the waves look nothing like primes; together they cancel everywhere except at prime powers, where they pile up into jumps of size $\log p$. Near a jump the truncated sum overshoots, exactly like a truncated Fourier series (the Gibbs phenomenon), because the explicit formula <em>is</em> a Fourier expansion of $\psi$ in the variable $\log x$.</p>
+<p>The size of the waves explains why the Riemann hypothesis matters. Every zero has real part $\beta \le 1$ and contributes about $x^\beta / |\rho|$. If all $\beta = \tfrac12$, the error in the prime number theorem is $\psi(x) - x = O(\sqrt x \log^2 x)$ (von Koch, 1901), and conversely that bound forces every zero onto the critical line. A single zero off the line would leave a visible wave growing faster than $\sqrt x$.</p>
+  <details class="proof">
+    <summary>Sketch of proof: where the formula comes from</summary>
+    <div class="proof-body">
+<p>The logarithmic derivative of the Euler product is a Dirichlet series over prime powers:
+$$-\frac{\zeta'(s)}{\zeta(s)} = \sum_{n \ge 1} \frac{\Lambda(n)}{n^s}, \qquad \Lambda(p^k) = \log p, \quad \Lambda = 0 \text{ otherwise}.$$
+Perron's formula picks out the partial sums: for $c > 1$ and $x$ not a prime power,
+$$\psi(x) = \frac{1}{2\pi i} \int_{c - i\infty}^{c + i\infty} \left(-\frac{\zeta'(s)}{\zeta(s)}\right) \frac{x^s}{s}\, ds.$$
+Shift the contour to the left. The integrand has poles at $s = 1$ (from the pole of $\zeta$, residue $x$), at $s = 0$ (residue $-\zeta'(0)/\zeta(0) = -\log 2\pi$), at each nontrivial zero $\rho$ (residue $-x^\rho/\rho$, counted with multiplicity) and at the trivial zeros $s = -2n$ (residues $x^{-2n}/2n$, which sum to $-\tfrac12\log(1 - x^{-2})$). The real work, done by von Mangoldt, is to bound $\zeta'/\zeta$ on a sequence of horizontal and vertical segments avoiding the zeros, so that the shifted integrals tend to $0$. $\square$</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>H. Davenport, <em>Multiplicative Number Theory</em>, 3rd ed., Springer GTM 74, 2000, Chapter 17.</li>
+  <li>H. L. Montgomery and R. C. Vaughan, <em>Multiplicative Number Theory I: Classical Theory</em>, Cambridge, 2007, Chapter 12.</li>
+  <li>B. Riemann, <em>Über die Anzahl der Primzahlen unter einer gegebenen Grösse</em>, Monatsberichte der Berliner Akademie, 1859.</li>
+  <li>B. Mazur and W. Stein, <em>Prime Numbers and the Riemann Hypothesis</em>, Cambridge, 2016.</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

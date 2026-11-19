@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prime races and arithmetic random walks · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Prime races and arithmetic random walks · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <p class="eyebrow">Lab · Analytic number theory</p>
+    <h1>Prime races and arithmetic random walks</h1>
+    <p class="lead">Chebyshev's bias, the Mertens function and the Liouville walk: running totals that look like coin tossing, behave almost like it, and hide the zeros of L-functions in their small deviations.</p>
+    <div class="byline"><span class="tag">primes</span><span class="tag">Möbius function</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Run through the primes and keep score: $+1$ for each prime $\equiv 3 \pmod 4$, $-1$ for each prime $\equiv 1 \pmod 4$. Dirichlet's theorem says both teams get half the primes in the long run, so the score should wander around zero like a random walk. It does not: the $3 \bmod 4$ team is ahead almost all the time, and the $1 \bmod 4$ team first takes the lead at $x = 26861$. This is <strong>Chebyshev's bias</strong>, noticed in a letter of 1853. The applet also draws three classical walks built from the Möbius function $\mu$ and its cousin $\lambda(n) = (-1)^{\Omega(n)}$.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/prime-races.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:880px" src="app/prime-races.html" title="Prime races and arithmetic random walks: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>Why the race is biased</h2>
+<p>The explicit formula for primes in progressions (the same one as in the <a href="explicit-formula.html">zeros of ζ</a> lab, but for the $L$-function of the character $\chi_4$) gives, roughly,
+$$\frac{\log x}{\sqrt x}\Big(\pi(x; 4, 3) - \pi(x; 4, 1)\Big) \approx 1 - 2\sum_{\gamma > 0} \frac{\sin(\gamma \log x)}{\gamma},$$
+summed over the zeros $\tfrac12 + i\gamma$ of $L(s, \chi_4)$, assuming the generalised Riemann hypothesis. The constant $1$ comes from squares of primes: every odd square is $1 \bmod 4$, so the prime powers that the explicit formula counts give the $1 \bmod 4$ side a head start that the primes themselves must pay back. The oscillating sum has mean zero and is usually smaller than $1$, so the $3 \bmod 4$ side usually leads. Rubinstein and Sarnak (1994) made this precise: assuming GRH and that the $\gamma$ are linearly independent over $\mathbb{Q}$, the set of $x$ where the $3 \bmod 4$ team leads has logarithmic density $0.9959\ldots$.</p>
+
+<h2>Möbius and Liouville walks</h2>
+<p>The <strong>Mertens function</strong> $M(x) = \sum_{n \le x} \mu(n)$ stays inside $\pm\sqrt x$ for as far as anyone has computed, and Mertens conjectured in 1897 that it always does. Odlyzko and te Riele disproved this in 1985 without exhibiting a counterexample; the first one is known to lie beyond $10^{16}$. What is true is that the Riemann hypothesis is <em>equivalent</em> to $M(x) = O(x^{1/2 + \varepsilon})$ for every $\varepsilon > 0$.</p>
+<p>Pólya conjectured in 1919 that $L(x) = \sum_{n \le x} \lambda(n) \le 0$ for all $x \ge 2$, that is, at least half the numbers up to $x$ have an odd number of prime factors. It survives every computation within the applet's range, but fails first at $x = 906{,}150{,}257$ (Tanaka, 1980).</p>
+<p><strong>Chowla's conjecture</strong> says $\lambda(n)$ and $\lambda(n+1)$ are uncorrelated: $\sum_{n \le x} \lambda(n)\lambda(n+1) = o(x)$. The walk in the last panel should therefore grow more slowly than $x$. The conjecture is open, but Matomäki, Radziwiłł and Tao proved it on average over shifts, and Tao (2016) proved the version with logarithmic weights $1/n$. My own research is on the function-field analogue for a truncated Möbius function; see <a href="https://arxiv.org/abs/2610.06471" rel="noopener">arXiv:2610.06471</a>.</p>
+  <details class="proof">
+    <summary>Full proof: the Möbius function sums to zero over divisors</summary>
+    <div class="proof-body">
+<p>The walks above are built from $\mu$, and everything about $\mu$ starts from one identity.</p>
+<p><strong>Lemma.</strong> <em>$\sum_{d \mid n} \mu(d) = 1$ if $n = 1$ and $0$ if $n > 1$.</em></p>
+<p><em>Proof.</em> For $n = 1$ the sum is $\mu(1) = 1$. For $n > 1$ let $p_1, \dots, p_k$ ($k \ge 1$) be its distinct prime factors. Only squarefree divisors contribute, and a squarefree divisor is a product of a subset of $\{p_1, \dots, p_k\}$; a subset of size $j$ contributes $(-1)^j$. So the sum is $\sum_{j=0}^{k} \binom{k}{j}(-1)^j = (1 - 1)^k = 0$. $\square$</p>
+<p>Summing the identity over $n \le x$ and swapping the order gives $\sum_{d \le x} \mu(d)\lfloor x/d \rfloor = 1$, which already shows $|M(x)| \le x$ is far from the truth: the large terms must cancel.</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>A. Granville and G. Martin, <em>Prime number races</em>, American Mathematical Monthly 113 (2006).</li>
+  <li>M. Rubinstein and P. Sarnak, <em>Chebyshev's bias</em>, Experimental Mathematics 3 (1994).</li>
+  <li>A. M. Odlyzko and H. J. J. te Riele, <em>Disproof of the Mertens conjecture</em>, Journal für die reine und angewandte Mathematik 357 (1985).</li>
+  <li>T. Tao, <em>The logarithmically averaged Chowla and Elliott conjectures for two-point correlations</em>, Forum of Mathematics, Pi 4 (2016).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

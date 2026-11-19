@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chord and tangent over 𝔽ₚ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../elliptic-fp.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Chord and tangent over 𝔽ₚ</h1><p class="sub">The group law on an elliptic curve modulo a prime, step by step.</p></div>
+<div class="row"><span class="lab">prime p</span><select id="ep" aria-label="Prime p"><option>23</option><option selected>61</option><option>101</option><option>151</option></select>
+    <button type="button" id="enew">New curve</button><button type="button" id="epause">Pause</button><span class="grow"></span><span class="lab">speed</span><button type="button" data-sp="slow">slow</button><button type="button" data-sp="fast">fast</button></div>
+  <div class="stage" style="--ar:1;max-width:640px;margin-inline:auto"><canvas id="ec" aria-label="Points of an elliptic curve over a finite field, with the chord-and-tangent construction of the multiples of a point"></canvas></div>
+  <div class="readout" id="er">…</div>
+  <div class="legend"><span><i class="sq" style="background:var(--ink-soft)"></i>points of E(𝔽ₚ)</span><span><i class="sq" style="background:var(--accent)"></i>P, 2P, 3P, …</span><span><i style="background:var(--plus)"></i>current line (wrapping mod p)</span></div>
+</div>
+<script>
+var css=Lab.css,setup=Lab.setup,sub=Lab.sub,sup=Lab.sup,redraws=[];Lab.onTheme(function(){redraws.forEach(function(f){f();});});
+/* ======================= Option 6: E(F_p) and the chord-and-tangent law ======================= */
+(function(){
+  var cv=document.getElementById("ec"),out=document.getElementById("er"),selP=document.getElementById("ep");
+  var p,a,b,pts,isPt,N,P,ordP,k,cur,trail,logOf,geom,paused=false,phase=0,phaseT=0,STEP=900,hoverPt=null,line=null,third=null,done=false,holdUntil=0;
+  function mod(x){x%=p;return x<0?x+p:x;}
+  function inv(x){var r=1,bb=mod(x),e=p-2;while(e>0){if(e&1)r=r*bb%p;bb=bb*bb%p;e>>=1;}return r;}
+  function add(A,B){ // null = point at infinity
+    if(!A)return B;if(!B)return A;
+    var lam;
+    if(A[0]===B[0]){if(mod(A[1]+B[1])===0)return null;lam=mod((3*A[0]*A[0]+a)*inv(2*A[1]));}
+    else lam=mod((B[1]-A[1])*inv(B[0]-A[0]));
+    var x3=mod(lam*lam-A[0]-B[0]),y3=mod(lam*(A[0]-x3)-A[1]);
+    return[x3,y3];}
+  function lineThrough(A,B){ // returns {lam, nu} or {vertical:x}
+    if(A[0]===B[0]&&mod(A[1]+B[1])===0)return{vertical:A[0]};
+    var lam=A[0]===B[0]?mod((3*A[0]*A[0]+a)*inv(2*A[1])):mod((B[1]-A[1])*inv(B[0]-A[0]));
+    return{lam:lam,nu:mod(A[1]-lam*A[0])};}
+  function order(Q){var R=Q,n=1;while(R){R=add(R,Q);n++;if(n>4*p)break;}return n;}
+  function newCurve(){
+    p=+selP.value;
+    for(var tries=0;tries<400;tries++){
+      a=Math.floor(Math.random()*p);b=1+Math.floor(Math.random()*(p-1));
+      if(mod(4*a*a*a+27*b*b)===0)continue;
+      pts=[];isPt={};
+      var sq={};for(var y=0;y<p;y++){var s=y*y%p;(sq[s]=sq[s]||[]).push(y);}
+      for(var x=0;x<p;x++){var r=mod(x*x*x+a*x+b);(sq[r]||[]).forEach(function(y){pts.push([x,y]);isPt[x+","+y]=1;});}
+      N=pts.length+1;
+      // prefer curves with a point of large order (ideally #E prime) so the walk is long
+      var best=null,bo=0;for(var i=0;i<pts.length;i++){var o=order(pts[i]);if(o>bo){bo=o;best=pts[i];}if(o===N)break;}
+      if(bo===N||(tries>150&&bo>=N*0.5)||tries>300){startFrom(best);return;}
+    }}
+  function startFrom(Q){P=Q;ordP=order(P);k=1;cur=P;trail=[P];logOf={};logOf[P[0]+","+P[1]]=1;phase=0;phaseT=performance.now();line=null;third=null;done=false;report();draw();}
+  function step(){ // compute (k+1)P = P + kP, with its line and third point
+    if(done)return;
+    var A=P,B=cur;line=lineThrough(A,B);
+    var S=add(A,B);
+    third=S?[S[0],mod(-S[1])]:null;
+    k++;cur=S;
+    if(S){trail.push(S);logOf[S[0]+","+S[1]]=k;}else done=true;
+  }
+  function layout(){geom=setup(cv);}
+  function toXY(x,y){var m=geom.m,s=geom.s;return[m+(x+.5)*s,geom.h-m-(y+.5)*s];}
+  function draw(){
+    if(!geom)layout();var c=geom.ctx,W=geom.w,H=geom.h;c.clearRect(0,0,W,H);
+    var m=14,s=(Math.min(W,H)-2*m)/p;geom.m=m;geom.s=s;
+    var ink=css("--ink"),soft=css("--ink-soft"),mut=css("--muted"),rule=css("--rule"),acc=css("--accent"),plus=css("--plus"),zero=css("--zero");
+    // frame (the torus F_p x F_p)
+    c.strokeStyle=rule;c.lineWidth=1;c.strokeRect(m,H-m-p*s,p*s,p*s);
+    c.setLineDash([2,4]);c.beginPath();var mid=toXY(0,(p-1)/2);c.moveTo(m,mid[1]);c.lineTo(m+p*s,mid[1]);c.stroke();c.setLineDash([]);
+    // current line, drawn on the torus with the smallest slope representative
+    var prog=Math.min(1,(performance.now()-phaseT)/STEP);
+    if(line){c.save();c.beginPath();c.rect(m,H-m-p*s,p*s,p*s);c.clip();c.strokeStyle=plus;c.globalAlpha=0.5*Math.min(1,prog*3);c.lineWidth=1.2;
+      if(line.vertical!==undefined){var q=toXY(line.vertical,0);c.beginPath();c.moveTo(q[0],H-m);c.lineTo(q[0],H-m-p*s);c.stroke();}
+      else{var sl=line.lam>p/2?line.lam-p:line.lam,nu=line.nu;
+        // y = sl*x + nu (mod p): draw for x in [-0.5, p-0.5], shifting by multiples of p
+        var segs=Math.abs(sl)+2;
+        for(var j=-segs;j<=segs;j++){var y0=sl*(-.5)+nu+j*p,y1=sl*(p-.5)+nu+j*p;
+          var A0=toXY(-.5,y0),A1=toXY(p-.5,y1);c.beginPath();c.moveTo(A0[0],A0[1]);c.lineTo(A1[0],A1[1]);c.stroke();}}
+      c.restore();c.globalAlpha=1;}
+    // all points
+    var r=Math.max(1.6,Math.min(4,s*0.36));
+    c.fillStyle=soft;c.globalAlpha=.55;pts.forEach(function(Q){var z=toXY(Q[0],Q[1]);c.beginPath();c.arc(z[0],z[1],r,0,6.2832);c.fill();});c.globalAlpha=1;
+    // trail
+    var shown=trail.length-(line&&prog<0.6&&!done?1:0);
+    if(done&&prog<0.6)shown=trail.length;
+    c.strokeStyle=acc;c.globalAlpha=.28;c.lineWidth=1;c.beginPath();
+    for(var i=0;i<shown;i++){var z=toXY(trail[i][0],trail[i][1]);if(i)c.lineTo(z[0],z[1]);else c.moveTo(z[0],z[1]);}c.stroke();c.globalAlpha=1;
+    c.fillStyle=acc;for(i=0;i<shown;i++){z=toXY(trail[i][0],trail[i][1]);c.beginPath();c.arc(z[0],z[1],r*1.05,0,6.2832);c.fill();}
+    // third point and reflection
+    if(third&&line&&!done){var T=toXY(third[0],third[1]),C=toXY(cur[0],cur[1]);
+      c.strokeStyle=plus;c.lineWidth=1.6;c.beginPath();c.arc(T[0],T[1],r+3,0,6.2832);c.stroke();
+      if(prog>0.45){c.setLineDash([3,3]);c.strokeStyle=soft;c.beginPath();c.moveTo(T[0],T[1]);var t=Math.min(1,(prog-.45)/.35);c.lineTo(T[0],T[1]+(C[1]-T[1])*t);c.stroke();c.setLineDash([]);}
+      if(prog>0.8){c.strokeStyle=ink;c.lineWidth=1.6;c.beginPath();c.arc(C[0],C[1],r+3.5,0,6.2832);c.stroke();}}
+    // P marker
+    var Pz=toXY(P[0],P[1]);c.strokeStyle=ink;c.lineWidth=1.8;c.beginPath();c.arc(Pz[0],Pz[1],r+5.5,0,6.2832);c.stroke();
+    c.fillStyle=ink;c.font="600 12px "+css("--f-mono");c.textAlign="left";c.fillText("P",Pz[0]+r+7,Pz[1]-r-4);
+    if(done){c.fillStyle=acc;c.font="500 13px "+css("--f-mono");c.textAlign="center";c.fillText(ordP+"P = O  (back to the identity)",W/2,m+14);}
+    if(hoverPt){z=toXY(hoverPt[0],hoverPt[1]);c.strokeStyle=ink;c.lineWidth=1.2;c.beginPath();c.arc(z[0],z[1],r+4,0,6.2832);c.stroke();}
+    // axis labels
+    c.fillStyle=mut;c.font="10px "+css("--f-mono");c.textAlign="left";c.fillText("0",m-10,H-m+11);c.textAlign="right";c.fillText(String(p-1),m+p*s,H-m+11);
+  }
+  function fmtP(Q){return Q?"("+Q[0]+", "+Q[1]+")":"O";}
+  function report(){
+    var hb=2*Math.sqrt(p),eq="y² = x³ "+(a?"+ "+a+"x ":"")+"+ "+b+"  over 𝔽"+sub(p);
+    var l2="#E(𝔽"+sub(p)+") = "+N+"   ·   |#E − p − 1| = "+Math.abs(N-p-1)+" ≤ 2√p ≈ "+hb.toFixed(1);
+    var l3;
+    if(hoverPt){var key=hoverPt[0]+","+hoverPt[1],lg=logOf[key];l3=fmtP(hoverPt)+(lg?"  =  "+lg+"P   (its discrete log is "+lg+")":"   not reached yet: click to start from here");}
+    else l3="P = "+fmtP(P)+" has order "+ordP+"   ·   now at "+(done?ordP+"P = O":k+"P = "+fmtP(cur));
+    out.textContent=eq+"\n"+l2+"\n"+l3;}
+  function nearest(ev){var r=cv.getBoundingClientRect(),x=ev.clientX-r.left,y=ev.clientY-r.top,best=null,bd=1e9;
+    pts.forEach(function(Q){var z=toXY(Q[0],Q[1]),d=(z[0]-x)*(z[0]-x)+(z[1]-y)*(z[1]-y);if(d<bd){bd=d;best=Q;}});
+    return bd<Math.max(144,geom.s*geom.s)?best:null;}
+  cv.addEventListener("pointermove",function(ev){var q=nearest(ev);if(q!==hoverPt){hoverPt=q;report();draw();}});
+  cv.addEventListener("pointerleave",function(){hoverPt=null;report();draw();});
+  cv.addEventListener("click",function(ev){var q=nearest(ev);if(q)startFrom(q);});
+  selP.addEventListener("change",newCurve);
+  document.getElementById("enew").addEventListener("click",newCurve);
+  document.getElementById("epause").addEventListener("click",function(){paused=!paused;this.textContent=paused?"Play":"Pause";phaseT=performance.now();});
+  function setSpeed(sp){STEP=sp==="fast"?260:900;document.querySelectorAll("[data-sp]").forEach(function(bt){bt.setAttribute("aria-pressed",String(bt.dataset.sp===sp));});}
+  document.querySelectorAll("[data-sp]").forEach(function(bt){bt.addEventListener("click",function(){setSpeed(bt.dataset.sp);});});
+  function tick(now){
+    if(!paused){
+      if(now-phaseT>=STEP){
+        if(done){if(!holdUntil)holdUntil=now+2600;if(now>holdUntil){holdUntil=0;var q=pts[Math.floor(Math.random()*pts.length)];startFrom(q);}}
+        else{step();phaseT=now;report();}
+      }
+      draw();}
+    requestAnimationFrame(tick);}
+  window.addEventListener("resize",function(){layout();draw();});
+  redraws.push(draw);
+  setSpeed("slow");layout();newCurve();requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

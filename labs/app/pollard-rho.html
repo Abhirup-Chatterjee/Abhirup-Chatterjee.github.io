@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pollard's rho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../pollard-rho.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Pollard's rho</h1><p class="sub">Factoring with x ↦ x² + c, the tortoise, the hare and the birthday paradox.</p></div>
+<div class="row"><span class="lab">n</span><button type="button" data-n="8051">8051</button><button type="button" data-n="10403">10403</button><button type="button" data-n="455459">455459</button><button type="button" data-n="1022117">1022117</button><button type="button" data-n="600851475143">600851475143</button>
+    <input id="pn" type="text" value="" placeholder="your own n" aria-label="Your own n" style="width:10rem"><button type="button" id="pgo">factor</button></div>
+  <div class="row"><span class="lab">map</span><span>x ↦ x² + c,  c =</span><input id="pc" type="number" min="1" value="1" aria-label="c"><span>start x₀ = 2</span><span class="grow"></span><button type="button" id="pstep">Step</button><button type="button" id="prun">Run</button><button type="button" id="preset">Restart</button></div>
+  <div class="stage" style="--ar:4/3"><canvas id="pcv" aria-label="The sequence x, x squared plus c, … modulo a hidden prime factor, drawn as the Greek letter rho, with the tortoise and the hare"></canvas></div>
+  <div class="readout" id="pr">…</div>
+  <div class="legend"><span><i class="sq" style="background:var(--ink)"></i>tortoise xᵢ</span><span><i class="sq" style="background:var(--accent)"></i>hare x₂ᵢ</span><span><i class="sq" style="background:var(--plus)"></i>the sequence mod p: a tail, then a cycle</span></div>
+</div>
+<script>
+(function(){
+"use strict";
+var cv=document.getElementById("pcv"),out=document.getElementById("pr"),nIn=document.getElementById("pn"),cIn=document.getElementById("pc");
+var n=8051n,c=1n,run=null,steps=[],i=0,res=null,geom,rho=null,timer=null;
+function bgcd(a,b){if(a<0n)a=-a;if(b<0n)b=-b;while(b){var t=a%b;a=b;b=t;}return a;}
+function f(x,m){return (x*x+c)%m;}
+function compute(){ // Floyd: tortoise x_i, hare x_2i, until gcd(|x-y|, n) > 1
+  steps=[];var x=2n,y=2n,g=1n,k=0;
+  while(g===1n&&k<200000){x=f(x,n);y=f(f(y,n),n);k++;g=bgcd(x-y,n);if(k<=4000)steps.push({k:k,x:x,y:y,g:g});}
+  res={k:k,g:g,last:{x:x,y:y}};
+  rho=null;if(g!==1n&&g!==n){buildRho(g);}}
+function buildRho(p){ // sequence mod the factor p from x0 = 2: tail mu, then a cycle of length lambda
+  var seen=new Map(),seq=[],x=2n%p;
+  while(!seen.has(x)&&seq.length<300000){seen.set(x,seq.length);seq.push(x);x=(x*x+c)%p;}
+  var mu=seen.has(x)?seen.get(x):0;rho={p:p,seq:seq,mu:mu,lam:seq.length-mu};}
+function pos(idx,F){ // position of x_idx on the rho drawing
+  var r=rho,j=idx<r.mu?idx:r.mu+((idx-r.mu)%r.lam);
+  var cx=F.W/2,R=Math.min(F.W*0.32,(F.H-60)*0.36),cy=F.T+R+6,tailLen=F.B-(cy+R);
+  if(j<r.mu){var t=r.mu<=1?1:j/(r.mu);return[cx-R*0.0,F.B-tailLen*(r.mu?j/r.mu:0)];}
+  var a=Math.PI/2+2*Math.PI*(j-r.mu)/r.lam;return[cx+R*Math.cos(a),cy+R*Math.sin(a)];}
+function frame(){return{W:geom.w,H:geom.h,T:30,B:geom.h-24};}
+function draw(){
+  if(!geom)geom=Lab.setup(cv);var cx=geom.ctx,F=frame();cx.clearRect(0,0,F.W,F.H);
+  var ink=Lab.css("--ink"),mut=Lab.css("--muted"),rule=Lab.css("--rule"),acc=Lab.css("--accent"),plus=Lab.css("--plus"),card=Lab.css("--card");
+  if(!rho){cx.fillStyle=mut;cx.font=Lab.font(13);cx.textAlign="center";cx.fillText(res&&res.g===n?"gcd reached n itself: this c fails, try another c":"no factor found within 200,000 steps (n may be prime)",F.W/2,F.H/2);return;}
+  var r=rho,L=r.seq.length,rad=Math.max(1.6,Math.min(6,200/Math.sqrt(L+4)));
+  cx.strokeStyle=rule;cx.lineWidth=1.2;cx.beginPath();for(var j=0;j<=L;j++){var P=pos(j,F);if(j)cx.lineTo(P[0],P[1]);else cx.moveTo(P[0],P[1]);}cx.stroke();
+  for(j=0;j<L;j++){var Q=pos(j,F);cx.fillStyle=plus;cx.globalAlpha=.75;cx.beginPath();cx.arc(Q[0],Q[1],rad,0,6.2832);cx.fill();}
+  cx.globalAlpha=1;
+  if(L<=48){cx.font=Lab.font(10);cx.fillStyle=mut;cx.textAlign="left";for(j=0;j<L;j++){var Z=pos(j,F);cx.fillText(r.seq[j].toString(),Z[0]+rad+3,Z[1]+3);}}
+  var ti=Math.min(i,res.k),tp=pos(ti,F),hp=pos(2*ti,F);
+  cx.strokeStyle=acc;cx.lineWidth=2.4;cx.beginPath();cx.arc(hp[0],hp[1],rad+6,0,6.2832);cx.stroke();
+  cx.fillStyle=ink;cx.beginPath();cx.arc(tp[0],tp[1],rad+2.5,0,6.2832);cx.fill();
+  cx.font=Lab.font(11);cx.textAlign="left";cx.fillStyle=ink;cx.fillText("tortoise",tp[0]+rad+8,tp[1]+16);cx.fillStyle=acc;cx.fillText("hare",hp[0]+rad+10,hp[1]-10);
+  cx.fillStyle=mut;cx.textAlign="center";cx.font=Lab.font(11);cx.fillText("the sequence 2, 2²+c, … reduced mod the hidden factor p = "+r.p+":  tail "+r.mu+", cycle "+r.lam,F.W/2,F.T-12);
+  if(i>=res.k){cx.fillStyle=acc;cx.font=Lab.font(12,600);cx.textAlign="left";cx.fillText("they meet mod p after "+res.k+" steps",14,F.B-14);cx.fillText("⇒ the gcd reveals p",14,F.B+4);}
+}
+function report(){
+  if(!res){out.textContent="…";return;}
+  var s=steps[Math.min(i,steps.length)-1];
+  var head="n = "+n.toString()+"   ·   map x ↦ x² + "+c+" (mod n)   ·   Floyd: compare xᵢ with x₂ᵢ\n";
+  if(i===0){out.textContent=head+"press Step or Run";return;}
+  if(i<res.k&&s)out.textContent=head+"step "+s.k+":  xᵢ = "+s.x+",  x₂ᵢ = "+s.y+",  gcd(xᵢ − x₂ᵢ, n) = "+s.g+"\n√p ≈ "+(rho?Math.sqrt(Number(rho.p)).toFixed(1):"?")+": the birthday paradox predicts a collision mod p after about that many steps";
+  else if(res.g!==1n&&res.g!==n){var p=res.g,q=n/res.g;out.textContent=head+"step "+res.k+":  gcd(xᵢ − x₂ᵢ, n) = "+p+"   ⇒   n = "+p+" × "+q+"\nfound after "+res.k+" steps; trial division would need about "+Number(p<q?p:q).toLocaleString("en")+" divisions";}
+  else out.textContent=head+(res.g===n?"the gcd jumped straight to n: the cycles mod p and mod q closed together. Change c.":"no factor found (is n prime?)");
+}
+function stop(){if(timer){clearTimeout(timer);timer=null;}document.getElementById("prun").textContent="Run";}
+function restart(){stop();i=0;compute();draw();report();}
+function step(){if(!res)return;if(i<res.k){i++;draw();report();}}
+document.getElementById("pstep").addEventListener("click",function(){stop();step();});
+document.getElementById("prun").addEventListener("click",function(){if(timer){stop();return;}this.textContent="Pause";(function t(){if(i>=res.k){stop();return;}step();timer=setTimeout(t,Lab.reduce?300:Math.max(30,600-i*8));})();});
+document.getElementById("preset").addEventListener("click",restart);
+cIn.addEventListener("change",function(){var v=parseInt(cIn.value,10);c=BigInt(isFinite(v)&&v>0&&v!==2&&v!==-2?v:1);restart();});
+document.querySelectorAll("[data-n]").forEach(function(b){b.addEventListener("click",function(){n=BigInt(b.dataset.n);nIn.value="";Lab.pressed("[data-n]",function(x){return x===b;});restart();});});
+document.getElementById("pgo").addEventListener("click",function(){var v=nIn.value.replace(/[\s,_]/g,"");if(!/^\d{2,18}$/.test(v)){out.textContent="type a whole number with 2 to 18 digits";return;}n=BigInt(v);Lab.pressed("[data-n]",function(){return false;});restart();});
+Lab.onTheme(draw);window.addEventListener("resize",function(){geom=Lab.setup(cv);draw();});
+Lab.pressed("[data-n]",function(x){return x.dataset.n==="8051";});restart();
+})();
+</script>
+</body>
+</html>

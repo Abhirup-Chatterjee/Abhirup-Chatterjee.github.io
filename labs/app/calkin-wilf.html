@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Every fraction exactly once</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../calkin-wilf.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Every fraction exactly once</h1><p class="sub">The Calkin–Wilf tree, Stern's diatomic sequence and Minkowski's question-mark function.</p></div>
+<div class="row"><span class="lab">view</span><button type="button" data-m="tree">Calkin–Wilf tree</button><button type="button" data-m="stern">Stern's sequence</button><button type="button" data-m="mink">Minkowski ?(x)</button></div>
+  <div class="row" id="findRow"><span class="lab">find</span><input id="cwf" type="text" value="3/5" aria-label="A positive fraction p/q"><button type="button" id="cwgo">trace to the root</button><span class="lab" id="cwerr"></span></div>
+  <div class="stage" style="--ar:4/3"><canvas id="cwc" aria-label="The Calkin–Wilf tree of positive fractions, Stern's diatomic sequence, or Minkowski's question-mark function"></canvas></div>
+  <div class="readout" id="cwr">…</div>
+  <div class="legend"><span><i class="sq" style="background:var(--accent)"></i>selected fraction and its path</span><span><i class="sq" style="background:var(--plus)"></i>left child a/(a+b) · right child (a+b)/b</span></div>
+</div>
+<script>
+(function(){
+"use strict";
+var cv=document.getElementById("cwc"),out=document.getElementById("cwr"),fin=document.getElementById("cwf"),err=document.getElementById("cwerr");
+var mode="tree",geom,sel={p:3,q:5},hov=null,DEPTH=6,stern=[0,1];
+function gcd(a,b){while(b){var t=a%b;a=b;b=t;}return a;}
+function sternTo(n){while(stern.length<=n){var k=stern.length;stern.push(k%2===0?stern[k/2]:stern[(k-1)/2]+stern[(k+1)/2]);}}
+sternTo(1<<12);
+function pathOf(p,q){var s="";while(!(p===1&&q===1)){if(p<q){s="L"+s;q-=p;}else{s="R"+s;p-=q;}if(s.length>4000)break;}return s;}
+function cfOf(p,q){var a=[];while(q){a.push(Math.floor(p/q));var r=p%q;p=q;q=r;}return a;}
+function nodeXY(d,i,F){var cnt=1<<d;return[F.L+(F.R-F.L)*(i+0.5)/cnt,F.T+(F.B-F.T)*d/DEPTH];}
+function frac(d,i){var p=1,q=1;for(var k=d-1;k>=0;k--){if((i>>k)&1){p=p+q;}else{q=p+q;}}return[p,q];}
+function frame(){return{W:geom.w,H:geom.h,L:16,R:geom.w-16,T:26,B:geom.h-28};}
+function drawTree(c,F){
+  var ink=Lab.css("--ink"),mut=Lab.css("--muted"),rule=Lab.css("--rule"),acc=Lab.css("--accent"),plus=Lab.css("--plus"),card=Lab.css("--card");
+  var sp=sel?pathOf(sel.p,sel.q):"",hp=hov?hov.path:null;
+  function onPath(d,i,path){if(path===null||d>path.length)return false;for(var k=0;k<d;k++){var bit=(i>>(d-1-k))&1;if((path[k]==="R")!==(bit===1))return false;}return true;}
+  for(var d=0;d<DEPTH;d++)for(var i=0;i<(1<<d);i++){var a=nodeXY(d,i,F);[0,1].forEach(function(bit){var b=nodeXY(d+1,2*i+bit,F),on=onPath(d+1,2*i+bit,sp)||onPath(d+1,2*i+bit,hp);
+    c.strokeStyle=on?acc:rule;c.lineWidth=on?2.2:1;c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke();});}
+  for(d=0;d<=DEPTH;d++)for(i=0;i<(1<<d);i++){var P=nodeXY(d,i,F),f=frac(d,i),on=onPath(d,i,sp)||onPath(d,i,hp),w=(F.R-F.L)/(1<<d);
+    if(w>26){var lab=f[0]+"/"+f[1];c.font=Lab.font(d<3?13:d<4?12:10,on?600:400);var tw=c.measureText(lab).width+8;c.fillStyle=card;c.fillRect(P[0]-tw/2,P[1]-9,tw,18);
+      c.strokeStyle=on?acc:rule;c.lineWidth=on?1.6:1;c.strokeRect(P[0]-tw/2+.5,P[1]-8.5,tw-1,17);c.fillStyle=on?ink:Lab.css("--ink-soft");c.textAlign="center";c.fillText(lab,P[0],P[1]+4);}
+    else{c.fillStyle=on?acc:plus;c.beginPath();c.arc(P[0],P[1],on?3.4:2.2,0,6.2832);c.fill();}}
+  c.fillStyle=mut;c.font=Lab.font(10);c.textAlign="left";c.fillText("level "+DEPTH+": "+(1<<DEPTH)+" fractions; every positive fraction appears exactly once somewhere below",F.L,F.B+20);
+}
+function drawStern(c,F){var N=1<<10,mut=Lab.css("--muted"),plus=Lab.css("--plus"),acc=Lab.css("--accent"),rule=Lab.css("--rule"),mx=0;for(var n=1;n<=N;n++)mx=Math.max(mx,stern[n]);
+  c.strokeStyle=rule;c.beginPath();c.moveTo(F.L,F.B+.5);c.lineTo(F.R,F.B+.5);c.stroke();
+  for(n=1;n<=N;n++){var x=F.L+(F.R-F.L)*(n-1)/(N-1),y=F.B-(F.B-F.T)*stern[n]/mx;c.fillStyle=(hov&&hov.n===n)?acc:plus;c.globalAlpha=(hov&&hov.n===n)?1:.75;c.fillRect(x-0.6,y,1.2,F.B-y);}
+  c.globalAlpha=1;c.fillStyle=mut;c.font=Lab.font(10);c.textAlign="center";[1,256,512,768,1024].forEach(function(v){c.fillText(String(v),F.L+(F.R-F.L)*(v-1)/(N-1),F.B+14);});
+  c.textAlign="left";c.fillText("s(n) for n ≤ 1024: between 2^k and 2^(k+1) the largest value is a Fibonacci number",F.L,F.T-10);}
+function mink(x){if(x<=0)return 0;if(x>=1)return 1;var a=[],y=x;for(var k=0;k<40&&y>1e-12;k++){var t=1/y,ai=Math.floor(t+1e-12);a.push(ai);y=t-ai;if(Math.abs(y)<1e-12)break;}
+  var s=0,sum=0;for(k=0;k<a.length;k++){sum+=a[k];if(sum>60)break;s+=(k%2?-1:1)*Math.pow(2,1-sum);}return s;}
+function drawMink(c,F){var mut=Lab.css("--muted"),plus=Lab.css("--plus"),acc=Lab.css("--accent"),rule=Lab.css("--rule"),ink=Lab.css("--ink");
+  var S=Math.min(F.R-F.L,F.B-F.T),ox=(F.L+F.R)/2-S/2,oy=F.B;
+  c.strokeStyle=rule;c.strokeRect(ox+.5,oy-S+.5,S,S);c.setLineDash([3,4]);c.beginPath();c.moveTo(ox,oy);c.lineTo(ox+S,oy-S);c.stroke();c.setLineDash([]);
+  c.strokeStyle=plus;c.lineWidth=1.6;c.beginPath();var M=Math.round(S*2);for(var i=0;i<=M;i++){var x=i/M,y=mink(x);if(i)c.lineTo(ox+x*S,oy-y*S);else c.moveTo(ox,oy);}c.stroke();
+  if(hov&&hov.x!=null){c.fillStyle=acc;c.beginPath();c.arc(ox+hov.x*S,oy-mink(hov.x)*S,4,0,6.2832);c.fill();c.strokeStyle=acc;c.globalAlpha=.4;c.beginPath();c.moveTo(ox+hov.x*S,oy);c.lineTo(ox+hov.x*S,oy-mink(hov.x)*S);c.lineTo(ox,oy-mink(hov.x)*S);c.stroke();c.globalAlpha=1;}
+  c.fillStyle=mut;c.font=Lab.font(10);c.textAlign="center";c.fillText("0",ox,oy+14);c.fillText("1",ox+S,oy+14);c.fillText("x",ox+S/2,oy+14);c.textAlign="right";c.fillText("?(x)",ox-6,oy-S+10);}
+function draw(){if(!geom)geom=Lab.setup(cv);var c=geom.ctx,F=frame();c.clearRect(0,0,F.W,F.H);if(mode==="tree")drawTree(c,F);else if(mode==="stern")drawStern(c,F);else drawMink(c,F);}
+function bin(v,n){var s="0.";for(var i=0;i<n;i++){v*=2;var b=Math.floor(v+1e-12);s+=b;v-=b;}return s;}
+function report(){
+  if(mode==="tree"){var f=hov||sel;if(!f){out.textContent="hover over a fraction";return;}var path=pathOf(f.p,f.q),n=1;for(var i=0;i<path.length;i++)n=2*n+(path[i]==="R"?1:0);
+    var cf=cfOf(f.p,f.q);out.textContent=f.p+"/"+f.q+":  path from the root 1/1 = "+(path||"(the root)")+"   ·   depth "+path.length+"\nposition "+(n<1e15?n.toLocaleString("en"):"≈ 2^"+path.length)+" in level order, so "+f.p+"/"+f.q+" = s("+(n<1e15?n:"n")+")/s("+(n<1e15?n+1:"n+1")+") (Stern)\ncontinued fraction ["+cf[0]+(cf.length>1?"; "+cf.slice(1).join(", "):"")+"]: read from the root, the path is runs of L and R whose lengths are these digits backwards, the last one reduced by 1";return;}
+  if(mode==="stern"){if(hov){out.textContent="s("+hov.n+") = "+stern[hov.n]+",  s("+(hov.n+1)+") = "+stern[hov.n+1]+"   ·   the "+hov.n+"th Calkin–Wilf fraction is "+stern[hov.n]+"/"+stern[hov.n+1]+"\ns(2n) = s(n), s(2n+1) = s(n) + s(n+1)";return;}
+    out.textContent="Stern's diatomic sequence: s(0) = 0, s(1) = 1, s(2n) = s(n), s(2n+1) = s(n) + s(n+1)\nconsecutive terms s(n)/s(n+1) list every positive fraction exactly once, in Calkin–Wilf order\nhover to read values";return;}
+  if(hov&&hov.x!=null){var cf2=[],y=hov.x;for(var k=0;k<8&&y>1e-9;k++){var t=1/y,a=Math.floor(t+1e-9);cf2.push(a);y=t-a;}
+    out.textContent="x ≈ "+hov.x.toFixed(5)+" = [0; "+cf2.join(", ")+(cf2.length>=8?", …":"")+"]\n?(x) ≈ "+mink(hov.x).toFixed(5)+" = "+bin(mink(hov.x),18)+"…₂\nthe binary digits of ?(x) are runs of lengths a₁, a₂, a₃, … (one 0s run, then 1s, …)";return;}
+  out.textContent="Minkowski's ?(x): continuous and strictly increasing, yet with derivative 0 almost everywhere\nit maps rationals to dyadic rationals and quadratic irrationals to rationals: ?(√2 − 1) = 2/5, ?((√5−1)/2) = 2/3\nhover over the curve";}
+function setMode(m){mode=m;hov=null;Lab.pressed("[data-m]",function(b){return b.dataset.m===m;});document.getElementById("findRow").hidden=m!=="tree";draw();report();}
+document.querySelectorAll("[data-m]").forEach(function(b){b.addEventListener("click",function(){setMode(b.dataset.m);});});
+function find(){var m=/^\s*(\d+)\s*\/\s*(\d+)\s*$/.exec(fin.value);err.textContent="";if(!m||+m[1]<1||+m[2]<1){err.textContent="type a fraction like 3/5";return;}var p=+m[1],q=+m[2],g=gcd(p,q);sel={p:p/g,q:q/g};
+  if(pathOf(sel.p,sel.q).length>DEPTH)err.textContent="deeper than the levels drawn: see the path in the readout";draw();report();}
+document.getElementById("cwgo").addEventListener("click",find);fin.addEventListener("keydown",function(e){if(e.key==="Enter")find();});
+cv.addEventListener("pointermove",function(ev){var p=Lab.local(cv,ev),F=frame(),h=null;
+  if(mode==="tree"){var d=Math.round((p[1]-F.T)/(F.B-F.T)*DEPTH);if(d>=0&&d<=DEPTH){var cnt=1<<d,i=Math.floor((p[0]-F.L)/(F.R-F.L)*cnt);if(i>=0&&i<cnt){var P=nodeXY(d,i,F);if(Math.abs(P[1]-p[1])<12){var f=frac(d,i);h={p:f[0],q:f[1],path:pathOf(f[0],f[1])};}}}
+    if((h&&hov&&h.p===hov.p&&h.q===hov.q)||(!h&&!hov))return;}
+  else if(mode==="stern"){var N=1<<10,n=Math.round((p[0]-F.L)/(F.R-F.L)*(N-1))+1;if(n>=1&&n<=N)h={n:n};}
+  else{var S=Math.min(F.R-F.L,F.B-F.T),ox=(F.L+F.R)/2-S/2,x=(p[0]-ox)/S;if(x>0&&x<1)h={x:x};}
+  hov=h;draw();report();});
+cv.addEventListener("pointerleave",function(){hov=null;draw();report();});
+Lab.onTheme(draw);window.addEventListener("resize",function(){geom=Lab.setup(cv);draw();});
+setMode("tree");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pascal's triangle, coloured by p · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Pascal's triangle, coloured by p · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Combinatorics</p>
+    <h1>Pascal's triangle, coloured by p</h1>
+    <p class="lead">Colour each binomial coefficient by the power of a prime that divides it, and Pascal's triangle turns into a fractal. Kummer's theorem explains the picture: the exponent is the number of carries in a base-p addition.</p>
+    <div class="byline"><span class="tag">binomial coefficients</span><span class="tag">p-adic</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Write $v_p(m)$ for the exponent of the prime $p$ in $m$. In 1852 Kummer found a surprising rule for binomial coefficients: <em>$v_p\binom{n}{k}$ is the number of carries when $k$ and $n - k$ are added in base $p$.</em> No carries means $p \nmid \binom{n}{k}$, and those are the marigold cells. A companion result of Lucas (1878) gives the residue: if $n = \sum n_i p^i$ and $k = \sum k_i p^i$ in base $p$, then
+$$\binom{n}{k} \equiv \prod_i \binom{n_i}{k_i} \pmod p.$$
+Hover over any cell to see the addition $k + (n-k) = n$ written out, with the carries marked.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/pascal-mod-p.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:1000px" src="app/pascal-mod-p.html" title="Pascal's triangle, coloured by p: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>Why it is a fractal</h2>
+<p>Lucas's theorem says the residue of $\binom{n}{k}$ depends on the base-$p$ digits one at a time. Rows $0$ to $p^{m} - 1$ therefore contain a small triangle (the last digit) repeated in the pattern of a big triangle (the leading digits), and the whole picture is self-similar with ratio $p$. For $p = 2$ the cells not divisible by $2$ form the Sierpiński triangle; the gallery has a <a href="../proofs.html#lucas">proof without words</a> of the doubling step.</p>
+<p>Two consequences are easy to read off. Row $n$ contains exactly $\prod_i (n_i + 1)$ entries not divisible by $p$, because each digit $k_i$ can be chosen from $0, \dots, n_i$ without causing a carry; for $p = 2$ that is $2^{s(n)}$ with $s(n)$ the number of $1$s in binary. And the rows $p^m - 1$ (all digits $p - 1$) are entirely marigold, while the rows $p^m$ are divisible by $p$ everywhere except at the two ends.</p>
+  <details class="proof">
+    <summary>Full proof: Kummer's theorem from Legendre's formula</summary>
+    <div class="proof-body">
+<p><strong>Legendre's formula.</strong> <em>$v_p(n!) = \dfrac{n - s_p(n)}{p - 1}$, where $s_p(n)$ is the sum of the base-$p$ digits of $n$.</em></p>
+<p><em>Proof.</em> $v_p(n!) = \sum_{j \ge 1} \lfloor n/p^j \rfloor$, since $\lfloor n/p^j \rfloor$ counts the multiples of $p^j$ up to $n$. If $n = \sum_i n_i p^i$ then $\lfloor n/p^j \rfloor = \sum_{i \ge j} n_i p^{i-j}$, and summing over $j$ gives $\sum_i n_i (p^{i-1} + \dots + 1) = \sum_i n_i \frac{p^i - 1}{p - 1} = \frac{n - s_p(n)}{p - 1}$. $\square$</p>
+<p><strong>Kummer's theorem.</strong> <em>$v_p\binom{n}{k}$ equals the number of carries when adding $k$ and $n - k$ in base $p$.</em></p>
+<p><em>Proof.</em> By Legendre's formula,
+$$v_p\binom{n}{k} = v_p(n!) - v_p(k!) - v_p((n-k)!) = \frac{s_p(k) + s_p(n-k) - s_p(n)}{p - 1}.$$
+Add $a = k$ and $b = n - k$ digit by digit. In position $i$ we have $a_i + b_i + c_i = n_i + p\,c_{i+1}$, where $c_i \in \{0, 1\}$ is the incoming carry and $c_0 = 0$. Summing over $i$, $s_p(a) + s_p(b) + \sum_i c_i = s_p(n) + p\sum_i c_{i+1}$, so $s_p(a) + s_p(b) - s_p(n) = (p - 1)\cdot(\text{number of carries})$. $\square$</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>A. Granville, <em>Arithmetic properties of binomial coefficients I: Binomial coefficients modulo prime powers</em>, Canadian Mathematical Society Conference Proceedings 20 (1997).</li>
+  <li>E. Kummer, <em>Über die Ergänzungssätze zu den allgemeinen Reciprocitätsgesetzen</em>, Journal für die reine und angewandte Mathematik 44 (1852).</li>
+  <li>N. J. Fine, <em>Binomial coefficients modulo a prime</em>, American Mathematical Monthly 54 (1947).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

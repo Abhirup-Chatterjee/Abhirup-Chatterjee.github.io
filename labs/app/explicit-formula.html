@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primes from the zeros of ζ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../explicit-formula.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Primes from the zeros of ζ</h1><p class="sub">Riemann's explicit formula, one zero at a time.</p></div>
+<div class="row"><span class="lab">zeros</span><input id="zn" type="range" min="0" max="300" value="0" aria-label="Number of zeros used"><span id="znv" class="val">0</span>
+    <span class="grow"></span><span class="lab">x up to</span><button type="button" data-x="30">30</button><button type="button" data-x="60">60</button><button type="button" data-x="120">120</button><button type="button" id="zplay">Replay</button></div>
+  <div class="stage" style="--ar:1;max-width:680px;margin-inline:auto"><canvas id="zc" aria-label="Chebyshev's function psi(x) and its approximation by Riemann's explicit formula using the first N zeros of the zeta function"></canvas></div>
+  <div class="readout" id="zr">…</div>
+  <div class="legend"><span><i style="background:var(--ink-soft)"></i>ψ(x), the true staircase</span><span><i style="background:var(--accent)"></i>built from N zeros</span><span><i style="background:var(--plus)"></i>wave of the newest zero</span><span><i class="sq" style="background:var(--accent)"></i>ticks: primes</span></div>
+</div>
+<script>
+(function(){
+"use strict";
+var GAMMA=[14.134725142,21.022039639,25.01085758,30.424876126,32.935061588,37.586178159,40.918719012,43.327073281,48.005150881,49.773832478,52.970321478,56.446247697,59.347044003,60.831778525,65.112544048,67.079810529,69.546401711,72.067157674,75.704690699,77.144840069,79.33737502,82.910380854,84.735492981,87.425274613,88.809111208,92.491899271,94.651344041,95.870634228,98.831194218,101.317851006,103.72553804,105.446623052,107.168611184,111.029535543,111.874659177,114.320220915,116.226680321,118.790782866,121.370125002,122.946829294,124.256818554,127.51668388,129.5787042,131.087688531,133.497737203,134.756509753,138.116042055,139.736208952,141.123707404,143.111845808,146.000982487,147.422765343,150.053520421,150.925257612,153.024693811,156.112909294,157.597591818,158.849988171,161.188964138,163.030709687,165.537069188,167.184439978,169.094515416,169.911976479,173.41153652,174.754191523,176.441434298,178.377407776,179.91648402,182.207078484,184.874467848,185.598783678,187.228922584,189.416158656,192.026656361,193.079726604,195.26539668,196.876481841,198.015309676,201.264751944,202.493594514,204.189671803,205.394697202,207.906258888,209.576509717,211.690862595,213.34791936,214.547044783,216.169538508,219.067596349,220.714918839,221.430705555,224.007000255,224.98332467,227.42144428,229.337413306,231.2501887,231.987235253,233.693404179,236.524229666,237.769820481,239.555477573,241.049157796,242.823271934,244.070898497,247.136990075,248.10199006,249.573689645,251.014947795,253.069986748,255.306256455,256.380713694,258.610439492,259.87440699,260.805084505,263.573893905,265.557851839,266.614973782,267.921915083,269.970449024,271.494055642,273.459609188,275.587492649,276.452049503,278.25074353,279.229250928,282.465114765,283.211185733,284.835963981,286.667445363,287.911920501,289.579854929,291.846291329,293.558434139,294.965369619,295.573254879,297.979277062,299.840326054,301.649325462,302.69674959,304.864371341,305.728912602,307.219496128,310.109463147,311.16514153,312.427801181,313.985285731,315.475616089,317.734805942,318.853104256,321.160134309,322.144558672,323.466969558,324.862866052,327.443901262,329.03307168,329.953239728,331.474467583,333.645378525,334.211354833,336.841850428,338.339992851,339.858216725,341.042261111,342.05487751,344.66170294,346.347870566,347.272677584,349.316260871,350.408419349,351.878649025,353.488900489,356.017574977,357.151302252,357.952685102,359.743754953,361.289361696,363.331330579,364.736024114,366.212710288,367.993575482,368.968438096,370.050919212,373.061928372,373.864873911,375.825912767,376.324092231,378.43668025,379.872975347,381.484468617,383.44352945,384.956116815,385.861300846,387.222890222,388.846128354,391.456083564,392.24508334,393.427743844,395.582870011,396.381854223,397.91873621,399.985119876,401.839228601,402.861917764,404.2364418,405.13438746,407.581460387,408.947245502,410.513869193,411.972267804,413.26273607,415.018809755,415.455214996,418.38770579,419.861364818,420.643827625,422.076710059,423.716579627,425.069882494,427.208825084,428.127914077,430.328745431,431.301306931,432.138641735,433.889218481,436.161006433,437.581698168,438.621738656,439.918442214,441.683199201,442.904546303,444.319336278,446.860622696,447.441704194,449.148545685,450.12694578,451.403308445,453.986737807,454.974683769,456.328426689,457.903893064,459.513415281,460.087944422,462.065367275,464.057286911,465.671539211,466.570286931,467.43904621,469.536004559,470.773655478,472.799174662,473.835232345,475.600339369,476.769015237,478.075263767,478.942181535,481.830339376,482.834782791,483.851427212,485.539148129,486.528718262,488.38056709,489.661761578,491.398821594,493.314441582,493.957997805,495.358828822,496.429696216,498.58078243,500.309084942,501.604446965,502.276270327,504.499773313,505.415231742,506.46415271,508.800700336,510.264227944,511.5622897,512.623144531,513.668985555,515.435057167,517.589668572,518.234223148,520.106310412,521.525193449,522.456696178,523.960530892,525.077385687,527.903641601,528.406213852,529.806226319,530.866917884,532.688183028,533.779630754,535.664314076,537.069759083,538.428526176,540.213166376,540.631390247,541.847437121];
+var root=document.documentElement;
+var css=Lab.css;
+var cv=document.getElementById("zc"),out=document.getElementById("zr"),slider=document.getElementById("zn"),nv=document.getElementById("znv");
+var X=60,Nz=0,geom,xs,base,partial,psiTrue,ppList,hoverX=null,anim=null;
+var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+Lab.onTheme(function(){draw();});
+// prime powers up to X with log p
+function primePowers(lim){var sieve=new Uint8Array(lim+1),out=[];for(var i=2;i<=lim;i++){if(!sieve[i]){for(var j=i*i;j<=lim;j+=i)sieve[j]=1;for(var q=i,k=1;q<=lim;q*=i,k++)out.push({n:q,p:i,k:k});}}out.sort(function(a,b){return a.n-b.n;});return out;}
+function psiAt(x){var s=0;for(var i=0;i<ppList.length&&ppList[i].n<=x;i++)s+=Math.log(ppList[i].p);return s;}
+function wave(x,g){var L=Math.log(x);return 2*Math.sqrt(x)*(0.5*Math.cos(g*L)+g*Math.sin(g*L))/(0.25+g*g);}
+function layout(){
+  var dpr=Math.min(window.devicePixelRatio||1,2),w=cv.clientWidth||500,h=cv.clientHeight||500;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);var c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);geom={ctx:c,w:w,h:h};
+  build();}
+function build(){
+  ppList=primePowers(X+1);
+  var M=Math.round(geom.w*2.5);xs=new Float64Array(M);base=new Float64Array(M);psiTrue=new Float64Array(M);
+  var x0=1.02;for(var i=0;i<M;i++){var x=x0+(X-x0)*i/(M-1);xs[i]=x;base[i]=x-Math.log(2*Math.PI)-0.5*Math.log(1-1/(x*x));psiTrue[i]=psiAt(x);}
+  // cumulative sums: partial[k] holds sum over the first k zeros (computed lazily up to 300)
+  partial=[new Float64Array(M)];
+  for(var k=1;k<=GAMMA.length;k++){var prev=partial[k-1],cur=new Float64Array(M),g=GAMMA[k-1];for(i=0;i<M;i++)cur[i]=prev[i]+wave(xs[i],g);partial.push(cur);}
+}
+function draw(){
+  if(!geom)layout();var c=geom.ctx,W=geom.w,H=geom.h;c.clearRect(0,0,W,H);
+  var ink=css("--ink"),soft=css("--ink-soft"),mut=css("--muted"),rule=css("--rule"),acc=css("--accent"),plus=css("--plus"),f=css("--f-mono");
+  var L=34,R=W-10,T=16,B=H*0.78,WT=H*0.87,WB=H-18,ymax=X*1.12,ymin=-X*0.06;
+  function px(x){return L+(R-L)*(x-1)/(X-1);}function py(y){return B-(B-T)*(y-ymin)/(ymax-ymin);}
+  // grid + axes
+  c.font="10px "+f;c.fillStyle=mut;c.strokeStyle=rule;c.lineWidth=1;
+  var step=X<=30?5:X<=60?10:20;
+  for(var v=0;v<=X;v+=step){var yy=py(v);c.globalAlpha=.5;c.beginPath();c.moveTo(L,yy+.5);c.lineTo(R,yy+.5);c.stroke();c.globalAlpha=1;c.textAlign="right";c.fillText(String(v),L-5,yy+3);
+    if(v>=step||v===0){var xx=px(Math.max(v,1));c.textAlign="center";c.fillText(String(Math.max(v,1)),xx,B+13);}}
+  // prime ticks on the axis
+  ppList.forEach(function(q){if(q.n>X)return;var xx=px(q.n);c.strokeStyle=q.k===1?acc:mut;c.globalAlpha=q.k===1?.9:.6;c.beginPath();c.moveTo(xx,B+1);c.lineTo(xx,B+(q.k===1?6:4));c.stroke();c.globalAlpha=1;});
+  // y = x guide
+  c.setLineDash([3,4]);c.strokeStyle=rule;c.beginPath();c.moveTo(px(1),py(1));c.lineTo(px(X),py(X));c.stroke();c.setLineDash([]);
+  // true staircase
+  c.strokeStyle=soft;c.lineWidth=1.4;c.beginPath();var lastY=0;c.moveTo(px(1),py(0));
+  ppList.forEach(function(q){if(q.n>X)return;c.lineTo(px(q.n),py(lastY));lastY+=Math.log(q.p);c.lineTo(px(q.n),py(lastY));});c.lineTo(px(X),py(lastY));c.stroke();
+  // approximation with Nz zeros (fractional Nz blends the newest wave in)
+  var k=Math.floor(Nz),fr=Nz-k,Pk=partial[k],Pk1=partial[Math.min(k+1,GAMMA.length)];
+  c.save();c.beginPath();c.rect(L,T,R-L,B-T);c.clip();
+  c.strokeStyle=acc;c.lineWidth=1.6;c.beginPath();
+  for(var i=0;i<xs.length;i++){var val=base[i]-(Pk[i]+(Pk1[i]-Pk[i])*fr),X1=px(xs[i]),Y1=py(val);if(i)c.lineTo(X1,Y1);else c.moveTo(X1,Y1);}c.stroke();c.restore();
+  // newest wave strip
+  var kk=Math.max(1,Math.ceil(Nz));
+  c.fillStyle=mut;c.textAlign="left";c.fillText(Nz>0?"wave of zero #"+kk+":  γ = "+GAMMA[kk-1].toFixed(6):"no zeros yet: the curve is y = x − log 2π − ½ log(1 − x⁻²)",L,WT-4);
+  c.strokeStyle=rule;c.beginPath();var mid=(WT+WB)/2;c.moveTo(L,mid+.5);c.lineTo(R,mid+.5);c.stroke();
+  if(Nz>0){var g=GAMMA[kk-1],amp=0;for(i=0;i<xs.length;i+=4)amp=Math.max(amp,Math.abs(wave(xs[i],g)));
+    c.strokeStyle=plus;c.lineWidth=1.2;c.beginPath();for(i=0;i<xs.length;i++){var wv=-wave(xs[i],g)/amp,X2=px(xs[i]),Y2=mid-wv*(WB-WT)/2*0.9;if(i)c.lineTo(X2,Y2);else c.moveTo(X2,Y2);}c.stroke();}
+  // hover
+  if(hoverX!==null){var hx=px(hoverX);c.strokeStyle=ink;c.globalAlpha=.35;c.beginPath();c.moveTo(hx,T);c.lineTo(hx,B);c.stroke();c.globalAlpha=1;}
+}
+function idxOf(x){return Math.max(0,Math.min(xs.length-1,Math.round((x-xs[0])/(xs[xs.length-1]-xs[0])*(xs.length-1))));}
+function report(){
+  var k=Math.round(Nz);
+  if(hoverX!==null){var i=idxOf(hoverX),x=xs[i],approx=base[i]-partial[k][i],tru=psiTrue[i],near=null,bd=1e9;
+    ppList.forEach(function(q){var d=Math.abs(q.n-x);if(d<bd){bd=d;near=q;}});
+    var nearS=near?(near.k===1?near.n+" is prime: ψ jumps by log "+near.p+" = "+Math.log(near.p).toFixed(3):near.n+" = "+near.p+(near.k===2?"²":near.k===3?"³":near.k===4?"⁴":near.k===5?"⁵":"^"+near.k)+": ψ jumps by log "+near.p+" = "+Math.log(near.p).toFixed(3)):"";
+    out.textContent="x = "+x.toFixed(2)+"   ·   ψ(x) = "+tru.toFixed(3)+"   ·   from "+k+" zeros: "+approx.toFixed(3)+"\nnearest prime power: "+nearS;return;}
+  out.textContent=(k?"using the first "+k+" zeros ρ = ½ + iγ, up to γ = "+GAMMA[k-1].toFixed(3):"using no zeros: just the main term x")+"\nmove the slider, or hover over the graph to compare with ψ(x) = Σ log p over prime powers pᵏ ≤ x";}
+function setN(n){Nz=n;var k=Math.round(n);slider.value=k;nv.textContent=k;draw();report();}
+slider.addEventListener("input",function(){if(anim){cancelAnimationFrame(anim);anim=null;}setN(+slider.value);});
+function play(){if(anim)cancelAnimationFrame(anim);if(reduce){setN(GAMMA.length);return;}var t0=null,dur=14000;
+  function fr(t){if(t0===null)t0=t;var u=Math.min(1,(t-t0)/dur);
+    // first 12 zeros one at a time, then speed up through the rest
+    var n=u<.35?Math.floor(u/.35*12)+1:12+(GAMMA.length-12)*Math.pow((u-.35)/.65,2);
+    setN(Math.min(GAMMA.length,n));if(u<1)anim=requestAnimationFrame(fr);else anim=null;}
+  anim=requestAnimationFrame(fr);}
+document.getElementById("zplay").addEventListener("click",play);
+function setX(x){X=x;document.querySelectorAll("[data-x]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.x===X));});build();draw();report();}
+document.querySelectorAll("[data-x]").forEach(function(b){b.addEventListener("click",function(){setX(+b.dataset.x);});});
+cv.addEventListener("pointermove",function(ev){var r=cv.getBoundingClientRect(),x=ev.clientX-r.left,L=34,R=r.width-10;if(x<L||x>R){hoverX=null;}else hoverX=1+(X-1)*(x-L)/(R-L);draw();report();});
+cv.addEventListener("pointerleave",function(){hoverX=null;draw();report();});
+window.addEventListener("resize",function(){layout();draw();});
+layout();setX(60);play();
+})();
+</script>
+</body>
+</html>

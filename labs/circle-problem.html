@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gauss's circle problem · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Gauss's circle problem · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Lattice points</p>
+    <h1>Gauss's circle problem</h1>
+    <p class="lead">How many lattice points lie inside a circle of radius R? About πR², obviously. How far off that guess can be is one of the oldest open problems in number theory.</p>
+    <div class="byline"><span class="tag">lattice points</span><span class="tag">sums of two squares</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Let $N(R)$ be the number of points $(x, y) \in \mathbb{Z}^2$ with $x^2 + y^2 \le R^2$. Each lattice point owns a unit square, and those squares cover the disc up to a strip of width about $1$ along its edge, so Gauss observed that
+$$N(R) = \pi R^2 + E(R), \qquad |E(R)| \le \sqrt2\,\pi R + \tfrac{\pi}{2}.$$
+The question is the true size of the error $E(R)$. Watch the circle grow over the lattice on the left and the error wobble on the right.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/circle-problem.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:760px" src="app/circle-problem.html" title="Gauss's circle problem: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>Where things stand</h2>
+<p>Sierpiński proved $E(R) = O(R^{2/3})$ in 1906 by grouping the lattice points along short arcs. A long series of improvements using exponential sums (van der Corput, Vinogradov, Huxley and others) has brought the exponent down only to about $0.63$. In the other direction, Hardy and Landau showed in 1915 that $E(R)$ is <em>not</em> $O(R^{1/2})$: it is occasionally larger than $c\,R^{1/2}(\log R)^{1/4}$. The conjecture is that $1/2$ is the truth:
+$$E(R) = O(R^{1/2 + \varepsilon}) \quad\text{for every } \varepsilon > 0.$$
+The graph supports it: the error has the size of $\sqrt R$, now and then reaching a few times $\sqrt R$ (for $R \le 200$ the extreme is about $5.8\sqrt R$, near $R = 195$). Cramér showed that the mean square of $E$ grows like a constant times $R$, so a typical error is of order $\sqrt R$; the conjecture says the rare large values never outgrow $R^{1/2+\varepsilon}$.</p>
+<h3>Sums of two squares</h3>
+<p>Counting lattice points by distance is counting representations as a sum of two squares. If $r_2(n)$ is the number of $(x, y)$ with $x^2 + y^2 = n$, then $N(R) = \sum_{n \le R^2} r_2(n)$, and Jacobi's formula $r_2(n) = 4\,(d_1(n) - d_3(n))$, where $d_i(n)$ counts divisors $\equiv i \pmod 4$, turns the circle problem into a problem about divisors. This is why it is a twin of Dirichlet's divisor problem for the hyperbola, and why the same exponents appear in both. Hover over a lattice point to see $r_2$ of its squared distance.</p>
+  <details class="proof">
+    <summary>Full proof: the error is at most a constant times R</summary>
+    <div class="proof-body">
+<p><strong>Proposition.</strong> <em>For $R \ge 1$, $|N(R) - \pi R^2| \le \sqrt2\,\pi R + \tfrac{\pi}{2}$.</em></p>
+<p><em>Proof.</em> Attach to each lattice point $(x, y)$ the unit square $[x - \tfrac12, x + \tfrac12] \times [y - \tfrac12, y + \tfrac12]$. Each square has diameter $\sqrt2$, so every point of it is within $\tfrac{\sqrt2}{2}$ of its centre. Let $\rho = \tfrac{\sqrt 2}{2}$. If $(x, y)$ is inside the circle of radius $R$, its square lies inside the circle of radius $R + \rho$. Conversely every point of the disc of radius $R - \rho$ lies in some square, whose centre is then within $R$ of the origin, so these squares cover that smaller disc. The squares do not overlap, so comparing areas,
+$$\pi (R - \rho)^2 \le N(R) \le \pi (R + \rho)^2.$$
+Hence $|N(R) - \pi R^2| \le 2\pi\rho R + \pi\rho^2 = \sqrt2\,\pi R + \tfrac{\pi}{2}$, as claimed. $\square$</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>G. H. Hardy, <em>On the expression of a number as the sum of two squares</em>, Quarterly Journal of Mathematics 46 (1915).</li>
+  <li>M. N. Huxley, <em>Exponential sums and lattice points III</em>, Proceedings of the London Mathematical Society 87 (2003).</li>
+  <li>A. Ivić, E. Krätzel, M. Kühleitner and W. G. Nowak, <em>Lattice points in large regions and related arithmetic functions: recent developments in a very classic topic</em>, 2004 (arXiv:math/0410522).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

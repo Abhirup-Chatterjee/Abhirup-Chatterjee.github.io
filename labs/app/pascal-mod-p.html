@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pascal's triangle, coloured by p</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../pascal-mod-p.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Pascal's triangle, coloured by p</h1><p class="sub">Binomial coefficients coloured by the power of p dividing them (Kummer) or by their residue (Lucas).</p></div>
+<div class="row"><span class="lab">prime p</span><button type="button" data-p="2">2</button><button type="button" data-p="3">3</button><button type="button" data-p="5">5</button><button type="button" data-p="7">7</button>
+    <span class="lab" style="margin-left:.6rem">rows</span><button type="button" data-rows="0">fewer</button><button type="button" data-rows="1">more</button>
+    <span class="lab" style="margin-left:.6rem">colour by</span><button type="button" data-m="v">power of p</button><button type="button" data-m="r">residue mod p</button></div>
+  <div class="stage" style="--ar:1;max-width:640px;margin-inline:auto"><canvas id="pc" aria-label="Pascal's triangle with each entry coloured by the power of p dividing it"></canvas></div>
+  <div class="readout" id="pr">…</div>
+  <div class="legend" id="plegend"></div>
+</div>
+<script>
+var css=Lab.css,setup=Lab.setup,sub=Lab.sub,sup=Lab.sup,rgb=Lab.rgb,redraws=[];var root=document.documentElement,reduce=Lab.reduce;function mix(a,b,t){return Lab.mix(a,b,t);}Lab.onTheme(function(){redraws.forEach(function(f){f();});});
+/* ============================ Option 1: Pascal's triangle mod p ============================ */
+(function(){
+  var cv=document.getElementById("pc"),out=document.getElementById("pr"),leg=document.getElementById("plegend");
+  var p=3,more=0,mode="v",N,V,Res,geom,hover=null,grow=0,anim=null;
+  var SIZES={2:[64,128],3:[81,243],5:[25,125],7:[49,343]};
+  function digits(n){var d=[];if(n===0)return[0];while(n>0){d.push(n%p);n=Math.floor(n/p);}return d;}
+  function build(){
+    N=SIZES[p][more];V=[];Res=[];
+    // Pascal mod p^big via valuations: v(n,k) = carries of k + (n-k) in base p ; residue via Lucas
+    var small=[];for(var a=0;a<p;a++){small.push([]);for(var b=0;b<=a;b++)small[a].push(b===0||b===a?1:(small[a-1][b-1]+small[a-1][b])%p);}
+    for(var n=0;n<N;n++){var vr=new Uint8Array(n+1),rr=new Uint8Array(n+1);
+      for(var k=0;k<=n;k++){var x=k,y=n-k,c=0,carry=0,res=1,nn=n,kk=k;
+        while(x>0||y>0||carry){var s=x%p+y%p+carry;carry=s>=p?1:0;c+=carry;x=Math.floor(x/p);y=Math.floor(y/p);}
+        if(c===0){while(nn>0||kk>0){var ni=nn%p,ki=kk%p;res=res*small[ni][ki]%p;nn=Math.floor(nn/p);kk=Math.floor(kk/p);}}else res=0;
+        vr[k]=c;rr[k]=res;}
+      V.push(vr);Res.push(rr);}
+  }
+  function palette(){var acc=rgb(css("--accent")),plus=rgb(css("--plus")),card=rgb(css("--card")),ink=rgb(css("--ink"));
+    var dark=root.getAttribute("data-theme")==="dark";
+    var vcol=[mix(acc,acc,0),mix(plus,card,0.55),mix(plus,plus,0),mix(plus,ink,0.55),mix(ink,ink,0),mix(ink,ink,0)];
+    if(dark)vcol=[mix(acc,acc,0),mix(plus,[255,255,255],0.35),mix(plus,plus,0),mix(plus,card,0.45),mix(plus,card,0.68),mix(ink,card,0.86)];
+    var rcol=[mix(card,ink,dark?0.12:0.08)];for(var r=1;r<p;r++)rcol.push(p===2?mix(acc,acc,0):mix(acc,plus,(r-1)/(p-2)));
+    return{v:vcol,r:rcol};}
+  function layout(){geom=setup(cv);}
+  function geo(){var W=geom.w,H=geom.h,pad=8,s=Math.min((W-2*pad)/N,(H-2*pad)/(N*0.866)),rowH=s*0.866,top=(H-N*rowH)/2+rowH/2;return{s:s,rowH:rowH,top:top,cx:W/2};}
+  function hexPath(path,x,y,r){for(var i=0;i<6;i++){var a=Math.PI/6+i*Math.PI/3,X=x+r*Math.cos(a),Y=y+r*Math.sin(a);if(i)path.lineTo(X,Y);else path.moveTo(X,Y);}path.closePath();}
+  function draw(){
+    if(!geom)layout();var c=geom.ctx,W=geom.w,H=geom.h;c.clearRect(0,0,W,H);
+    var G=geo(),pal=palette(),cols=mode==="v"?pal.v:pal.r,paths=cols.map(function(){return new Path2D();}),r=G.s*0.578;
+    var rows=Math.min(N,Math.ceil(grow));
+    for(var n=0;n<rows;n++){var y=G.top+n*G.rowH,x0=G.cx-n*G.s/2;
+      for(var k=0;k<=n;k++){var idx=mode==="v"?Math.min(V[n][k],cols.length-1):Res[n][k];hexPath(paths[idx],x0+k*G.s,y,r*(G.s>3?0.97:1.04));}}
+    paths.forEach(function(pa,i){c.fillStyle=cols[i];c.fill(pa);});
+    // hover: highlight row and cell
+    if(hover){var hy=G.top+hover.n*G.rowH,hx=G.cx-hover.n*G.s/2+hover.k*G.s;
+      c.strokeStyle=css("--ink");c.lineWidth=1.6;var hp=new Path2D();hexPath(hp,hx,hy,Math.max(r*1.25,5));c.stroke(hp);
+      panel(c,G);}
+    else intro(c,G);
+  }
+  function intro(c,G){var f=css("--f-mono"),kexp=Math.round(Math.log(N)/Math.log(p)),SUP="⁰¹²³⁴⁵⁶⁷⁸⁹";c.font="11px "+f;c.fillStyle=css("--muted");c.textAlign="left";
+    c.fillText("rows 0 – "+(N-1)+"   ·   p = "+p,10,18);c.fillText(N+" = "+p+SUP[kexp]+" rows: the pattern repeats at "+kexp+" scales",10,34);}
+  function panel(c,G){ // base-p addition k + (n-k) = n with carries
+    var n=hover.n,k=hover.k,m=n-k,L=Math.max(digits(n).length,1),f=css("--f-mono"),ink=css("--ink"),mut=css("--muted"),acc=css("--accent"),plus=css("--plus");
+    var dk=digits(k),dm=digits(m),dn=digits(n),carries=[],carry=0;
+    for(var i=0;i<L;i++){var s=(dk[i]||0)+(dm[i]||0)+carry;carry=s>=p?1:0;carries.push(carry);}
+    var cw=13,x1=12+cw*(L+1),y0=22;c.font="12px "+f;c.textAlign="center";
+    c.fillStyle=css("--card");c.globalAlpha=.88;c.fillRect(4,4,x1+70,94);c.globalAlpha=1;
+    // carries row (carry out of position i lands above position i+1)
+    for(i=0;i<L;i++)if(carries[i]){var cx=x1-cw*(i+1);c.fillStyle=acc;c.beginPath();c.arc(cx,y0-4,4.2,0,6.2832);c.fill();c.fillStyle=css("--card");c.font="600 8px "+f;c.fillText("1",cx,y0-1);c.font="12px "+f;}
+    function row(ds,y,col){c.fillStyle=col;for(var i=0;i<L;i++)c.fillText(String(ds[i]===undefined?" ":ds[i]),x1-cw*i,y);}
+    row(dk,y0+16,ink);c.fillStyle=mut;c.textAlign="right";c.fillText("k",x1+40,y0+16);c.textAlign="center";
+    row(dm,y0+32,ink);c.fillStyle=mut;c.textAlign="left";c.fillText("+",x1-cw*L-12,y0+32);c.textAlign="right";c.fillText("n−k",x1+40,y0+32);c.textAlign="center";
+    c.strokeStyle=mut;c.beginPath();c.moveTo(x1-cw*(L-0.5),y0+38);c.lineTo(x1+cw*0.5,y0+38);c.stroke();
+    row(dn,y0+54,ink);c.fillStyle=mut;c.textAlign="right";c.fillText("n",x1+40,y0+54);
+    var nc=carries.reduce(function(a,b){return a+b;},0);
+    c.textAlign="left";c.fillStyle=nc?plus:acc;c.font="600 11px "+f;c.fillText(nc+" carr"+(nc===1?"y":"ies")+"  ⇒  "+(nc?p+(nc>1?"⁰¹²³⁴⁵⁶⁷⁸⁹"[nc]||"^"+nc:"")+" ∥ C(n,k)":p+" ∤ C(n,k)"),8,y0+72);
+  }
+  function binom(n,k){var r=1n;k=Math.min(k,n-k);for(var i=1;i<=k;i++)r=r*BigInt(n-k+i)/BigInt(i);return r;}
+  function fmtBig(b){var s=b.toString();return s.length<=22?s:s.slice(0,10)+"…"+s.slice(-6)+"  ("+s.length+" digits)";}
+  function report(){
+    if(!hover){var cnt=0,tot=0;for(var n=0;n<N;n++)for(var k=0;k<=n;k++){tot++;if(V[n][k]===0)cnt++;}
+      out.textContent="p = "+p+", rows 0 to "+(N-1)+":  "+cnt+" of "+tot+" entries are not divisible by "+p+"\nhover over a cell to see Kummer's carries"+(p===2?"\n(row n has 2^(number of 1s in n's binary expansion) odd entries)":"");return;}
+    var n=hover.n,k=hover.k,dn=digits(n).reverse().join(""),dk=digits(k).reverse().join("");
+    out.textContent="C("+n+", "+k+") = "+fmtBig(binom(n,k))+"\nin base "+p+":  n = "+dn+sub(p)+",  k = "+dk+sub(p)+"   ·   "+p+"-adic valuation "+V[n][k]+(V[n][k]===0?"   ·   residue mod "+p+" = "+Res[n][k]+" (Lucas)":"");}
+  function setLegend(){var pal=palette();
+    if(mode==="v")leg.innerHTML=["not divisible","÷ "+p,"÷ "+p+"²","÷ "+p+"³","÷ "+p+"⁴+"].map(function(t,i){return'<span><i style="background:'+pal.v[i]+';height:9px;width:9px;border-radius:2px"></i>'+t+'</span>';}).join("");
+    else{var h='<span><i style="background:'+pal.r[0]+';height:9px;width:9px;border-radius:2px"></i>0</span>';for(var r=1;r<p;r++)h+='<span><i style="background:'+pal.r[r]+';height:9px;width:9px;border-radius:2px"></i>'+r+'</span>';leg.innerHTML=h;}}
+  function play(){if(anim)cancelAnimationFrame(anim);if(reduce){grow=N;draw();return;}grow=0;var t0=null,dur=1800;
+    function fr(t){if(t0===null)t0=t;var u=Math.min(1,(t-t0)/dur);grow=N*(1-Math.pow(1-u,2.2));draw();if(u<1)anim=requestAnimationFrame(fr);else anim=null;}anim=requestAnimationFrame(fr);}
+  function sync(){document.querySelectorAll("[data-p]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.p===p));});
+    document.querySelectorAll("[data-rows]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.rows===more));});
+    document.querySelectorAll("[data-m]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.m===mode));});}
+  function reset(){hover=null;build();sync();setLegend();report();play();}
+  document.querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(){p=+b.dataset.p;reset();});});
+  document.querySelectorAll("[data-rows]").forEach(function(b){b.addEventListener("click",function(){more=+b.dataset.rows;reset();});});
+  document.querySelectorAll("[data-m]").forEach(function(b){b.addEventListener("click",function(){mode=b.dataset.m;sync();setLegend();draw();});});
+  cv.addEventListener("pointermove",function(ev){var r=cv.getBoundingClientRect(),x=ev.clientX-r.left,y=ev.clientY-r.top,G=geo();
+    var n=Math.round((y-G.top)/G.rowH),k=Math.round((x-G.cx)/G.s+n/2),h=null;
+    if(n>=0&&n<N&&k>=0&&k<=n)h={n:n,k:k};
+    if(!h&&!hover)return;if(h&&hover&&h.n===hover.n&&h.k===hover.k)return;hover=h;draw();report();});
+  cv.addEventListener("pointerleave",function(){hover=null;draw();report();});
+  window.addEventListener("resize",function(){layout();draw();});
+  redraws.push(function(){setLegend();draw();});
+  layout();reset();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zeros on the unit circle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../zeros-circle.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Zeros on the unit circle</h1><p class="sub">Zeros of L-functions of random curves over finite fields, against USp(2g).</p></div>
+<div class="row"><span class="lab">genus</span><button type="button" data-g="1">1</button><button type="button" data-g="2">2</button><button type="button" data-g="3">3</button>
+    <span class="lab" style="margin-left:.8rem">prime p</span><select id="zp" aria-label="Prime p"></select>
+    <span class="grow"></span><button type="button" id="zpause">Pause</button><button type="button" id="zreset">Clear</button></div>
+  <div class="stage" style="--ar:1;max-width:640px;margin-inline:auto"><canvas id="zc" aria-label="Normalised zeros of L-functions of random hyperelliptic curves over a finite field, with a histogram of their angles"></canvas></div>
+  <div class="readout" id="zr">Drawing curves…</div>
+  <div class="legend"><span><i style="background:var(--accent)"></i>zeros of the latest curve</span><span><i style="background:var(--plus);opacity:.55"></i>angles of all curves so far</span><span><i style="background:var(--ink-soft)"></i>USp(2g) prediction (Katz–Sarnak)</span></div>
+</div>
+<script>
+var css=Lab.css,setup=Lab.setup,sub=Lab.sub,sup=Lab.sup,redraws=[];Lab.onTheme(function(){redraws.forEach(function(f){f();});});
+/* =================== Option 2: zeros of L-functions of y^2 = f(x) over F_p =================== */
+(function(){
+  var cv=document.getElementById("zc"),out=document.getElementById("zr"),selP=document.getElementById("zp");
+  var PR=[7,11,13,17,19,23,29,31,37,41,43,47,53];
+  PR.forEach(function(p){var o=document.createElement("option");o.value=p;o.textContent=p;selP.appendChild(o);});
+  var g=2,p=31,paused=false,BINS=36,bins,total,curves,latest=null,geom,hoverBin=-1;
+  selP.value=p;
+  function mod(a,m){a%=m;return a<0?a+m:a;}
+  function powmod(b,e,m){var r=1;b=mod(b,m);while(e>0){if(e&1)r=r*b%m;b=b*b%m;e>>=1;}return r;}
+  var leg,nonres,cubA,cubB;
+  function findCubic(){for(var A=0;A<p;A++)for(var B=1;B<p;B++){var ok=true;for(var x=0;x<p;x++)if(mod(x*x*x-A*x-B,p)===0){ok=false;break;}if(ok){cubA=A;cubB=B;return;}}}
+  function prep(){leg=new Int8Array(p);for(var a=1;a<p;a++)leg[a]=powmod(a,(p-1)/2,p)===1?1:-1;for(nonres=2;leg[nonres]!==-1;nonres++);findCubic();}
+  // character sums S_r = sum_{x in F_{p^r}} chi(f(x)),  f given low->high coefficients
+  function S1(f){var s=0;for(var x=0;x<p;x++){var v=0;for(var i=f.length-1;i>=0;i--)v=(v*x+f[i])%p;s+=leg[v];}return s;}
+  function S2(f){var s=0,n=nonres,d=f.length-1;
+    for(var x0=0;x0<p;x0++)for(var x1=0;x1<p;x1++){var a0=f[d],a1=0;
+      for(var i=d-1;i>=0;i--){var b0=(a0*x0+n*a1*x1+f[i])%p,b1=(a0*x1+a1*x0)%p;a0=b0;a1=b1;}
+      s+=leg[mod(a0*a0-n*a1*a1,p)];}
+    return s;}
+  function S3(f){var s=0,A=cubA,B=cubB,d=f.length-1;
+    for(var x0=0;x0<p;x0++)for(var x1=0;x1<p;x1++)for(var x2=0;x2<p;x2++){var y0=f[d],y1=0,y2=0;
+      for(var i=d-1;i>=0;i--){
+        var c0=y0*x0,c1=y0*x1+y1*x0,c2=y0*x2+y1*x1+y2*x0,c3=y1*x2+y2*x1,c4=y2*x2;
+        c2+=A*c4;c1+=B*c4;c1+=A*c3;c0+=B*c3;
+        y0=(c0+f[i])%p;y1=c1%p;y2=c2%p;}
+      // norm = det of multiplication by y on basis 1, s, s^2
+      var u0=y0,u1=y1,u2=y2;                        // y*1
+      var v0=B*u2%p,v1=(u0+A*u2)%p,v2=u1;            // y*s
+      var w0=B*v2%p,w1=(v0+A*v2)%p,w2=v1;            // y*s^2
+      var det=u0*(v1*w2-v2*w1)-v0*(u1*w2-u2*w1)+w0*(u1*v2-u2*v1);
+      s+=leg[mod(det,p)];}
+    return s;}
+  function polyGcdIsOne(f){ // f low->high monic; check gcd(f, f') == 1 over F_p
+    var a=f.slice(),b=[];for(var i=1;i<f.length;i++)b.push(mod(i*f[i],p));
+    function trim(x){while(x.length&&x[x.length-1]===0)x.pop();return x;}
+    trim(a);trim(b);
+    while(b.length){var inv=powmod(b[b.length-1],p-2,p);
+      while(a.length>=b.length){var c=a[a.length-1]*inv%p,sh=a.length-b.length;for(var j=0;j<b.length;j++)a[sh+j]=mod(a[sh+j]-c*b[j],p);trim(a);if(!a.length)break;}
+      var t=a;a=b;b=t;}
+    return a.length===1;}
+  function randomCurve(){
+    for(var tries=0;tries<50;tries++){var d=2*g+1,f=[];for(var i=0;i<d;i++)f.push(Math.floor(Math.random()*p));f.push(1);
+      if(polyGcdIsOne(f))return f;}
+    return null;}
+  function zerosOf(f){
+    var s=[0,-S1(f)];if(g>=2)s.push(-S2(f));if(g>=3)s.push(-S3(f));
+    var e=[1];for(var k=1;k<=g;k++){var t=0;for(var i=1;i<=k;i++)t+=(i%2?1:-1)*e[k-i]*s[i];e.push(t/k);}
+    for(k=g+1;k<=2*g;k++)e.push(Math.pow(p,k-g)*e[2*g-k]);
+    var sq=Math.sqrt(p);
+    function h(th){var v=0;for(var k=0;k<=2*g;k++)v+=(k%2?-1:1)*e[k]*Math.pow(sq,g-k)*Math.cos((g-k)*th);return v;}
+    var roots=[],M=1200,prev=h(1e-9),pt=1e-9;
+    for(var m=1;m<=M;m++){var th=Math.PI*m/M-(m===M?1e-9:0),v=h(th);
+      if(prev===0){roots.push(pt);}else if(prev*v<0){var lo=pt,hi=th;for(var it=0;it<40;it++){var mid=(lo+hi)/2;if(prev*h(mid)<=0)hi=mid;else lo=mid;}roots.push((lo+hi)/2);}
+      prev=v;pt=th;}
+    // double roots (tangency) are missed by sign changes: fill by local minima of |h|
+    if(roots.length<g){var best=[];for(m=1;m<M;m++){var a=Math.abs(h(Math.PI*(m-1)/M)),b=Math.abs(h(Math.PI*m/M)),c=Math.abs(h(Math.PI*(m+1)/M));if(b<=a&&b<=c)best.push([b,Math.PI*m/M]);}
+      best.sort(function(x,y){return x[0]-y[0];});for(var q=0;q<best.length&&roots.length<g;q++){var dup=roots.some(function(r){return Math.abs(r-best[q][1])<1e-2;});if(!dup){roots.push(best[q][1]);if(roots.length<g)roots.push(best[q][1]);}}
+      roots.length=Math.min(roots.length,g);}
+    roots.sort(function(a,b){return a-b;});
+    return{roots:roots,e:e,N1:p+1+(-s[1]),f:f};}
+  function density(th){var n=2*g+1,s=Math.sin(th);var r=Math.abs(s)<1e-9?n:Math.sin(n*th)/s;return (n-r)/(2*Math.PI)/g;} // per-angle probability density on [0,pi]
+  function reset(){bins=new Float64Array(BINS);total=0;curves=0;latest=null;}
+  function step(k){for(var i=0;i<k;i++){var f=randomCurve();if(!f)continue;var z=zerosOf(f);latest=z;curves++;
+      z.roots.forEach(function(th){var b=Math.min(BINS-1,Math.floor(th/Math.PI*BINS));bins[b]++;total++;});}}
+  function layout(){geom=setup(cv);}
+  function draw(){
+    if(!geom)layout();var c=geom.ctx,W=geom.w,H=geom.h,cx=W/2,cy=H/2,Rh=Math.min(W,H)/2-4,R0=Rh*0.5,Rmax=Rh*0.98;
+    c.clearRect(0,0,W,H);
+    var ink=css("--ink"),soft=css("--ink-soft"),plus=css("--plus"),acc=css("--accent"),rule=css("--rule"),zero=css("--zero");
+    // scale: bar length proportional to observed density; theory peak maps to ~ (Rmax-R0)
+    var peak=0;for(var t=0;t<=200;t++)peak=Math.max(peak,density(Math.PI*t/200));
+    var scale=(Rmax-R0-6)/(peak*1.08);
+    var bw=Math.PI/BINS;
+    // bars (mirrored in lower half)
+    for(var b=0;b<BINS;b++){var obs=total?bins[b]/total/bw:0,len=obs*scale;if(len<=0)continue;
+      var a0=b*bw,a1=(b+1)*bw;c.fillStyle=plus;c.globalAlpha=b===hoverBin?0.85:0.42;
+      [1,-1].forEach(function(sg){c.beginPath();c.arc(cx,cy,R0+2,-sg*a0,-sg*a1,sg>0);c.arc(cx,cy,R0+2+len,-sg*a1,-sg*a0,sg<0);c.closePath();c.fill();});}
+    c.globalAlpha=1;
+    // theory outline
+    c.strokeStyle=soft;c.lineWidth=1.3;c.beginPath();
+    for(t=0;t<=400;t++){var th=-Math.PI+2*Math.PI*t/400,r=R0+2+density(Math.abs(th))*scale;var X=cx+r*Math.cos(th),Y=cy-r*Math.sin(th);if(t)c.lineTo(X,Y);else c.moveTo(X,Y);}
+    c.stroke();
+    // unit circle and axes
+    c.strokeStyle=rule;c.lineWidth=1;c.beginPath();c.moveTo(cx-R0-8,cy);c.lineTo(cx+R0+8,cy);c.stroke();
+    c.strokeStyle=ink;c.lineWidth=1.4;c.beginPath();c.arc(cx,cy,R0,0,2*Math.PI);c.stroke();
+    c.fillStyle=css("--muted");c.font="11px "+css("--f-mono");c.textAlign="left";c.fillText("1",cx+R0+10,cy+4);c.textAlign="right";c.fillText("−1",cx-R0-10,cy+4);
+    // latest zeros
+    if(latest){c.strokeStyle=acc;c.globalAlpha=.55;c.lineWidth=1;
+      latest.roots.forEach(function(th){c.beginPath();c.moveTo(cx+R0*Math.cos(th),cy-R0*Math.sin(th));c.lineTo(cx+R0*Math.cos(th),cy+R0*Math.sin(th));c.stroke();});
+      c.globalAlpha=1;c.fillStyle=acc;
+      latest.roots.forEach(function(th){[1,-1].forEach(function(sg){c.beginPath();c.arc(cx+R0*Math.cos(th),cy-sg*R0*Math.sin(th),4.5,0,2*Math.PI);c.fill();});});}
+    // centre text
+    c.fillStyle=soft;c.textAlign="center";c.font="12px "+css("--f-mono");
+    c.fillText("genus "+g+" · p = "+p,cx,cy-10);c.fillStyle=css("--muted");c.fillText(curves+" curves",cx,cy+18);
+  }
+  function fmtPoly(f){var parts=[];for(var i=f.length-1;i>=0;i--){var a=f[i];if(!a)continue;var m=i===0?String(a):(a===1?"":a)+"x"+(i>1?sup(i):"");parts.push(m);}return "y² = "+parts.join(" + ");}
+  function fmtL(e){var parts=["1"];for(var k=1;k<e.length;k++){var c=(k%2?-1:1)*e[k];if(!c)continue;var abs=Math.abs(c);parts.push((c<0?"− ":"+ ")+(abs===1?"":abs)+"T"+(k>1?sup(k):""));}return "L(T) = "+parts.join(" ");}
+  function report(){
+    if(hoverBin>=0){var bw=Math.PI/BINS,a=hoverBin*bw,obs=total?bins[hoverBin]/total*100:0,pred=0;for(var t=0;t<20;t++)pred+=density(a+bw*(t+.5)/20)*bw/20;
+      out.textContent="θ/π ∈ ["+(hoverBin/BINS).toFixed(3)+", "+((hoverBin+1)/BINS).toFixed(3)+")\nobserved "+obs.toFixed(2)+"%   ·   USp("+(2*g)+") predicts "+(pred*100).toFixed(2)+"%";return;}
+    if(!latest){out.textContent="Drawing curves…";return;}
+    out.textContent=fmtPoly(latest.f)+" over 𝔽"+sub(p)+"   ·   #C(𝔽"+sub(p)+") = "+latest.N1+"\n"+fmtL(latest.e)+"\nθ/π = "+latest.roots.map(function(r){return (r/Math.PI).toFixed(3);}).join(", ");}
+  var last=0,acc=0;
+  function tick(ts){if(!paused){var target=curves<300?(g===3&&p>40?1:4):1,dt=ts-last;
+      if(curves<300||dt>(curves<1500?140:420)){step(target);last=ts;draw();report();}}
+    requestAnimationFrame(tick);}
+  function setG(n){g=n;document.querySelectorAll("[data-g]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.g===g));});reset();draw();report();}
+  document.querySelectorAll("[data-g]").forEach(function(b){b.addEventListener("click",function(){setG(+b.dataset.g);});});
+  selP.addEventListener("change",function(){p=+selP.value;prep();reset();draw();report();});
+  document.getElementById("zpause").addEventListener("click",function(){paused=!paused;this.textContent=paused?"Play":"Pause";});
+  document.getElementById("zreset").addEventListener("click",function(){reset();draw();report();});
+  cv.addEventListener("pointermove",function(ev){var r=cv.getBoundingClientRect(),x=ev.clientX-r.left-r.width/2,y=-(ev.clientY-r.top-r.height/2),d=Math.hypot(x,y),Rh=Math.min(r.width,r.height)/2-4;
+    var nb=-1;if(d>Rh*0.5){var th=Math.abs(Math.atan2(y,x));nb=Math.min(BINS-1,Math.floor(th/Math.PI*BINS));}
+    if(nb!==hoverBin){hoverBin=nb;draw();report();}});
+  cv.addEventListener("pointerleave",function(){hoverBin=-1;draw();report();});
+  window.addEventListener("resize",function(){layout();draw();});
+  redraws.push(draw);
+  prep();setG(2);requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

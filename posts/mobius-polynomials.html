@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Möbius Function over Polynomials</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="The Möbius Function over Polynomials">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <h1>The Möbius function over polynomials, and a prime number theorem in one line</h1>
+    <div class="byline"><span class="date">October 2026</span><span class="tag">function fields</span><span class="tag">expository</span><span class="date">≈ 8 min read</span></div>
+  </header>
+  <div class="prose">
+    <p>Over the integers, the Möbius function $\mu(n)$ is $(-1)^k$ when $n$ is a product of $k$ distinct primes and $0$ when $n$ has a repeated prime factor. Its partial sums, the Mertens function
+    $$M(x) = \sum_{n \le x} \mu(n),$$
+    carry an astonishing amount of information. The prime number theorem is equivalent to $M(x) = o(x)$, and the Riemann hypothesis is equivalent to $M(x) \ll_\varepsilon x^{1/2+\varepsilon}$ for every $\varepsilon > 0$.</p>
+    <p>This post is about what happens when we replace $\mathbb{Z}$ by the polynomial ring $\mathbb{F}_q[t]$ over a finite field with $q$ elements. The answer is surprisingly clean, and it explains why function fields are such a good laboratory for problems that are hopeless over the integers.</p>
+
+    <h2>The dictionary</h2>
+    <p>The analogy rests on a short dictionary.</p>
+    <div class="table-wrap"><table class="nice">
+      <thead><tr><th>Integers</th><th>Polynomials over $\mathbb{F}_q$</th></tr></thead>
+      <tbody>
+        <tr><td>positive integers $n$</td><td>monic polynomials $f$</td></tr>
+        <tr><td>primes $p$</td><td>monic irreducible polynomials $P$</td></tr>
+        <tr><td>size $n$</td><td>norm $|f| = q^{\deg f}$</td></tr>
+        <tr><td>$n \le x$</td><td>$\deg f = n$ (there are exactly $q^n$ of them)</td></tr>
+      </tbody>
+    </table></div>
+    <p>Unique factorisation holds in $\mathbb{F}_q[t]$, so the Möbius function carries over verbatim: $\mu(f) = (-1)^k$ if $f$ is a product of $k$ distinct monic irreducibles, and $\mu(f) = 0$ if $f$ is divisible by the square of an irreducible.</p>
+
+    <h2>The zeta function is a geometric series</h2>
+    <p>Define the zeta function of $\mathbb{F}_q[t]$ as a power series in a variable $u$ (think $u = q^{-s}$):
+    $$Z(u) = \sum_{f \text{ monic}} u^{\deg f} = \sum_{n \ge 0} q^n u^n = \frac{1}{1 - qu}.$$
+    Unique factorisation gives the Euler product $Z(u) = \prod_P (1 - u^{\deg P})^{-1}$, exactly as for the Riemann zeta function. Inverting the Euler product term by term,
+    $$\sum_{f \text{ monic}} \mu(f)\, u^{\deg f} = \prod_P \left(1 - u^{\deg P}\right) = \frac{1}{Z(u)} = 1 - qu.$$</p>
+    <p>That is the whole computation. Comparing coefficients of $u^n$:</p>
+    <div class="callout"><span class="eyebrow">The polynomial Mertens function</span>
+    $$\sum_{\substack{f \text{ monic} \\ \deg f = n}} \mu(f) = \begin{cases} 1 & n = 0, \\ -q & n = 1, \\ 0 & n \ge 2. \end{cases}$$</div>
+    <p>Compare this with the integers, where the best unconditional bound for $M(x)$ saves only a factor of roughly $\exp\!\big(c(\log x)^{3/5}(\log\log x)^{-1/5}\big)$ over the trivial bound. Over $\mathbb{F}_q[t]$ the sum is not just small; it is <em>exactly zero</em> in every degree $n \ge 2$.</p>
+
+    <h3>Half plus, half minus</h3>
+    <p>The same trick counts squarefree polynomials. Since $\sum_{f \text{ squarefree}} u^{\deg f} = Z(u)/Z(u^2) = (1 - qu^2)/(1 - qu)$, there are $q^n - q^{n-1}$ squarefree monic polynomials of degree $n \ge 2$. Combined with the vanishing sum above, exactly half of them have $\mu(f) = +1$ and half have $\mu(f) = -1$.</p>
+    <p>A sanity check with $q = 2$, $n = 2$: the monic quadratics over $\mathbb{F}_2$ are $t^2$, $t^2 + 1 = (t+1)^2$, $t^2 + t = t(t+1)$ and the irreducible $t^2 + t + 1$. Their Möbius values are $0, 0, +1, -1$, which sum to $0$, and there are $2 = 2^2 - 2^1$ squarefree ones.</p>
+
+    <h2>Check it yourself</h2>
+    <p>The widget below factors every monic polynomial of the chosen degree over $\mathbb{F}_p$ by trial division, right in your browser, and tallies the Möbius values.</p>
+  </div>
+
+  <div class="widget" id="mu-widget" style="margin-block:1.6rem">
+    <div class="controls">
+      <label for="mu-p">field $\mathbb{F}_p$, p =
+        <select id="mu-p"><option value="2">2</option><option value="3" selected>3</option><option value="5">5</option><option value="7">7</option></select></label>
+      <label for="mu-n">degree n =
+        <select id="mu-n"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></label>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b id="mu-plus">–</b><span>μ = +1</span></div>
+      <div class="stat"><b id="mu-minus">–</b><span>μ = −1</span></div>
+      <div class="stat"><b id="mu-zero">–</b><span>μ = 0</span></div>
+      <div class="stat"><b id="mu-sum">–</b><span>Σ μ(f)</span></div>
+    </div>
+    <div class="bar" aria-hidden="true"><span id="mu-bar-plus"></span><span id="mu-bar-minus"></span></div>
+    <p class="date" id="mu-note">Computing…</p>
+  </div>
+
+  <div class="prose">
+    <h2>Where it gets hard: correlations</h2>
+    <p>Sums of $\mu$ alone are trivial over $\mathbb{F}_q[t]$, but correlations are not. The function-field analogue of Chowla's conjecture asks whether, for a fixed non-zero polynomial $h$,
+    $$\sum_{\substack{f \text{ monic} \\ \deg f = n}} \mu(f)\, \mu(f + h) = o(q^n) \qquad (n \to \infty).$$
+    Here the zeta function gives no help, because $\mu(f)\mu(f+h)$ is not multiplicative. Carmon and Rudnick proved a version in the limit $q \to \infty$ with $n$ fixed, using equidistribution results that ultimately rest on the Riemann hypothesis for curves. For fixed $q$, Sawin and Shusterman obtained a power saving under conditions relating $q$ to its characteristic, by a geometric analysis of the relevant varieties.</p>
+    <p>My own work lives in this territory: correlations of a <em>truncated</em> Möbius function $\mu_M$ over $\mathbb{F}_q[t]$. In the preprint <a href="https://arxiv.org/abs/2610.06471" rel="noopener">Chowla Conjecture for the Truncated Möbius Function over $\mathbb{F}_q[t]$</a> (arXiv:2610.06471) I study the two-point correlation $\sum_f \mu_M(f)\,\mu_M(f + h)$ by turning it into a uniform <em>bivariate</em> Erdős–Kac theorem, which I prove through characteristic functions. The precise definition of $\mu_M$ and the statements are in the paper; the <a href="../labs/erdos-kac.html">Erdős–Kac Lab</a> shows the one-variable version of the phenomenon.</p>
+
+    <figure class="quote"><blockquote>Beauty is the first test: there is no permanent place in the world for ugly mathematics.</blockquote><figcaption><b>G. H. Hardy</b><span>A Mathematician’s Apology, 1940</span></figcaption></figure>
+<h2>Further reading</h2>
+    <ul>
+      <li>M. Rosen, <em>Number Theory in Function Fields</em>, Graduate Texts in Mathematics 210, Springer, 2002. Chapters 1–2 cover everything above.</li>
+      <li>D. Carmon and Z. Rudnick, <em>The autocorrelation of the Möbius function and Chowla's conjecture for the rational function field</em>, Quarterly Journal of Mathematics, 2014.</li>
+      <li>W. Sawin and M. Shusterman, <em>On the Chowla and twin primes conjectures over $\mathbb{F}_q[T]$</em>, Annals of Mathematics, 2022.</li>
+    </ul>
+  </div>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

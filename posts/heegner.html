@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>163 and the class number one problem · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="163 and the class number one problem · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <h1>163 and the class number one problem</h1>
+    <div class="byline"><span class="date">November 2026</span><span class="tag">quadratic forms</span><span class="tag">modular forms</span><span class="date">≈ 8 min read</span></div>
+  </header>
+  <div class="prose">
+<p>Here is a number that looks like a misprint:
+$$e^{\pi\sqrt{163}} = 262537412640768743.99999999999925\ldots$$
+It misses an integer by less than $10^{-12}$. Martin Gardner announced in his April 1975 column that Ramanujan had proved it to be an integer; it was a joke, but the name "Ramanujan's constant" stuck. The real explanation is better than the joke, and it runs through one of Gauss's questions about quadratic forms.</p>
+
+<h2>Gauss's list</h2>
+<p>A binary quadratic form $ax^2 + bxy + cy^2$ with discriminant $b^2 - 4ac = -D < 0$ is <em>reduced</em> if $|b| \le a \le c$. Gauss showed that every positive definite form is equivalent, under integer changes of variables of determinant $1$, to exactly one reduced form (with a convention on the boundary), so the number of classes, the <strong>class number</strong> $h(-D)$, is finite and easy to compute. For fundamental discriminants, $h(-D) = 1$ means that every form of discriminant $-D$ is equivalent to the principal one, and that the ring of integers of $\mathbb{Q}(\sqrt{-D})$ has unique factorisation.</p>
+<p>In the <em>Disquisitiones Arithmeticae</em> (1801) Gauss listed the discriminants with class number one and conjectured that his list was complete. In modern terms, the fundamental discriminants $-D$ with $h(-D) = 1$ are
+$$D = 3,\ 4,\ 7,\ 8,\ 11,\ 19,\ 43,\ 67,\ 163.$$
+A computer search confirms there are no others below $4000$. The largest, $163$, is the source of the near-integer.</p>
+<table class="nums"><tr><th>$D$</th><th>$e^{\pi\sqrt D}$</th></tr>
+<tr><td>19</td><td>885479.777680…</td></tr>
+<tr><td>43</td><td>884736743.999777…</td></tr>
+<tr><td>67</td><td>147197952743.999998…</td></tr>
+<tr><td>163</td><td>262537412640768743.999999999999…</td></tr></table>
+
+<h2>Why the near-integer</h2>
+<p>Take $\tau = \frac{1 + \sqrt{-163}}{2}$, the root in the upper half-plane of the reduced form $x^2 + xy + 41y^2$. The elliptic curve $\mathbb{C}/(\mathbb{Z} + \tau\mathbb{Z})$ has complex multiplication by the ring of integers of $\mathbb{Q}(\sqrt{-163})$, and the theory of complex multiplication says that $j(\tau)$ is an algebraic integer of degree $h(-163) = 1$. So $j(\tau)$ is an ordinary integer; in fact $j(\tau) = -640320^3$. On the other hand
+$$j(\tau) = \frac1q + 744 + 196884\,q + \cdots, \qquad q = e^{2\pi i\tau} = -e^{-\pi\sqrt{163}},$$
+and $|q| \approx 4 \times 10^{-18}$. So $-e^{\pi\sqrt{163}} + 744 \approx -640320^3$, an integer, with error about $196884\,|q| \approx 7.5 \times 10^{-13}$. That is exactly the gap in the decimal expansion: $640320^3 + 744 = 262537412640768744$. The same argument with $43$ and $67$ explains the weaker near-misses in the table, and the <a href="../labs/modular.html">modular surface lab</a> draws $j$ and the CM points behind it.</p>
+
+<h2>Euler's prime-producing polynomial</h2>
+<p>The same $163$ is hiding in Euler's polynomial $n^2 + n + 41$, which is prime for $n = 0, 1, \dots, 39$: note $4(n^2 + n + 41) = (2n+1)^2 + 163$. Rabinowitsch proved in 1913 that $n^2 + n + A$ is prime for all $0 \le n \le A - 2$ exactly when $4A - 1$ is one of Gauss's discriminants. So $A = 41$ is the best possible, and no quadratic polynomial of this shape does better.</p>
+  <details class="proof">
+    <summary>Full proof: n² + n + 41 is prime for 0 ≤ n ≤ 39</summary>
+    <div class="proof-body">
+<p><em>Proof.</em> Let $f(n) = n^2 + n + 41$ and suppose a prime $p$ divides $f(n)$. Since $n(n+1)$ is even, $f(n)$ is odd and $p \ne 2$. From $4f(n) = (2n+1)^2 + 163$ we get $(2n+1)^2 \equiv -163 \pmod p$, so either $p = 163$ or $-163$ is a quadratic residue mod $p$. A direct check of Legendre symbols shows that $-163$ is a non-residue modulo every odd prime $p < 41$, namely $3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37$. Hence every prime factor of $f(n)$ is at least $41$. For $0 \le n \le 39$ we have $f(n) \le 39^2 + 39 + 41 = 1601 < 41^2$, so $f(n)$ cannot have two prime factors $\ge 41$, and it is prime. $\square$</p>
+<p>The residue check is the class number one property in disguise: a prime $p < 41$ for which $-163$ were a square would give a reduced form $px^2 + bxy + cy^2$ of discriminant $-163$ other than $x^2 + xy + 41y^2$. And $f(40) = 41^2$ shows the bound is sharp.</p>
+    </div>
+  </details>
+
+<h2>Proving the list is complete</h2>
+<p>Siegel showed in 1936 that $h(-D)$ grows like $D^{1/2 + o(1)}$, so only finitely many $D$ have class number one, but his proof could not say how large an exception might be. Kurt Heegner, a schoolteacher, published a proof of completeness in 1952 using modular functions; it was dismissed as flawed. In 1966–67 Alan Baker (with linear forms in logarithms) and Harold Stark (with modular functions) gave independent proofs, and Stark then showed that Heegner had been right all along. The general problem, listing all $D$ with a given class number, was made effective by Goldfeld, Gross and Zagier in the 1980s, and Watkins (2004) completed the lists up to class number $100$. For example, exactly eighteen fundamental discriminants have class number two, the largest being $-427$.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>D. A. Cox, <em>Primes of the Form $x^2 + ny^2$</em>, 2nd ed., Wiley, 2013.</li>
+  <li>H. M. Stark, <em>On the "gap" in a theorem of Heegner</em>, Journal of Number Theory 1 (1969).</li>
+  <li>D. Goldfeld, <em>Gauss's class number problem for imaginary quadratic fields</em>, Bulletin of the AMS 13 (1985).</li>
+  <li>M. Watkins, <em>Class numbers of imaginary quadratic fields</em>, Mathematics of Computation 73 (2004).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

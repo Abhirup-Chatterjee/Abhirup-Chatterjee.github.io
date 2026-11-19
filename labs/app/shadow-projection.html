@@ -1,0 +1,623 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);addEventListener("message",function(e){var d=e.data;if(d&&typeof d.acTheme==="string"&&v.test(d.acTheme))document.documentElement.setAttribute("data-theme",d.acTheme)});addEventListener("storage",function(e){if(e.key==="ac-theme"&&e.newValue)document.documentElement.setAttribute("data-theme",e.newValue)});addEventListener("DOMContentLoaded",function(){if(window.top===window.self){var b=document.querySelector(".ac-back");if(b)b.hidden=false}})})();</script><style>.ac-back{display:inline-block;margin-bottom:10px;font:500 12px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.04em;color:inherit;opacity:.75;text-decoration:none}.ac-back:hover{opacity:1;text-decoration:underline}</style>
+<title>Shadow Projection</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap">
+<style>
+/* Dark-first single-theme — mathematical instruments */
+:root {
+  color-scheme: dark;
+  --bg:        #08101e;
+  --surface:   #0e1928;
+  --surface2:  #131e30;
+  --border:    #1e2d48;
+  --text:      #dce6f2;
+  --muted:     #93a6c2;
+  --accent:    #e07830;
+  --accent-lo: rgba(224,120,48,0.15);
+  --shad:      #b83420;
+  --shad-lo:   rgba(184,52,32,0.18);
+  --light-col: #f5d428;
+  --mat:       #5ba8f5;
+  --mat-zero:  #4d6688;
+  --green:     #3ecf82;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  display: flex;
+  height: 100%;
+}
+
+/* ── Canvas ─────────────────────────────────────── */
+#cv { flex: 1; position: relative; overflow: hidden; min-width: 0; }
+canvas {
+  display: block;
+  width: 100%; height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+canvas.grabbing { cursor: grabbing; }
+canvas.over-vert { cursor: move; }
+
+/* ── Panel ───────────────────────────────────────── */
+#panel {
+  width: 308px;
+  min-width: 260px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.ph {
+  padding: 15px 18px 13px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ph h1 {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.ph p { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.55; }
+
+.sec { padding: 14px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.sec h2 {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 11px;
+}
+
+/* Sliders */
+.cr { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.cr:last-child { margin-bottom: 0; }
+.cl {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--muted); width: 28px; flex-shrink: 0;
+}
+.cr input[type=range] {
+  flex: 1; height: 3px;
+  -webkit-appearance: none; appearance: none;
+  background: var(--border); border-radius: 2px;
+  outline: none; cursor: pointer;
+}
+.cr input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(224,120,48,.22);
+}
+.cr input[type=range]::-moz-range-thumb {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--accent); border: none; cursor: pointer;
+}
+.cv {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--text); width: 42px; text-align: right; flex-shrink: 0;
+}
+
+/* Matrix */
+.mat-wrap { display: flex; align-items: center; gap: 0; margin-top: 2px; }
+.m-bk {
+  color: var(--muted); font-size: 52px;
+  font-weight: 200; line-height: 1;
+  font-family: 'Inter', sans-serif;
+  user-select: none; flex-shrink: 0;
+}
+.m-rows { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.m-row { display: flex; }
+.mc {
+  font-family: var(--mono); font-size: 11px;
+  flex: 1 1 0; min-width: 0; text-align: right; padding: 3px 3px 3px 0;
+  color: var(--mat);
+  font-variant-numeric: tabular-nums;
+  transition: color .2s;
+}
+.mc.z { color: var(--mat-zero); }
+.mdet {
+  font-family: var(--mono); font-size: 10.5px;
+  color: var(--muted); margin-top: 9px;
+  display: flex; align-items: center; gap: 6px;
+}
+.mdet em { font-style: normal; color: var(--green); }
+
+.formula-box {
+  margin-top: 10px; overflow-x: auto; overflow-wrap: anywhere;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 2;
+}
+.formula-box .hl { color: var(--mat); }
+.formula-box .nm { color: var(--text); }
+
+.note {
+  font-size: 10.5px; color: var(--muted);
+  line-height: 1.6; margin-top: 10px;
+  padding: 7px 10px;
+  border-left: 2px solid var(--border);
+}
+
+/* Coords */
+.cg {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 10px;
+  font-family: var(--mono); font-size: 11px;
+}
+.ck { color: var(--muted); }
+.cval { color: var(--text); font-variant-numeric: tabular-nums; }
+.csec {
+  grid-column: 1/-1;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 8px; margin-bottom: 2px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.csec:first-child { margin-top: 0; }
+.csec::before {
+  content: '';
+  display: block;
+  width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
+}
+.cs-src::before { background: var(--accent); }
+.cs-shd::before { background: var(--shad); }
+
+.tips {
+  padding: 12px 18px;
+  font-size: 11px; color: var(--muted);
+  line-height: 1.8; flex: 1;
+  display: flex; align-items: flex-end;
+}
+.tips span { color: var(--accent); }
+
+/* Responsive */
+@media (max-width: 640px) {
+  body { flex-direction: column-reverse; }
+  #cv { flex: 1 1 auto; min-height: 0; }
+  #panel {
+    width: 100%; min-width: 0; flex: 0 0 auto;
+    height: 50%; max-height: 50%;
+    border-left: none; border-top: 1px solid var(--border);
+    flex-direction: column; flex-wrap: nowrap; overflow-x: hidden; overflow-y: auto;
+  }
+  .ph, .sec { width: 100%; flex: 0 0 auto; min-width: 0; }
+  .sec { padding: 12px 14px; }
+  .m-bk { font-size: 40px; }
+  .mc { font-size: 10.5px; }
+  .tips { display: none; }
+}
+.seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 3px; margin-bottom: 11px; }
+.seg2 button { border: 0; background: transparent; color: var(--muted); font: 500 11px/1.2 var(--sans); padding: 6px 4px; border-radius: 5px; cursor: pointer; }
+.seg2 button[aria-pressed="true"] { background: var(--accent-lo); color: var(--text); box-shadow: inset 0 0 0 1px var(--accent); }
+.seg2 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+</style>
+
+<div id="cv"><canvas id="c"></canvas></div>
+
+<aside id="panel">
+  <div class="ph">
+    <a class="ac-back" href="../shadow-projection.html" hidden>← Back to the notes</a><br>
+    <h1>Shadow Projection</h1>
+    <p>Projection from source plane π₁ to shadow plane π₂ by a point light, or by parallel rays from a light at infinity</p>
+  </div>
+
+  <div class="sec">
+    <h2 id="light-h">Light Source  L = (L<sub>x</sub> : L<sub>y</sub> : L<sub>z</sub> : 1)</h2>
+    <div class="seg2" role="group" aria-label="Type of light source">
+      <button type="button" id="mode-pt" aria-pressed="true">Point light</button>
+      <button type="button" id="mode-inf" aria-pressed="false">At infinity (parallel)</button>
+    </div>
+    <div id="pt-ctrls">
+    <div class="cr"><span class="cl">L<sub>x</sub></span><input type="range" id="lx" min="-5" max="5" step=".05" value="2"><span class="cv" id="lx-v"> 2.00</span></div>
+    <div class="cr"><span class="cl">L<sub>y</sub></span><input type="range" id="ly" min="-5" max="5" step=".05" value="1"><span class="cv" id="ly-v"> 1.00</span></div>
+    <div class="cr"><span class="cl">L<sub>z</sub></span><input type="range" id="lz" min=".3" max="10" step=".05" value="5"><span class="cv" id="lz-v"> 5.00</span></div>
+    </div>
+    <div id="inf-ctrls" hidden>
+    <div class="cr"><span class="cl">az</span><input type="range" id="az" min="0" max="360" step="1" value="30"><span class="cv" id="az-v">30°</span></div>
+    <div class="cr"><span class="cl">elev</span><input type="range" id="el" min="8" max="90" step="1" value="55"><span class="cv" id="el-v">55°</span></div>
+    <p class="note" style="margin-top:8px">Drag the ☀ in the scene, or use the sliders. Rays travel parallel to the direction <em>s</em> = (cos el·cos az, cos el·sin az, sin el), pointing toward the light. In homogeneous coordinates the source is the point at infinity L = (s : 0).</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Source Plane  π₁</h2>
+    <div class="cr"><span class="cl">h</span><input type="range" id="sh" min=".1" max="4" step=".05" value="2"><span class="cv" id="sh-v"> 2.00</span></div>
+    <div class="cr"><span class="cl">tilt</span><input type="range" id="ta" min="-75" max="75" step="1" value="25"><span class="cv" id="ta-v">25°</span></div>
+    <div class="cr"><span class="cl">axis</span><input type="range" id="tb" min="0" max="360" step="1" value="0"><span class="cv" id="tb-v">0°</span></div>
+    <p class="note" style="margin-top:8px">π₁ passes through (0, 0, h), tilted by <em>tilt</em> about a horizontal hinge at angle <em>axis</em> from the x-axis. Quad vertices are given in π₁'s own coordinates (u, v).</p>
+  </div>
+
+  <div class="sec">
+    <h2>PSL(3, ℝ) Matrix  (det = 1)</h2>
+    <div class="mat-wrap">
+      <span class="m-bk">[</span>
+      <div class="m-rows" id="mrows">
+        <div class="m-row"><div class="mc">…</div><div class="mc">…</div><div class="mc">…</div></div>
+        <div class="m-row"><div class="mc">…</div><div class="mc">…</div><div class="mc">…</div></div>
+        <div class="m-row"><div class="mc">…</div><div class="mc">…</div><div class="mc">…</div></div>
+      </div>
+      <span class="m-bk">]</span>
+    </div>
+    <div class="mdet">det(M<sub>raw</sub>) = <em id="mdet-v">—</em></div>
+    <div class="mdet">type: <em id="mkind">—</em></div>
+    <div class="formula-box" id="fbox">—</div>
+    <p class="note" id="mnote">M sends (u : v : 1) on π₁ to (x′ : y′ : 1) on π₂ = {z = 0}. Its bottom row cuts out the <span style="color:#7fd8ff">vanishing line</span> on π₁ (points level with L), which goes to the line at infinity. Points on π₁ ∩ π₂ (<span style="color:#9fe6b0">green</span>) are fixed. Set tilt = 0 to recover the affine case.</p>
+  </div>
+
+  <div class="sec">
+    <h2>Vertices</h2>
+    <div class="cg" id="coords"></div>
+  </div>
+
+  <div class="tips">
+    Drag <span>●</span> vertices · drag ☀ light<br>
+    Background drag = orbit · scroll = zoom
+  </div>
+</aside>
+
+<script>
+'use strict';
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+let W, H, DPR;
+const MONO = "'JetBrains Mono', monospace";
+
+function resize() {
+  DPR = window.devicePixelRatio || 1;
+  const wrap = document.getElementById('cv');
+  W = Math.round(wrap.clientWidth * DPR);
+  H = Math.round(wrap.clientHeight * DPR);
+  c.width = W; c.height = H;
+  draw();
+}
+window.addEventListener('resize', resize);
+
+// ── 3-D math ─────────────────────────────────────
+const add3=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+const sub3=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+const scl3=(a,s)=>[a[0]*s,a[1]*s,a[2]*s];
+const dot3=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross3=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const nrm=a=>{const l=Math.hypot(...a);return l<1e-12?[0,0,1]:scl3(a,1/l);};
+const det3=m=>m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])-m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])+m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);
+
+// ── Camera ────────────────────────────────────────
+const cam = { th:-0.78, ph:0.5, r:15, t:[0,0,1.2] };
+const FOV = 0.68;
+function camBasis() {
+  const pos=[cam.t[0]+cam.r*Math.cos(cam.ph)*Math.cos(cam.th),
+             cam.t[1]+cam.r*Math.cos(cam.ph)*Math.sin(cam.th),
+             cam.t[2]+cam.r*Math.sin(cam.ph)];
+  const f=nrm(sub3(cam.t,pos)), r=nrm(cross3(f,[0,0,1])), u=cross3(r,f);
+  return {pos,f,r,u};
+}
+function projP(p) {
+  const {pos,f,r,u}=camBasis();
+  const d=sub3(p,pos), cz=dot3(d,f);
+  if (cz<0.05) return null;
+  const k=(1/Math.tan(FOV))*Math.min(W,H)*0.5/cz;
+  return [W/2+dot3(d,r)*k, H/2-dot3(d,u)*k];
+}
+const SUN_R=6.5;
+function sunCentre(){const F=frame();return quad.reduce((a,[u,v])=>add3(a,scl3(toW(u,v,F),.25)),[0,0,0]);}
+function sunPos(){return add3(sunCentre(),scl3(sunDir(),SUN_R));}
+function mouseRay(mx,my){
+  const {pos,f,r,u}=camBasis();
+  const s=(1/Math.tan(FOV))*Math.min(W,H)*0.5;
+  return {pos,dir:nrm(add3(add3(scl3(r,(mx-W/2)/s),scl3(u,-(my-H/2)/s)),f))};
+}
+// Drag the sun on a sphere around the quadrilateral: the new ray direction s points from the centre to the sun.
+function dragSun(mx,my){
+  const C=sunCentre(), {pos,dir}=mouseRay(mx,my), oc=sub3(pos,C);
+  const b=dot3(oc,dir), cc=dot3(oc,oc)-SUN_R*SUN_R, disc=b*b-cc;
+  let P;
+  if (disc>=0){ const t1=-b-Math.sqrt(disc), t2=-b+Math.sqrt(disc); const P1=add3(pos,scl3(dir,t1)), P2=add3(pos,scl3(dir,t2)); P=P1[2]>=P2[2]?P1:P2; }
+  else P=add3(pos,scl3(dir,-b));
+  const d=nrm(sub3(P,C));
+  el=Math.max(8,Math.min(90,Math.asin(Math.max(-1,Math.min(1,d[2])))*180/Math.PI));
+  if (el<89.5){ az=Math.atan2(d[1],d[0])*180/Math.PI; if (az<0) az+=360; }
+  for (const [k,v] of [['az',az],['el',el]]) { document.getElementById(k).value=v; document.getElementById(k+'-v').textContent=Math.round(v)+'°'; }
+}
+function hitPlane(mx,my,O,n) {
+  const {pos,f,r,u}=camBasis();
+  const s=(1/Math.tan(FOV))*Math.min(W,H)*0.5;
+  const dir=nrm(add3(add3(scl3(r,(mx-W/2)/s),scl3(u,-(my-H/2)/s)),f));
+  const den=dot3(dir,n);
+  if (Math.abs(den)<1e-6) return null;
+  const t=dot3(sub3(O,pos),n)/den;
+  return t<0?null:add3(pos,scl3(dir,t));
+}
+
+// ── Scene state ───────────────────────────────────
+let lp=[2,1,5];      // light L (point mode)
+let infMode=false, az=30, el=55; // parallel mode: azimuth, elevation (deg)
+function sunDir(){const a=az*Math.PI/180,e=el*Math.PI/180;return [Math.cos(e)*Math.cos(a),Math.cos(e)*Math.sin(a),Math.sin(e)];}
+// homogeneous light (Lx : Ly : Lz : Lw); Lw = 0 is a point at infinity
+function L4(){return infMode?[...sunDir(),0]:[...lp,1];}
+let sh=2;            // π₁ passes through (0,0,h)
+let ta=25, tb=0;     // tilt, hinge-axis angle (deg)
+let quad=[[-1.5,-1.5],[1.5,-1.5],[1.5,1.5],[-1.5,1.5]]; // (u,v) in π₁
+const S=7.5;
+const GROUND={O:[0,0,0],e1:[1,0,0],e2:[0,1,0],n:[0,0,1]};
+
+function frame() {
+  const a=ta*Math.PI/180, b=tb*Math.PI/180;
+  const e1=[Math.cos(b),Math.sin(b),0];
+  const e2=[-Math.sin(b)*Math.cos(a),Math.cos(b)*Math.cos(a),Math.sin(a)];
+  return {O:[0,0,sh],e1,e2,n:cross3(e1,e2)};
+}
+const toW=(u,v,F)=>add3(F.O,add3(scl3(F.e1,u),scl3(F.e2,v)));
+
+// M = Π·B,  Π = [[Lz,0,-Lx,0],[0,Lz,-Ly,0],[0,0,-1,Lz]] (central projection from L onto z=0),
+// B = [e1 | e2 | O ; 0 0 1] (parametrisation of π₁)
+// General Π from L = (lx : ly : lz : lw): shadow of (p : w) is lz·(p : w) − p_z·L, whose z vanishes.
+function computeMatrix() {
+  const F=frame(), [lx,ly,lz,lw]=L4();
+  const col=(p,w)=>[lz*p[0]-lx*p[2], lz*p[1]-ly*p[2], -lw*p[2]+lz*w];
+  const c1=col(F.e1,0), c2=col(F.e2,0), c3=col(F.O,1);
+  const raw=[0,1,2].map(i=>[c1[i],c2[i],c3[i]]);
+  const det=det3(raw);
+  const norm=Math.abs(det)<1e-9?null:raw.map(r=>r.map(v=>v/Math.cbrt(det)));
+  return {raw,det,norm,F};
+}
+const applyM=(M,u,v)=>M.map(r=>r[0]*u+r[1]*v+r[2]);
+
+// line g·u + h·v + i = 0 clipped to [-S,S]² in (u,v)
+function clipLine(g,h,i) {
+  const pts=[];
+  if (Math.abs(h)>1e-9) for (const u of [-S,S]) { const v=-(g*u+i)/h; if (Math.abs(v)<=S) pts.push([u,v]); }
+  if (Math.abs(g)>1e-9) for (const v of [-S,S]) { const u=-(h*v+i)/g; if (Math.abs(u)<=S) pts.push([u,v]); }
+  if (pts.length<2) return null;
+  let best=[pts[0],pts[1]], bd=-1;
+  for (const p of pts) for (const q of pts) { const d=Math.hypot(p[0]-q[0],p[1]-q[1]); if (d>bd){bd=d;best=[p,q];} }
+  return bd>1e-6?best:null;
+}
+
+// ── Drawing helpers ───────────────────────────────
+function seg(A,B,col,w,dash) {
+  const a=projP(A), b=projP(B);
+  if (!a||!b) return;
+  ctx.save();
+  ctx.strokeStyle=col; ctx.lineWidth=w*DPR;
+  if (dash) ctx.setLineDash(dash.map(d=>d*DPR));
+  ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+  ctx.restore();
+}
+function poly(P,fill,stroke,lw) {
+  const pts=P.map(projP);
+  if (pts.some(p=>!p)) return;
+  ctx.beginPath(); ctx.moveTo(...pts[0]);
+  pts.slice(1).forEach(p=>ctx.lineTo(...p)); ctx.closePath();
+  if (fill){ctx.fillStyle=fill;ctx.fill();}
+  if (stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw*DPR;ctx.stroke();}
+}
+function drawPlane(F,fill,grid,fa,ga) {
+  const corners=[[-S,-S],[S,-S],[S,S],[-S,S]].map(([u,v])=>toW(u,v,F));
+  ctx.save();
+  ctx.globalAlpha=fa; poly(corners,fill,null,0);
+  ctx.globalAlpha=ga;
+  for (let i=-7;i<=7;i++) {
+    seg(toW(i,-S,F),toW(i,S,F),grid,.5);
+    seg(toW(-S,i,F),toW(S,i,F),grid,.5);
+  }
+  ctx.globalAlpha=.4; poly(corners,null,grid,1);
+  ctx.restore();
+}
+function label(P,text,col,ox,oy) {
+  const p=projP(P); if (!p) return;
+  ctx.save(); ctx.font=`${11*DPR}px ${MONO}`; ctx.fillStyle=col;
+  ctx.fillText(text,p[0]+ox*DPR,p[1]+oy*DPR); ctx.restore();
+}
+function dot(P,r,col) {
+  const p=projP(P); if (!p) return;
+  ctx.beginPath(); ctx.arc(p[0],p[1],r*DPR,0,Math.PI*2); ctx.fillStyle=col; ctx.fill();
+}
+function drawLight(P) {
+  const p=projP(P); if (!p) return;
+  const [sx,sy]=p, R=11*DPR;
+  ctx.save();
+  const g=ctx.createRadialGradient(sx,sy,0,sx,sy,R*3);
+  g.addColorStop(0,'rgba(245,212,40,.5)'); g.addColorStop(.35,'rgba(245,212,40,.1)'); g.addColorStop(1,'rgba(245,212,40,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(sx,sy,R*3,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='rgba(245,212,40,.7)'; ctx.lineWidth=1.5*DPR;
+  for (let i=0;i<8;i++){const a=i*Math.PI/4;ctx.beginPath();ctx.moveTo(sx+Math.cos(a)*R*.55,sy+Math.sin(a)*R*.55);ctx.lineTo(sx+Math.cos(a)*R*1.6,sy+Math.sin(a)*R*1.6);ctx.stroke();}
+  const core=ctx.createRadialGradient(sx,sy,0,sx,sy,R*.55);
+  core.addColorStop(0,'#fffbe0'); core.addColorStop(1,'#f5d428');
+  ctx.fillStyle=core; ctx.beginPath(); ctx.arc(sx,sy,R*.55,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+// ── Main draw ─────────────────────────────────────
+function draw() {
+  if (!W||!H) return;
+  const bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#080f1e'); bg.addColorStop(1,'#0a1320');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  const m=computeMatrix(), F=m.F, M=m.raw;
+  const s=sunDir();
+  const L=infMode?sunPos():lp;   // where the light glyph is drawn
+  const shadow=quad.map(([u,v])=>{const [x,y,w]=applyM(M,u,v); return w>1e-6?[x/w,y/w]:null;});
+  const shadowOk=shadow.every(s=>s&&Math.abs(s[0])<60&&Math.abs(s[1])<60);
+
+  // axes
+  seg([0,0,0],[2.5,0,0],'rgba(240,70,70,.4)',1);
+  seg([0,0,0],[0,2.5,0],'rgba(60,220,60,.4)',1);
+  seg([0,0,0],[0,0,3],'rgba(60,130,255,.4)',1);
+
+  // ground π₂
+  drawPlane(GROUND,'#1a3050','#3a70a0',.08,.13);
+  label([-S+.5,-S+.5,0],'π₂ (z = 0)','rgba(160,200,240,.95)',0,0);
+
+  if (shadowOk) {
+    poly(shadow.map(([x,y])=>[x,y,0]),'rgba(184,52,32,.22)','rgba(220,80,50,.85)',1.8);
+    shadow.forEach(([x,y])=>dot([x,y,0],4,'rgba(220,80,50,.95)'));
+  }
+
+  // source π₁
+  drawPlane(F,'#0f2880','#2a60d0',.08,.12);
+  label(toW(-S+.5,-S+.5,F),'π₁','rgba(150,180,255,.95)',0,0);
+
+  // π₁ ∩ π₂ (fixed line): P_z = 0  →  e1z·u + e2z·v + h = 0
+  const fx=clipLine(F.e1[2],F.e2[2],F.O[2]);
+  if (fx) {
+    seg(toW(...fx[0],F),toW(...fx[1],F),'rgba(150,230,170,.85)',1.6);
+    label(toW(...fx[1],F),'π₁ ∩ π₂','rgba(150,230,170,.9)',6,-6);
+  }
+  // vanishing line on π₁: bottom row of M
+  const vl=clipLine(M[2][0],M[2][1],M[2][2]);
+  if (vl) {
+    seg(toW(...vl[0],F),toW(...vl[1],F),'rgba(127,216,255,.9)',1.6,[7,5]);
+    label(toW(...vl[1],F),'vanishing line','rgba(127,216,255,.95)',6,-6);
+  }
+
+  // rays L → vertex → shadow
+  quad.forEach(([u,v],i)=>{
+    const V=toW(u,v,F);
+    seg(infMode?add3(V,scl3(s,5.5)):L,V,'rgba(250,220,80,.6)',1.2,[5,4]);
+    if (shadow[i] && Math.abs(shadow[i][0])<60 && Math.abs(shadow[i][1])<60)
+      seg(V,[shadow[i][0],shadow[i][1],0],'rgba(250,220,80,.5)',1.2,[5,4]);
+  });
+
+  // quad
+  poly(quad.map(([u,v])=>toW(u,v,F)),'rgba(224,120,48,.25)','#e07830',2);
+  quad.forEach(([u,v],i)=>{
+    const V=toW(u,v,F);
+    dot(V,5,'#c86020'); dot(V,3.5,'#f09050');
+    label(V,'V'+'₁₂₃₄'[i],'rgba(240,160,80,.9)',8,-6);
+  });
+
+  drawLight(L);
+  label(L,infMode?'L∞  (rays ∥ s)':'L','rgba(245,212,40,.9)',14,-10);
+
+  if (!shadowOk) {
+    ctx.save(); ctx.font=`${12*DPR}px ${MONO}`; ctx.fillStyle='#ff8a70';
+    ctx.fillText(infMode?'Part of the quadrilateral is below the floor.':'Part of the quadrilateral is level with or above L — its shadow is unbounded.',16*DPR,24*DPR);
+    ctx.restore();
+  }
+  updateUI(m,shadow);
+}
+
+// ── Interaction ───────────────────────────────────
+let drag=null;
+function hitTest(mx,my) {
+  const hr=18*DPR, F=frame();
+  for (let i=0;i<4;i++){const p=projP(toW(...quad[i],F)); if(p&&Math.hypot(mx-p[0],my-p[1])<hr) return {type:'vert',i};}
+  const lpp=projP(infMode?sunPos():lp);
+  if (lpp&&Math.hypot(mx-lpp[0],my-lpp[1])<hr*1.4) return {type:'light'};
+  return {type:'cam'};
+}
+function down(mx,my){ const h=hitTest(mx,my); drag={...h,mx,my,th:cam.th,ph:cam.ph}; c.className=h.type==='cam'?'grabbing':'over-vert'; }
+function move(mx,my){
+  if (!drag){ c.className=hitTest(mx,my).type==='cam'?'':'over-vert'; return; }
+  if (drag.type==='cam'){
+    cam.th=drag.th-(mx-drag.mx)*0.007;
+    cam.ph=Math.max(0.05,Math.min(1.42,drag.ph-(my-drag.my)*0.007));
+  } else if (drag.type==='vert'){
+    const F=frame(), X=hitPlane(mx,my,F.O,F.n);
+    if (X){ const d=sub3(X,F.O); const cl=t=>Math.max(-7,Math.min(7,t)); quad[drag.i]=[cl(dot3(d,F.e1)),cl(dot3(d,F.e2))]; }
+  } else if (infMode) {
+    dragSun(mx,my);
+  } else {
+    const X=hitPlane(mx,my,[0,0,lp[2]],[0,0,1]);
+    if (X){ lp[0]=Math.max(-8,Math.min(8,X[0])); lp[1]=Math.max(-8,Math.min(8,X[1])); syncLight(); }
+  }
+  draw();
+}
+function up(){ drag=null; c.className=''; }
+function syncLight(){
+  for (const [k,i] of [['lx',0],['ly',1]]) {
+    document.getElementById(k).value=lp[i];
+    document.getElementById(k+'-v').textContent=fmt2(lp[i]);
+  }
+}
+const toCanvas=e=>{const r=c.getBoundingClientRect(),pr=W/r.width;return [(e.clientX-r.left)*pr,(e.clientY-r.top)*pr];};
+c.addEventListener('mousedown',e=>down(...toCanvas(e)));
+window.addEventListener('mousemove',e=>move(...toCanvas(e)));
+window.addEventListener('mouseup',up);
+c.addEventListener('wheel',e=>{e.preventDefault();cam.r=Math.max(5,Math.min(28,cam.r+e.deltaY*0.014));draw();},{passive:false});
+c.addEventListener('touchstart',e=>{e.preventDefault();down(...toCanvas(e.touches[0]));},{passive:false});
+c.addEventListener('touchmove',e=>{e.preventDefault();move(...toCanvas(e.touches[0]));},{passive:false});
+c.addEventListener('touchend',up);
+
+// ── Sliders ───────────────────────────────────────
+function sldr(id,cb,fmt){
+  const el=document.getElementById(id), vel=document.getElementById(id+'-v');
+  el.addEventListener('input',()=>{const v=parseFloat(el.value); vel.textContent=(fmt||fmt2)(v); cb(v); draw();});
+}
+const deg=v=>Math.round(v)+'°';
+sldr('lx',v=>lp[0]=v); sldr('ly',v=>lp[1]=v); sldr('lz',v=>lp[2]=v);
+sldr('az',v=>az=v,deg); sldr('el',v=>el=v,deg);
+function setMode(inf){
+  infMode=inf;
+  document.getElementById('mode-pt').setAttribute('aria-pressed',String(!inf));
+  document.getElementById('mode-inf').setAttribute('aria-pressed',String(inf));
+  document.getElementById('pt-ctrls').hidden=inf;
+  document.getElementById('inf-ctrls').hidden=!inf;
+  document.getElementById('light-h').innerHTML=inf?'Light at infinity  L = (s<sub>x</sub> : s<sub>y</sub> : s<sub>z</sub> : 0)':'Light Source  L = (L<sub>x</sub> : L<sub>y</sub> : L<sub>z</sub> : 1)';
+  document.getElementById('mnote').innerHTML=inf?
+    'With L at infinity the bottom row of M is (0, 0, c): no point of π₁ goes to infinity, so there is <b>no vanishing line</b>. The map is <span style="color:#3ecf82">affine</span>: parallel edges of the quadrilateral cast parallel shadows, and ratios along a line are kept. Points on π₁ ∩ π₂ (<span style="color:#9fe6b0">green</span>) are still fixed.':
+    NOTE_PT;
+  draw();
+}
+const NOTE_PT=document.getElementById('mnote').innerHTML;
+document.getElementById('mode-pt').addEventListener('click',()=>setMode(false));
+document.getElementById('mode-inf').addEventListener('click',()=>setMode(true));
+sldr('sh',v=>sh=v); sldr('ta',v=>ta=v,deg); sldr('tb',v=>tb=v,deg);
+
+// ── UI ────────────────────────────────────────────
+function fmt2(n){ return (n>=0?' ':'')+n.toFixed(2); }
+function fmtM(n){ return Math.abs(n)<5e-5?'0':n.toFixed(5); }
+function fc(n){ return (n>=0?' ':'')+n.toFixed(3); }
+function lin(a,b,k){
+  const t=(x,v,first)=>{const s=x<0?'−':(first?'':'+');return `${first?s:' '+s+' '}<span class="nm">${Math.abs(x).toFixed(3)}</span>${v}`;};
+  return t(a,'u',true)+t(b,'v',false)+t(k,'',false);
+}
+function updateUI(m,shadow){
+  const mrows=document.getElementById('mrows');
+  if (m.norm){
+    mrows.innerHTML=m.norm.map(r=>`<div class="m-row">${r.map(v=>{const z=Math.abs(v)<5e-5;return `<div class="mc${z?' z':''}">${z?'&nbsp;0':fmtM(v)}</div>`;}).join('')}</div>`).join('');
+  } else {
+    mrows.innerHTML='<div style="color:#f04040;font-family:var(--mono);font-size:11px;padding:4px 0;">Degenerate: L lies on π₁ (det = 0)'+(infMode?', i.e. the rays run parallel to π₁':'')+'</div>';
+  }
+  document.getElementById('mdet-v').textContent=m.det.toFixed(5);
+  const N=m.norm||m.raw;
+  const affine=Math.abs(N[2][0])<1e-6&&Math.abs(N[2][1])<1e-6;
+  document.getElementById('mkind').textContent=!m.norm?'degenerate':affine?(infMode?'affine (parallel light)':'affine (π₁ ∥ π₂)'):'projective, non-affine';
+  const den=lin(N[2][0],N[2][1],N[2][2]);
+  document.getElementById('fbox').innerHTML=
+    `x′ = (${lin(N[0][0],N[0][1],N[0][2])}) / (${den})<br>`+
+    `y′ = (${lin(N[1][0],N[1][1],N[1][2])}) / (${den})`;
+
+  let html='<div class="csec cs-src">Source  π₁ coords (u, v)</div>';
+  quad.forEach(([u,v],i)=>html+=`<div class="ck">V${i+1}</div><div class="cval">(${fc(u)}, ${fc(v)})</div>`);
+  html+='<div class="csec cs-shd">Shadow  π₂ coords (x, y)</div>';
+  shadow.forEach((s,i)=>{
+    const ok=s&&Math.abs(s[0])<60&&Math.abs(s[1])<60;
+    html+=`<div class="ck">S${i+1}</div><div class="cval">${ok?`(${fc(s[0])}, ${fc(s[1])})`:s?'far (near horizon)':(infMode?'none':'none (above L)')}</div>`;
+  });
+  document.getElementById('coords').innerHTML=html;
+}
+
+resize();
+</script>
+
+</body></html>

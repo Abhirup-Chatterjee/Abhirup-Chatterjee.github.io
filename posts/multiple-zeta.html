@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A first look at multiple zeta values · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="A first look at multiple zeta values · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html" aria-current="page">Number Theory</a><a href="../recreational.html">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../number-theory.html">← Number theory</a>
+    <h1>A first look at multiple zeta values</h1>
+    <div class="byline"><span class="date">November 2026</span><span class="tag">zeta values</span><span class="tag">modular forms</span><span class="date">≈ 8 min read</span></div>
+  </header>
+  <div class="prose">
+<p>In December 2025 IMSc hosted an IWM Research in Groups week on classical and finite multiple zeta values. These notes are my attempt at the first lecture I would have liked to hear: what multiple zeta values are, the surprising identities between them, and the unexpected way modular forms count those identities.</p>
+
+<h2>Definitions and Euler's identity</h2>
+<p>For integers $s_1 \ge 2$ and $s_2, \dots, s_k \ge 1$, the <strong>multiple zeta value</strong> is
+$$\zeta(s_1, \dots, s_k) = \sum_{n_1 > n_2 > \cdots > n_k \ge 1} \frac{1}{n_1^{s_1} n_2^{s_2} \cdots n_k^{s_k}}.$$
+The <em>weight</em> is $s_1 + \dots + s_k$ and the <em>depth</em> is $k$. Depth one gives the Riemann zeta values. Euler already knew that the double sum $\zeta(2, 1) = \sum_{n > m \ge 1} \frac{1}{n^2 m}$ equals $\zeta(3)$, an identity between objects of different depths and the same weight.</p>
+  <details class="proof">
+    <summary>Full proof: ζ(2, 1) = ζ(3)</summary>
+    <div class="proof-body">
+<p><em>Proof.</em> Evaluate $S = \sum_{n, m \ge 1} \frac{1}{nm(n+m)}$ (a convergent sum of positive terms) in two ways.</p>
+<p>First, $\frac{1}{nm} = \frac{1}{n+m}\left(\frac1n + \frac1m\right)$, so by symmetry $S = 2\sum_{n, m} \frac{1}{n(n+m)^2}$. Setting $k = n + m$, this is $2\sum_{k \ge 2}\frac{1}{k^2}\sum_{n=1}^{k-1}\frac1n = 2\zeta(2, 1)$.</p>
+<p>Second, $\frac{1}{m(n+m)} = \frac1n\left(\frac1m - \frac{1}{n+m}\right)$, and $\sum_{m \ge 1}\left(\frac1m - \frac{1}{n+m}\right) = H_n = 1 + \frac12 + \dots + \frac1n$ (telescoping). So $S = \sum_{n}\frac{H_n}{n^2} = \sum_n \frac{H_{n-1}}{n^2} + \sum_n \frac{1}{n^3} = \zeta(2, 1) + \zeta(3)$.</p>
+<p>Comparing, $2\zeta(2,1) = \zeta(2,1) + \zeta(3)$, so $\zeta(2, 1) = \zeta(3)$. $\square$</p>
+    </div>
+  </details>
+
+<h2>Two ways to multiply</h2>
+<p>Products of multiple zeta values are again combinations of multiple zeta values, in two different ways. Multiplying the defining series and splitting according to whether the indices are equal gives the <strong>stuffle</strong> (or harmonic) product, for example
+$$\zeta(a)\,\zeta(b) = \zeta(a, b) + \zeta(b, a) + \zeta(a + b).$$
+Writing each value as an iterated integral on $[0, 1]$ (Kontsevich), products of integrals over simplices give the <strong>shuffle</strong> product, for example $\zeta(2)\zeta(2) = 2\zeta(2,2) + 4\zeta(3,1)$. Comparing the two expansions of the same product yields linear relations, the <em>double shuffle relations</em>; here $\zeta(2)^2 = 2\zeta(2,2) + \zeta(4)$ from the stuffle side, and with $\zeta(2) = \pi^2/6$, $\zeta(4) = \pi^4/90$ one gets $\zeta(2,2) = \pi^4/120$ and $\zeta(3,1) = \pi^4/360$.</p>
+
+<h2>How many are there?</h2>
+<p>Let $d_k$ be the dimension of the $\mathbb{Q}$-span of the multiple zeta values of weight $k$ (with $d_0 = 1$, $d_1 = 0$, $d_2 = 1$). Zagier conjectured that
+$$d_k = d_{k-2} + d_{k-3}, \qquad \text{so } d_k = 1, 0, 1, 1, 1, 2, 2, 3, 4, 5, 7, 9, 12, \dots,$$
+far fewer than the $2^{k-2}$ values of weight $k$. Terasoma and Deligne–Goncharov proved that $d_k$ is <em>at most</em> this number, using mixed Tate motives, and Brown (2012) showed that the values $\zeta(s_1, \dots, s_k)$ with every $s_i \in \{2, 3\}$ span everything (Hoffman's conjecture). The lower bound is out of reach: we cannot even prove that $\zeta(5)/\pi^5$ is irrational.</p>
+
+<h2>Double zeta values and modular forms</h2>
+<p>In depth two and even weight $k$, consider the double zeta values with both arguments odd. Gangl, Kaneko and Zagier (2006) found that the linear relations among them, beyond the obvious ones, are counted by cusp forms: their number is the dimension of the space $S_k(\mathrm{SL}_2(\mathbb{Z}))$, through the period polynomials of Eichler, Shimura and Manin. The first cusp form is $\Delta$, in weight $12$, and correspondingly weight $12$ has the first exotic relation,
+$$28\,\zeta(9, 3) + 150\,\zeta(7, 5) + 168\,\zeta(5, 7) = \frac{5197}{691}\,\zeta(12).$$
+The $691$ is the numerator of the Bernoulli number $B_{12}$, the same prime that appears in Ramanujan's congruence $\tau(n) \equiv \sigma_{11}(n) \pmod{691}$. This link between modular forms and multiple zeta values, explained conceptually by Brown and others through the motivic Lie algebra, was one of the main themes of the week.</p>
+
+<h2>Further reading</h2>
+<ul>
+  <li>D. Zagier, <em>Values of zeta functions and their applications</em>, First European Congress of Mathematics, Progress in Mathematics 120, Birkhäuser, 1994.</li>
+  <li>H. Gangl, M. Kaneko and D. Zagier, <em>Double zeta values and modular forms</em>, in Automorphic Forms and Zeta Functions, World Scientific, 2006.</li>
+  <li>F. Brown, <em>Mixed Tate motives over ℤ</em>, Annals of Mathematics 175 (2012).</li>
+  <li>J. I. Burgos Gil and J. Fresán, <em>Multiple zeta values: from numbers to motives</em>, Clay Mathematics Proceedings (draft available online).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

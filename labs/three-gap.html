@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The three-gap theorem · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="The three-gap theorem · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Diophantine approximation</p>
+    <h1>The three-gap theorem</h1>
+    <p class="lead">Walk around a circle in steps of a fixed irrational fraction of a turn. However many points you place, the gaps between neighbours never come in more than three different lengths.</p>
+    <div class="byline"><span class="tag">continued fractions</span><span class="tag">circle rotations</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Place the points $0, \alpha, 2\alpha, \dots, N\alpha$ on a circle of circumference $1$, that is, the fractional parts $\{n\alpha\}$. They cut the circle into $N + 1$ arcs. You might expect the arc lengths to be all over the place. Instead:</p>
+<blockquote><strong>Three-gap theorem.</strong> For every real $\alpha$ and every $N$, the arcs take at most three distinct lengths. When there are three, the longest is the sum of the other two.</blockquote>
+<p>Steinhaus conjectured this in the 1950s, and it was proved independently by Sós (1957), Surányi (1958) and Świerczkowski (1958). Press Play to add the points one at a time; each new point lands in one of the longest gaps and splits it into a short and a middle one.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/three-gap.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:940px" src="app/three-gap.html" title="The three-gap theorem: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>What controls the lengths</h2>
+<p>The two smaller lengths are $\delta_a = \{a\alpha\}$ and $\delta_b = 1 - \{b\alpha\}$, where $a$ and $b$ are the indices $1 \le n \le N$ whose points come closest to $0$ from the right and from the left. These indices are always denominators of convergents (or intermediate fractions) of the continued fraction of $\alpha$, which is why the theorem is really a statement about Diophantine approximation. For the golden ratio, whose continued fraction is all $1$s, the lengths shrink by the factor $\phi \approx 1.618$ each time and the pattern is as tidy as possible; for $\pi$, whose expansion begins $[3; 7, 15, 1, 292, \dots]$, there are long stretches with the same three lengths. Try the rational $7/23$: once $N \ge 22$ the points repeat and every gap has length $1/23$.</p>
+<p>The theorem has relatives everywhere: the arrangement of leaves around a stem (phyllotaxis), the distribution of the Sturmian words that describe straight lines on a grid, and the spacing statistics of $\{n^2\alpha\}$, which behave very differently and are conjectured to look random.</p>
+  <details class="proof">
+    <summary>Full proof (the two short cases in full)</summary>
+    <div class="proof-body">
+<p>Write $x_n = \{n\alpha\}$ for $0 \le n \le N$, assume $\alpha$ irrational (so the points are distinct), and choose $a, b \in [1, N]$ with $\delta_a = x_a$ minimal and $\delta_b = 1 - x_b$ minimal. Every difference between two of our points is $\pm\{k\alpha\}$ modulo $1$ for some $k \in [1, N]$; going counterclockwise, the difference from $x_j$ to $x_i$ is $\{(i - j)\alpha\}$, which is at least $\delta_a$ if $i > j$ and at least $\delta_b$ if $i < j$.</p>
+<p><strong>Case 1: $n + a \le N$.</strong> Then $x_{n+a} = x_n + \delta_a$ modulo $1$. If some $x_m$ lay strictly between them, the counterclockwise differences from $x_n$ to $x_m$ and from $x_m$ to $x_{n+a}$ would both be less than $\delta_a$. Their indices $m - n$ and $n + a - m$ add up to $a > 0$, so one of them is positive, and that difference would be at least $\delta_a$. Contradiction: the gap after $x_n$ has length exactly $\delta_a$.</p>
+<p><strong>Case 2: $n + a > N$ but $n - b \ge 0$.</strong> Then $x_{n-b} = x_n + \delta_b$ modulo $1$, and the same argument with indices $m - n$ and $n - b - m$, which add up to $-b < 0$, shows the gap after $x_n$ is exactly $\delta_b$.</p>
+<p><strong>Case 3: $n + a > N$ and $n < b$.</strong> Here the index $n + a - b$ lies in $[0, N]$ and $x_{n+a-b} = x_n + \delta_a + \delta_b$. One checks in the same way, using both minimality properties, that no point lies in between, so the gap is $\delta_a + \delta_b$. Every $n$ falls into one of the three cases, so there are at most three lengths, and the third is the sum of the first two. $\square$</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>V. T. Sós, <em>On the distribution mod 1 of the sequence nα</em>, Annales Universitatis Scientiarum Budapestinensis 1 (1958).</li>
+  <li>T. van Ravenstein, <em>The three gap theorem (Steinhaus conjecture)</em>, Journal of the Australian Mathematical Society 45 (1988).</li>
+  <li>J. Marklof and A. Strömbergsson, <em>The three gap theorem and the space of lattices</em>, American Mathematical Monthly 124 (2017).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

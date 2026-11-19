@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The p-adic integers as a fractal · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="The p-adic integers as a fractal · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · p-adic numbers</p>
+    <h1>The p-adic integers as a fractal</h1>
+    <p class="lead">Call two integers close when their difference is divisible by a high power of p. Drawn honestly, the integers become nested discs, and sequences like p, p², p³, … rush towards 0 while 1 + p + p² + ⋯ converges to a fraction.</p>
+    <div class="byline"><span class="tag">p-adic numbers</span><span class="tag">Hensel's lemma</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>Fix a prime $p$ and measure the size of a rational number $x \ne 0$ by $|x|_p = p^{-v_p(x)}$, where $v_p(x)$ is the exponent of $p$ in $x$. Then $|p^k|_p = p^{-k}$ is tiny, and two integers are close exactly when they agree in their last few base-$p$ digits. Completing $\mathbb{Z}$ for this distance gives the <strong>$p$-adic integers</strong> $\mathbb{Z}_p$: infinite base-$p$ expansions $\dots d_3 d_2 d_1 d_0$ extending to the left.</p>
+<p>The picture follows the digits. The last digit $d_0$ chooses one of $p$ large discs, the digit $d_1$ chooses one of $p$ discs inside it, and so on. Points in the same small disc agree in many final digits, so they are $p$-adically close. Hensel (1897) introduced these numbers; today they sit inside almost every part of number theory.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/p-adic.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:1000px" src="app/p-adic.html" title="The p-adic integers as a fractal: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>The sequences</h2>
+<ul>
+  <li><strong>$p^k - 1 \to -1$.</strong> The base-$p$ digits of $p^k - 1$ are $k$ copies of $p - 1$, so $-1 = \dots(p{-}1)(p{-}1)(p{-}1)$ in $\mathbb{Z}_p$. For $p = 2$ this reads $-1 = \dots 1111_2$.</li>
+  <li><strong>$1 + p + \dots + p^k \to \frac{1}{1-p}$.</strong> The geometric series converges because $|p|_p < 1$, and its limit is the usual formula. So $\dots 1111_p = \frac{1}{1-p}$, a negative fraction written with only the digit $1$.</li>
+  <li><strong>$a^{p^k}$ converges.</strong> For $p \nmid a$, Fermat's little theorem gives $a^{p^{k+1}} \equiv a^{p^k} \pmod{p^{k+1}}$, so the sequence is Cauchy. Its limit $\omega(a)$ satisfies $\omega^{p-1} = 1$: these are the Teichmüller representatives, the $(p-1)$-st roots of unity inside $\mathbb{Z}_p$.</li>
+  <li><strong>Hensel's lemma.</strong> $-1$ is a square modulo $5$ ($2^2 = 4$), and Newton's method $x \mapsto x - \frac{x^2 + 1}{2x}$ lifts the solution to $5^2, 5^3, \dots$, giving a square root of $-1$ in $\mathbb{Z}_5$. The applet does the same for $\sqrt{-7} \in \mathbb{Z}_2$, $\sqrt7 \in \mathbb{Z}_3$ and $\sqrt2 \in \mathbb{Z}_7$.</li>
+  <li><strong>$k! \to 0$.</strong> By Legendre's formula $v_p(k!) \approx k/(p-1)$, so factorials are $p$-adically small. The convergence is slow, and the picture shows the terms falling into ever smaller discs around $0$.</li>
+</ul>
+  <details class="proof">
+    <summary>Full proof: Hensel's lemma for a simple root</summary>
+    <div class="proof-body">
+<p><strong>Hensel's lemma.</strong> <em>Let $f \in \mathbb{Z}[x]$, $p$ a prime and $x_1 \in \mathbb{Z}$ with $f(x_1) \equiv 0 \pmod p$ and $f'(x_1) \not\equiv 0 \pmod p$. Then for every $k \ge 1$ there is $x_k$ with $f(x_k) \equiv 0 \pmod{p^k}$ and $x_{k+1} \equiv x_k \pmod{p^k}$; the $x_k$ converge in $\mathbb{Z}_p$ to a root of $f$.</em></p>
+<p><em>Proof.</em> Suppose $f(x_k) \equiv 0 \pmod{p^k}$ and try $x_{k+1} = x_k + t p^k$. Taylor's formula with integer coefficients gives $f(x_k + tp^k) \equiv f(x_k) + t p^k f'(x_k) \pmod{p^{k+1}}$, because the remaining terms are divisible by $p^{2k}$. Writing $f(x_k) = p^k m$, we need $m + t f'(x_k) \equiv 0 \pmod p$. Since $f'(x_k) \equiv f'(x_1) \not\equiv 0 \pmod p$, this has a unique solution $t \bmod p$. Induction gives the sequence, which is Cauchy for $|\cdot|_p$, and $f$ of its limit is divisible by every power of $p$, hence $0$. $\square$</p>
+<p>For $p = 2$ and $f = x^2 + 7$ the derivative $2x$ is always even, so this simple version does not apply; a refined version (lifting from $2^{k+1}$ to $2^{k+2}$, starting from $1^2 \equiv -7 \pmod 8$) still works, and that is what the applet uses.</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>N. Koblitz, <em>p-adic Numbers, p-adic Analysis, and Zeta-Functions</em>, 2nd ed., Springer GTM 58, 1984.</li>
+  <li>F. Q. Gouvêa, <em>p-adic Numbers: An Introduction</em>, 3rd ed., Springer Universitext, 2020.</li>
+  <li>J.-P. Serre, <em>A Course in Arithmetic</em>, Springer GTM 7, 1973, Chapter II.</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

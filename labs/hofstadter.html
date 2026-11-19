@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hofstadter's butterfly · Abhirup Chatterjee</title>
+<meta name="description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<meta property="og:title" content="Hofstadter's butterfly · Abhirup Chatterjee">
+<meta property="og:description" content="Abhirup Chatterjee — number theory over function fields, recreational mathematics and origami.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2040'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-style='italic' font-size='42' text-anchor='middle' fill='%23e0901f'%3E%CE%BC%3C/text%3E%3C/svg%3E">
+<script>(function(){var k="ac-theme",t=null,v=/^(dark|light)$/;try{var m=/[?&]theme=(dark|light)/.exec(location.search);if(m)t=m[1]}catch(e){}if(!t)try{t=localStorage.getItem(k)}catch(e){}if(!t)try{t=sessionStorage.getItem(k)}catch(e){}if(!t)try{var c=/(?:^|; )ac-theme=(dark|light)/.exec(document.cookie);if(c)t=c[1]}catch(e){}if(!t)try{var w=/ac-theme=(dark|light)/.exec(window.name||"");if(w)t=w[1]}catch(e){}if(t&&v.test(t))document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="Abhirup Chatterjee, home"><span class="mu">μ</span><span class="name">Abhirup Chatterjee</span></a>
+    <nav class="nav" id="nav" aria-label="Main"><a href="../index.html">Home</a><a href="../about.html">About</a><a href="../cv.html">CV</a><a href="../number-theory.html">Number Theory</a><a href="../recreational.html" aria-current="page">Recreational</a><a href="../art.html">Art</a><a href="../resources.html">Resources</a></nav>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<main>
+
+<article class="wrap article">
+  <header class="article-head">
+    <a class="back" href="../recreational.html">← Recreational maths</a>
+    <p class="eyebrow">Lab · Mathematical physics</p>
+    <h1>Hofstadter's butterfly</h1>
+    <p class="lead">An electron hopping on a square grid in a magnetic field has a spectrum that depends on whether the flux is rational. Plotted against the flux, it draws a butterfly built from the Farey fractions.</p>
+    <div class="byline"><span class="tag">spectral theory</span><span class="tag">Farey fractions</span><span class="date">interactive</span></div>
+  </header>
+  <div class="prose">
+<p>In 1976 Douglas Hofstadter, then a physics graduate student, computed the allowed energies of the <em>Harper</em> (or almost Mathieu) equation
+$$\psi_{n+1} + \psi_{n-1} + 2\cos(2\pi\alpha n + \theta)\,\psi_n = E\,\psi_n,$$
+which describes an electron on a square lattice in a perpendicular magnetic field, with $\alpha$ the magnetic flux through one cell in units of the flux quantum. For each rational $\alpha = p/q$ the equation is periodic with period $q$, and the allowed energies form exactly $q$ intervals. Hofstadter plotted these bands for many fractions, one horizontal row per $\alpha$, and saw a picture repeating itself at every scale.</p>
+</div>
+  <div class="lab-embed">
+    <div class="lab-bar"><span class="eyebrow">Live applet</span><a class="btn" href="app/hofstadter.html">Open full screen ↗</a></div>
+    <iframe class="lab-frame" style="height:980px" src="app/hofstadter.html" title="Hofstadter's butterfly: interactive applet" loading="lazy" data-autoheight="1"></iframe>
+  </div>
+  <div class="prose">
+<h2>What the picture encodes</h2>
+<p><strong>Farey structure.</strong> Each row $p/q$ has $q$ bands, and the big gaps of the picture sit between fractions with small denominators. Zooming in near $\alpha = 1/2$ or any other fraction reproduces the whole butterfly, squeezed, because the spectrum near $p/q$ looks like the spectrum near $0$ after a change of variables tied to the continued fraction of $\alpha$. Highlighting the Fibonacci ratios $1/2, 2/3, 3/5, 5/8, \dots$ follows the rows converging to the golden ratio.</p>
+<p><strong>Irrational flux.</strong> For irrational $\alpha$ the spectrum is a Cantor set: closed, with no isolated points and no intervals. Mark Kac offered ten martinis for a proof, and the "Ten Martini problem" was solved by Avila and Jitomirskaya (2009), part of the work cited for Avila's Fields Medal. At this critical coupling the Cantor set even has Lebesgue measure zero (Last 1994 for almost every $\alpha$, Avila and Krikorian 2006 for all irrational $\alpha$). The readout compares the total width of the bands at $p/q$ with Thouless's prediction $\approx 9.33/q$.</p>
+<p><strong>Gaps carry integers.</strong> Every gap can be labelled by two integers $(s, t)$ such that the fraction of states below it is $s\alpha + t$. The integer $s$ is the quantised Hall conductance of the gap (Thouless, Kohmoto, Nightingale and den Nijs, 1982), a topological invariant (a Chern number). In 2013 several groups saw the butterfly in experiments on graphene placed on boron nitride, where the moiré pattern makes the cells large enough to reach $\alpha \approx 1$ in laboratory fields.</p>
+
+<h3>How the applet computes the bands</h3>
+<p>For $\alpha = p/q$ the solutions are governed by the transfer matrix over one period, $M(E, \theta) = \prod_{n = q}^{1} \begin{pmatrix} E - 2\cos(2\pi\alpha n + \theta) & -1 \\ 1 & 0 \end{pmatrix}$. Chambers' formula says its trace is $D(E) - 2\cos(q\theta)$ for a polynomial $D$ of degree $q$, so the union of the spectra over all $\theta$ is $\{E : |D(E)| \le 4\}$. The applet evaluates the trace at $\theta = \pi/2q$, where $\cos(q\theta) = 0$, on a fine grid of energies, and also marks a pixel when the trace jumps across $[-4, 4]$ between two grid points, so that very thin bands are not lost.</p>
+  <details class="proof">
+    <summary>Full proof: a periodic equation has at most q bands</summary>
+    <div class="proof-body">
+<p><strong>Proposition.</strong> <em>For fixed $\theta$ and $\alpha = p/q$, the set of $E$ for which the equation has a bounded nonzero solution is $\{E : |\mathrm{tr}\, M(E, \theta)| \le 2\}$, and it is a union of at most $q$ closed intervals.</em></p>
+<p><em>Proof.</em> The vector $(\psi_{n+q}, \psi_{n+q-1})$ equals $M$ applied to $(\psi_n, \psi_{n-1})$, and $\det M = 1$, so the eigenvalues of $M$ are $\lambda, \lambda^{-1}$ with $\lambda + \lambda^{-1} = \mathrm{tr}\, M$. If $|\mathrm{tr}\, M| < 2$ they lie on the unit circle and every solution is bounded; if $|\mathrm{tr}\,M| = 2$ there is still a periodic or antiperiodic solution; if $|\mathrm{tr}\,M| > 2$ one eigenvalue exceeds $1$ in absolute value and every nonzero solution grows in one direction. So the set is $\{E : |t(E)| \le 2\}$ with $t(E) = \mathrm{tr}\,M(E, \theta)$, a polynomial of degree $q$ with leading coefficient $1$.</p>
+<p>For each $c \in (-2, 2)$, the equation $t(E) = c$ has $q$ real roots: they are the eigenvalues of the self-adjoint $q \times q$ matrix obtained by imposing the Bloch condition $\psi_{n+q} = e^{ik}\psi_n$ with $2\cos k = c$. A degree-$q$ polynomial that takes every value in $(-2, 2)$ exactly $q$ times, counted with multiplicity, is monotonic on each component of $t^{-1}([-2, 2])$, so there are at most $q$ components. $\square$</p>
+    </div>
+  </details>
+
+<h2>Further reading</h2>
+<ul>
+  <li>D. R. Hofstadter, <em>Energy levels and wave functions of Bloch electrons in rational and irrational magnetic fields</em>, Physical Review B 14 (1976).</li>
+  <li>A. Avila and S. Jitomirskaya, <em>The Ten Martini Problem</em>, Annals of Mathematics 170 (2009).</li>
+  <li>Y. Last, <em>Zero measure spectrum for the almost Mathieu operator</em>, Communications in Mathematical Physics 164 (1994).</li>
+  <li>D. J. Thouless, M. Kohmoto, M. P. Nightingale and M. den Nijs, <em>Quantized Hall conductance in a two-dimensional periodic potential</em>, Physical Review Letters 49 (1982).</li>
+</ul>
+</div>
+</article>
+
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <p class="sig">Abhirup Chatterjee</p>
+      <p style="color:var(--ink-soft);margin-top:.4rem;max-width:40ch">PhD student in number theory at The Institute of Mathematical Sciences (IMSc), Chennai.</p>
+    </div>
+    <div>
+      <h4>Write to me</h4>
+      <ul>
+        <li><a href="mailto:abhirupc@imsc.res.in">abhirupc@imsc.res.in</a></li>
+        <li><a href="mailto:abhirupchatterjee777@gmail.com">abhirupchatterjee777@gmail.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="https://arxiv.org/a/chatterjee_a_6" rel="noopener">arXiv</a></li>
+        <li><a href="https://orcid.org/0009-0002-3500-2615" rel="noopener">ORCID</a></li>
+        <li><a href="https://github.com/Abhirup-Chatterjee" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="small"><span>© 2026 Abhirup Chatterjee</span><span>Last updated November 2026</span></div>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gauss's circle problem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+<link rel="stylesheet" href="lab.css"><script src="lab.js"></script>
+</head>
+<body>
+<div class="app">
+  <a class="ac-back" href="../circle-problem.html" hidden>← Back to the notes</a>
+  <div class="standalone"><h1>Gauss's circle problem</h1><p class="sub">Lattice points in a growing circle, and the error term nobody can pin down.</p></div>
+<div class="row"><span class="lab">radius R</span><input id="cr" type="range" min="1" max="40" step="0.01" value="1" aria-label="Radius"><span id="crv" class="val">1</span><button type="button" id="cplay">Play</button>
+    <span class="grow"></span><span class="lab">graph up to</span><button type="button" data-g="40">R = 40</button><button type="button" data-g="200">200</button><button type="button" data-g="1000">1000</button></div>
+  <div class="stage" style="--ar:16/9"><canvas id="cc" aria-label="Lattice points inside a growing circle, and the error N(R) minus pi R squared"></canvas></div>
+  <div class="readout" id="cro">…</div>
+  <div class="legend"><span><i class="sq" style="background:var(--accent)"></i>lattice points inside</span><span><i class="sq" style="background:var(--plus)"></i>points on the circle</span><span><i style="background:var(--plus)"></i>error E(R) = N(R) − πR²</span><span><i style="background:var(--ink-soft)"></i>dashed: ±√R and ±3√R</span></div>
+</div>
+<script>
+(function(){
+"use strict";
+var cv=document.getElementById("cc"),out=document.getElementById("cro"),rS=document.getElementById("cr"),rV=document.getElementById("crv");
+var R=1,GMAX=200,geom,series=null,play=null,hov=null;
+function N(r){var s=0,r2=r*r,m=Math.floor(r);for(var x=-m;x<=m;x++){s+=2*Math.floor(Math.sqrt(r2-x*x)+1e-12)+1;}return s;}
+function r2count(n){var c=0,m=Math.floor(Math.sqrt(n));for(var x=-m;x<=m;x++){var y2=n-x*x,y=Math.round(Math.sqrt(y2));if(y*y===y2)c+=y===0?1:2;}return c;}
+function buildSeries(){var M=Math.max(400,Math.round(geom.w*0.6)),pts=[];for(var i=0;i<=M;i++){var r=0.5+(GMAX-0.5)*i/M;pts.push([r,N(r)-Math.PI*r*r]);}series=pts;}
+function frame(){var W=geom.w,H=geom.h,split=Math.min(W*0.42,H-20);return{W:W,H:H,lw:split,gx0:split+40,gx1:W-12,gy0:16,gy1:H-26};}
+function draw(){
+  if(!geom)geom=Lab.setup(cv);if(!series)buildSeries();var c=geom.ctx,F=frame();c.clearRect(0,0,F.W,F.H);
+  var ink=Lab.css("--ink"),mut=Lab.css("--muted"),rule=Lab.css("--rule"),acc=Lab.css("--accent"),plus=Lab.css("--plus"),soft=Lab.css("--ink-soft"),zero=Lab.css("--zero");
+  // left: lattice and circle
+  var view=Math.max(5,R*1.12),cx=F.lw/2,cy=F.H/2,s=(Math.min(F.lw,F.H)/2-8)/view,m=Math.ceil(view);
+  var dotR=Math.max(0.8,Math.min(4,s*0.18)),r2=R*R;
+  for(var x=-m;x<=m;x++)for(var y=-m;y<=m;y++){var d=x*x+y*y,X=cx+x*s,Y=cy-y*s;if(Math.abs(X-cx)>F.lw/2||Math.abs(Y-cy)>F.H/2)continue;
+    var on=Math.abs(d-r2)<1e-9,inside=d<=r2+1e-9;c.fillStyle=on?plus:inside?acc:zero;c.beginPath();c.arc(X,Y,on?dotR*1.6:dotR,0,6.2832);c.fill();}
+  c.strokeStyle=ink;c.lineWidth=1.4;c.beginPath();c.arc(cx,cy,R*s,0,6.2832);c.stroke();
+  if(hov){c.strokeStyle=ink;c.beginPath();c.arc(cx+hov[0]*s,cy-hov[1]*s,dotR+4,0,6.2832);c.stroke();}
+  // right: error graph
+  var lo=Infinity,hi=-Infinity;series.forEach(function(q){lo=Math.min(lo,q[1]);hi=Math.max(hi,q[1]);});var env=3*Math.sqrt(GMAX);lo=Math.min(lo,-env);hi=Math.max(hi,env);
+  function gx(r){return F.gx0+(F.gx1-F.gx0)*r/GMAX;}function gy(v){return F.gy1-(F.gy1-F.gy0)*(v-lo)/(hi-lo);}
+  c.strokeStyle=rule;c.lineWidth=1;c.beginPath();c.moveTo(F.gx0,gy(0)+.5);c.lineTo(F.gx1,gy(0)+.5);c.moveTo(F.gx0+.5,F.gy0);c.lineTo(F.gx0+.5,F.gy1);c.stroke();
+  [[0.5,1,"±√R"],[0.5,3,"±3√R"]].forEach(function(e,k){c.strokeStyle=soft;c.setLineDash(k?[2,5]:[5,4]);c.globalAlpha=.7;[1,-1].forEach(function(sg){c.beginPath();for(var i=0;i<=200;i++){var r=0.5+(GMAX-0.5)*i/200,Y=gy(sg*e[1]*Math.pow(r,e[0]));if(i)c.lineTo(gx(r),Y);else c.moveTo(gx(r),Y);}c.stroke();});
+    c.setLineDash([]);c.globalAlpha=1;c.fillStyle=mut;c.font=Lab.font(10);c.textAlign="right";c.fillText(e[2],F.gx1,gy(e[1]*Math.pow(GMAX,e[0]))-4);});
+  c.strokeStyle=plus;c.lineWidth=1;c.beginPath();series.forEach(function(q,i){if(i)c.lineTo(gx(q[0]),gy(q[1]));else c.moveTo(gx(q[0]),gy(q[1]));});c.stroke();
+  if(R<=GMAX){c.fillStyle=acc;c.beginPath();c.arc(gx(R),gy(N(R)-Math.PI*R*R),4,0,6.2832);c.fill();}
+  c.fillStyle=mut;c.font=Lab.font(10);c.textAlign="center";[0,0.25,0.5,0.75,1].forEach(function(f){c.fillText(String(Math.round(f*GMAX)),gx(f*GMAX),F.gy1+14);});
+  c.textAlign="left";c.fillText("E(R) = N(R) − πR²",F.gx0+6,F.gy0+8);
+}
+function report(){var n=N(R),e=n-Math.PI*R*R;
+  if(hov){var d=hov[0]*hov[0]+hov[1]*hov[1];out.textContent="point ("+hov[0]+", "+hov[1]+"):  x² + y² = "+d+"   ·   r₂("+d+") = "+r2count(d)+" ways to write "+d+" as a sum of two squares\n(r₂(n) = 4 × (number of divisors ≡ 1 mod 4 − number ≡ 3 mod 4))";return;}
+  out.textContent="R = "+R.toFixed(2)+":  N(R) = "+n+" lattice points,  πR² = "+(Math.PI*R*R).toFixed(2)+",  error E(R) = "+e.toFixed(2)+"\n|E(R)| / √R = "+(Math.abs(e)/Math.sqrt(R)).toFixed(3)+"   ·   conjecture: E(R) = O(R^(1/2+ε));  proved: exponent ≈ 0.63 (Huxley, with small later improvements);  Hardy: not O(R^(1/2))\nhover over a lattice point";}
+function setR(v){R=v;rS.value=v;rV.textContent=(+v).toFixed(2);draw();report();}
+rS.addEventListener("input",function(){stop();setR(+rS.value);});
+function stop(){if(play){cancelAnimationFrame(play);play=null;}document.getElementById("cplay").textContent="Play";}
+document.getElementById("cplay").addEventListener("click",function(){if(play){stop();return;}this.textContent="Pause";var t0=null,r0=R>=39.9?1:R;
+  (function fr(t){if(t0===null)t0=t;var v=r0+(t-t0)/1000*(Lab.reduce?40:2.2);if(v>=40){setR(40);stop();return;}setR(v);play=requestAnimationFrame(fr);})(performance.now());});
+document.querySelectorAll("[data-g]").forEach(function(b){b.addEventListener("click",function(){GMAX=+b.dataset.g;Lab.pressed("[data-g]",function(x){return x===b;});series=null;draw();});});
+cv.addEventListener("pointermove",function(ev){var p=Lab.local(cv,ev),F=frame();if(p[0]>F.lw){if(hov){hov=null;draw();report();}return;}var view=Math.max(5,R*1.12),s=(Math.min(F.lw,F.H)/2-8)/view,x=Math.round((p[0]-F.lw/2)/s),y=Math.round((F.H/2-p[1])/s);var h=[x,y];if(!hov||hov[0]!==x||hov[1]!==y){hov=h;draw();report();}});
+cv.addEventListener("pointerleave",function(){hov=null;draw();report();});
+Lab.onTheme(draw);window.addEventListener("resize",function(){geom=Lab.setup(cv);series=null;draw();});
+Lab.pressed("[data-g]",function(x){return x.dataset.g==="200";});geom=Lab.setup(cv);setR(1);document.getElementById("cplay").click();
+})();
+</script>
+</body>
+</html>
